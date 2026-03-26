@@ -1,0 +1,280 @@
+---
+title: "Modelo de datos"
+---
+
+## Diagrama entidad-relación
+
+El esquema PostgreSQL de `eleccionesdb` sigue un modelo estrella con 5 tablas de dimensiones y 4 tablas de hechos (2 principales + 2 CERA).
+
+```{mermaid}
+%%| label: fig-er
+%%| fig-cap: "Diagrama entidad-relación del esquema de eleccionesdb"
+erDiagram
+    tipos_eleccion {
+        VARCHAR codigo PK "G, A, L, E, S"
+        VARCHAR descripcion
+    }
+
+    elecciones {
+        INT id PK
+        VARCHAR tipo_eleccion FK
+        CHAR year
+        CHAR mes
+        CHAR dia
+        DATE fecha
+        CHAR codigo_ccaa
+        SMALLINT numero_vuelta
+        VARCHAR descripcion
+        VARCHAR ambito
+        VARCHAR slug
+    }
+
+    territorios {
+        INT id PK
+        ENUM tipo "ccaa, provincia, municipio..."
+        CHAR codigo_ccaa
+        CHAR codigo_provincia
+        CHAR codigo_municipio
+        CHAR codigo_distrito
+        CHAR codigo_seccion
+        CHAR codigo_circunscripcion
+        VARCHAR nombre
+        VARCHAR codigo_completo
+        INT parent_id FK
+    }
+
+    partidos_recode {
+        INT id PK
+        VARCHAR partido_recode
+        VARCHAR agrupacion
+        VARCHAR color
+    }
+
+    partidos {
+        INT id PK
+        INT partido_recode_id FK
+        VARCHAR siglas
+        VARCHAR denominacion
+    }
+
+    resumen_territorial {
+        INT id PK
+        INT eleccion_id FK
+        INT territorio_id FK
+        INT censo_ine
+        INT participacion_1
+        INT participacion_2
+        INT participacion_3
+        INT votos_validos
+        INT abstenciones
+        INT votos_blancos
+        INT votos_nulos
+        INT nrepresentantes
+    }
+
+    votos_territoriales {
+        INT id PK
+        INT eleccion_id FK
+        INT territorio_id FK
+        INT partido_id FK
+        INT votos
+        INT representantes
+    }
+
+    resumen_cera {
+        INT id PK
+        INT eleccion_id FK
+        INT territorio_id FK
+        INT censo_ine
+        INT votos_validos
+        INT abstenciones
+        INT votos_blancos
+        INT votos_nulos
+    }
+
+    votos_cera {
+        INT id PK
+        INT eleccion_id FK
+        INT territorio_id FK
+        INT partido_id FK
+        INT votos
+    }
+
+    tipos_eleccion ||--o{ elecciones : "tipo_eleccion"
+    territorios ||--o{ territorios : "parent_id"
+    partidos_recode ||--o{ partidos : "partido_recode_id"
+
+    elecciones ||--o{ resumen_territorial : "eleccion_id"
+    territorios ||--o{ resumen_territorial : "territorio_id"
+
+    elecciones ||--o{ votos_territoriales : "eleccion_id"
+    territorios ||--o{ votos_territoriales : "territorio_id"
+    partidos ||--o{ votos_territoriales : "partido_id"
+
+    elecciones ||--o{ resumen_cera : "eleccion_id"
+    territorios ||--o{ resumen_cera : "territorio_id"
+
+    elecciones ||--o{ votos_cera : "eleccion_id"
+    territorios ||--o{ votos_cera : "territorio_id"
+    partidos ||--o{ votos_cera : "partido_id"
+```
+
+## Tablas de dimensiones
+
+### `tipos_eleccion`
+
+Catálogo de tipos de elección con un código de un carácter.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `codigo` | `VARCHAR(1)` PK | Código del tipo: `G` (Generales), `A` (Autonómicas), `L` (Locales), `E` (Europeas), `S` (Senado) |
+| `descripcion` | `VARCHAR(100)` | Nombre descriptivo del tipo de elección |
+
+### `elecciones`
+
+Cada fila identifica una convocatoria electoral concreta.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id` | `INT` PK | Identificador autogenerado |
+| `tipo_eleccion` | `VARCHAR(1)` FK | Referencia a `tipos_eleccion.codigo` |
+| `year` | `CHAR(4)` | Año de la elección |
+| `mes` | `CHAR(2)` | Mes (con cero a la izquierda) |
+| `dia` | `CHAR(2)` | Día (con cero a la izquierda) |
+| `fecha` | `DATE` | Fecha completa |
+| `codigo_ccaa` | `CHAR(2)` | Código de comunidad autónoma (NULL para generales) |
+| `numero_vuelta` | `SMALLINT` | Número de vuelta (default 1) |
+| `descripcion` | `VARCHAR(255)` | Texto descriptivo legible (ej: "Generales junio 2016") |
+| `ambito` | `VARCHAR(50)` | Ámbito: "nacional", "autonómico", etc. |
+| `slug` | `VARCHAR(50)` | Identificador legible para URLs |
+
+**Restricción UNIQUE**: `(tipo_eleccion, year, mes, codigo_ccaa, numero_vuelta)`
+
+### `territorios`
+
+Jerarquía territorial con auto-referencia vía `parent_id`. Cada registro representa un nivel territorial único.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id` | `INT` PK | Identificador autogenerado |
+| `tipo` | `territorio_tipo` ENUM | Nivel: `ccaa`, `provincia`, `circunscripcion`, `municipio`, `distrito`, `seccion`, `cera` |
+| `codigo_ccaa` | `CHAR(2)` | Código INE de comunidad autónoma |
+| `codigo_provincia` | `CHAR(2)` | Código INE de provincia |
+| `codigo_municipio` | `CHAR(3)` | Código INE de municipio |
+| `codigo_distrito` | `CHAR(2)` | Código de distrito censal |
+| `codigo_seccion` | `CHAR(4)` | Código de sección censal |
+| `codigo_circunscripcion` | `CHAR(3)` | Código de circunscripción (sub-provincial en Canarias, Asturias, Baleares) |
+| `nombre` | `VARCHAR(255)` | Nombre del territorio |
+| `codigo_completo` | `VARCHAR(13)` | Código concatenado completo |
+| `parent_id` | `INT` FK | Referencia al territorio padre en la jerarquía |
+
+**Restricción UNIQUE**: `(tipo, codigo_ccaa, codigo_provincia, codigo_municipio, codigo_distrito, codigo_seccion, codigo_circunscripcion)`
+
+### `partidos_recode`
+
+Agrupaciones y recodificaciones de partidos. Permite agrupar siglas históricas o regionales bajo una misma etiqueta analítica.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id` | `INT` PK | Identificador autogenerado |
+| `partido_recode` | `VARCHAR(50)` UNIQUE | Nombre de la agrupación (ej: "PSOE", "PP", "Otros") |
+| `agrupacion` | `VARCHAR(50)` | Agrupación de nivel superior |
+| `color` | `VARCHAR(7)` | Color hexadecimal para visualización |
+
+### `partidos`
+
+Cada par único `(siglas, denominacion)` tal como aparece en los datos oficiales de cada elección.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `id` | `INT` PK | Identificador autogenerado |
+| `partido_recode_id` | `INT` FK | Referencia a `partidos_recode.id` |
+| `siglas` | `VARCHAR(255)` | Siglas del partido |
+| `denominacion` | `VARCHAR(255)` | Denominación completa del partido |
+
+**Restricción UNIQUE**: `(siglas, denominacion)`
+
+## Tablas de hechos
+
+### `resumen_territorial`
+
+Resumen de censo, participación y votos agregados por elección y territorio. Una fila por cada combinación `(eleccion_id, territorio_id)`.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `eleccion_id` | `INT` FK | Referencia a `elecciones.id` |
+| `territorio_id` | `INT` FK | Referencia a `territorios.id` |
+| `censo_ine` | `INT` | Censo electoral (electores con derecho a voto) |
+| `participacion_1` | `INT` | Primer avance de participación |
+| `participacion_2` | `INT` | Segundo avance de participación |
+| `participacion_3` | `INT` | Participación final |
+| `votos_validos` | `INT` | Total de votos válidos |
+| `abstenciones` | `INT` | Abstenciones |
+| `votos_blancos` | `INT` | Votos en blanco |
+| `votos_nulos` | `INT` | Votos nulos |
+| `nrepresentantes` | `INT` | Número de escaños asignados a ese territorio |
+
+### `votos_territoriales`
+
+Votos por partido, elección y territorio. Una fila por cada combinación `(eleccion_id, territorio_id, partido_id)`.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `eleccion_id` | `INT` FK | Referencia a `elecciones.id` |
+| `territorio_id` | `INT` FK | Referencia a `territorios.id` |
+| `partido_id` | `INT` FK | Referencia a `partidos.id` |
+| `votos` | `INT` | Número de votos recibidos |
+| `representantes` | `INT` | Representantes electos (si aplica) |
+
+### `resumen_cera` y `votos_cera`
+
+Tablas análogas a `resumen_territorial` y `votos_territoriales` para el voto CERA (Censo de Españoles Residentes Ausentes). Estructura similar pero sin avances de participación ni `nrepresentantes`.
+
+## Jerarquía territorial
+
+El campo `parent_id` de la tabla `territorios` codifica la siguiente jerarquía:
+
+```{mermaid}
+%%| label: fig-hierarchy
+%%| fig-cap: "Jerarquía territorial con parent_id"
+flowchart TD
+    CCAA["🏛️ Comunidad Autónoma\n(tipo = ccaa)"]
+    PROV["🗺️ Provincia\n(tipo = provincia)"]
+    CIRC["📍 Circunscripción\n(tipo = circunscripcion)"]
+    MUNI["🏘️ Municipio\n(tipo = municipio)"]
+    DIST["📊 Distrito\n(tipo = distrito)"]
+    SECC["📋 Sección censal\n(tipo = seccion)"]
+
+    CCAA --> PROV
+    PROV --> CIRC
+    CIRC --> MUNI
+    PROV --> MUNI
+    MUNI --> DIST
+    DIST --> SECC
+```
+
+- Cada **CCAA** es padre de sus **provincias**.
+- Cada **provincia** es padre de sus **municipios** (o de **circunscripciones** sub-provinciales en Canarias, Asturias y Baleares).
+- Las **circunscripciones** sub-provinciales (islas en Canarias y Baleares; Occidente/Centro/Oriente en Asturias) son padres de sus municipios.
+- Cada **municipio** es padre de sus **distritos**.
+- Cada **distrito** es padre de sus **secciones censales**.
+
+Este diseño permite navegar la jerarquía de forma recursiva: dado cualquier territorio, se puede subir o bajar en la jerarquía siguiendo `parent_id`.
+
+## Sistema de partidos
+
+El modelo utiliza dos tablas separadas para gestionar la complejidad del panorama partidista español:
+
+### Dos niveles de detalle
+
+1. **`partidos`**: Recoge cada par `(siglas, denominacion)` tal como aparece en los datos oficiales. Un mismo partido puede aparecer con distintas denominaciones a lo largo de los años o en distintas comunidades.
+
+2. **`partidos_recode`**: Agrupa las distintas apariciones bajo una etiqueta analítica común. Por ejemplo, todas las variantes de "Partido Socialista Obrero Español", "PSOE", "PSC-PSOE" pueden agruparse bajo el recode "PSOE". Incluye además un campo `agrupacion` para agrupaciones de nivel superior y un `color` para visualización.
+
+### Flujo de asignación
+
+1. Los scripts de generación de datos producen votos con `(siglas, denominacion)` tal cual.
+2. `new-partidos.R` detecta combinaciones nuevas sin recodificación asignada.
+3. Se revisan manualmente y se añaden a `partidos_recodes.xlsx`.
+4. `sync-partidos.R` sincroniza las dimensiones `partidos` y `partidos_recode`.
+5. `02-bind-hechos.R` asigna `partido_id` por matching case-insensitive — **falla si quedan votos sin match**.

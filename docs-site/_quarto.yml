@@ -1,0 +1,36 @@
+project:
+  type: website
+  output-dir: ../docs
+
+website:
+  title: "eleccionesdb"
+  lang: es
+  navbar:
+    background: primary
+    left:
+      - href: index.qmd
+        text: Inicio
+      - href: pipeline.qmd
+        text: Pipeline
+      - href: modelo-datos.qmd
+        text: Modelo de datos
+      - href: fuentes.qmd
+        text: Fuentes
+      - href: descargas.qmd
+        text: Descargas
+      - href: cobertura.qmd
+        text: Cobertura
+      - href: changelog.qmd
+        text: Changelog
+  page-footer:
+    center: |
+      Código fuente en [GitHub](https://github.com/hmeleiro/eleccionesdb-etl)
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+execute:
+  freeze: auto
