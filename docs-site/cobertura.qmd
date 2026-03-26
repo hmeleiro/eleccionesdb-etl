@@ -9,6 +9,9 @@ library(readr)
 library(dplyr)
 library(tidyr)
 library(knitr)
+
+elecciones_path <- "../tablas-finales/dimensiones/elecciones"
+has_data <- file.exists(elecciones_path)
 ```
 
 ## Matriz de cobertura
@@ -18,32 +21,39 @@ La siguiente tabla muestra las elecciones cubiertas en la base de datos, organiz
 ```{r}
 #| label: tabla-cobertura
 #| echo: false
+#| results: asis
 
-elecciones <- read_csv("../tablas-finales/dimensiones/elecciones", show_col_types = FALSE)
+if (!has_data) {
+  cat("::: {.callout-warning}\n")
+  cat("Los datos de cobertura no están disponibles. Ejecuta el pipeline ETL para generarlos.\n")
+  cat(":::\n")
+} else {
+  elecciones <- read_csv(elecciones_path, show_col_types = FALSE)
 
-cobertura <- elecciones |>
-  mutate(
-    ambito_label = case_when(
-      tipo_eleccion == "G" ~ "Congreso (nacional)",
-      tipo_eleccion == "A" & codigo_ccaa == "01" ~ "Andalucía",
-      tipo_eleccion == "A" & codigo_ccaa == "02" ~ "Aragón",
-      tipo_eleccion == "A" & codigo_ccaa == "03" ~ "Asturias",
-      tipo_eleccion == "A" & codigo_ccaa == "04" ~ "Baleares",
-      tipo_eleccion == "A" & codigo_ccaa == "05" ~ "Canarias",
-      tipo_eleccion == "A" & codigo_ccaa == "07" ~ "Castilla y León",
-      tipo_eleccion == "A" & codigo_ccaa == "09" ~ "Cataluña",
-      tipo_eleccion == "A" & codigo_ccaa == "10" ~ "C. Valenciana",
-      tipo_eleccion == "A" & codigo_ccaa == "13" ~ "C. de Madrid",
-      TRUE ~ paste(tipo_eleccion, codigo_ccaa)
-    )
-  ) |>
-  mutate(marca = "✓") |>
-  select(ambito_label, year, marca) |>
-  distinct() |>
-  pivot_wider(names_from = year, values_from = marca, values_fill = "") |>
-  arrange(ambito_label)
+  cobertura <- elecciones |>
+    mutate(
+      ambito_label = case_when(
+        tipo_eleccion == "G" ~ "Congreso (nacional)",
+        tipo_eleccion == "A" & codigo_ccaa == "01" ~ "Andalucía",
+        tipo_eleccion == "A" & codigo_ccaa == "02" ~ "Aragón",
+        tipo_eleccion == "A" & codigo_ccaa == "03" ~ "Asturias",
+        tipo_eleccion == "A" & codigo_ccaa == "04" ~ "Baleares",
+        tipo_eleccion == "A" & codigo_ccaa == "05" ~ "Canarias",
+        tipo_eleccion == "A" & codigo_ccaa == "07" ~ "Castilla y León",
+        tipo_eleccion == "A" & codigo_ccaa == "09" ~ "Cataluña",
+        tipo_eleccion == "A" & codigo_ccaa == "10" ~ "C. Valenciana",
+        tipo_eleccion == "A" & codigo_ccaa == "13" ~ "C. de Madrid",
+        TRUE ~ paste(tipo_eleccion, codigo_ccaa)
+      )
+    ) |>
+    mutate(marca = "✓") |>
+    select(ambito_label, year, marca) |>
+    distinct() |>
+    pivot_wider(names_from = year, values_from = marca, values_fill = "") |>
+    arrange(ambito_label)
 
-kable(cobertura, align = "l")
+  print(kable(cobertura, align = "l"))
+}
 ```
 
 ## Granularidad disponible
