@@ -2,9 +2,10 @@ project:
   type: website
   output-dir: ../docs
 
+lang: es
+
 website:
   title: "eleccionesdb"
-  lang: es
   navbar:
     background: primary
     left:
