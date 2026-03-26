@@ -7,9 +7,10 @@ fechas_elecciones <- read_csv("data-raw/fechas_elecciones.csv", show_col_types =
   mutate(
     ccaa = stringr::str_to_title(ccaa),
     fecha = case_when(
-      fecha == "10 y 16 de diciembre de 1985" ~"10 de diciembre de 1985",
+      fecha == "10 y 16 de diciembre de 1985" ~ "10 de diciembre de 1985",
       fecha == "12 marzo de 2000" ~ "12 de marzo de 2000",
-      T ~ fecha),
+      T ~ fecha
+    ),
     fecha = as.Date(fecha, format = "%d de %B de %Y"),
     codigo_ccaa = case_when(
       ccaa == "Andalucia" ~ "01",
@@ -70,6 +71,5 @@ elecciones <-
   select(-ccaa) %>%
   arrange(fecha) %>%
   mutate(id = row_number(), .before = 1)
-
 
 write_csv(elecciones, "tablas-finales/dimensiones/elecciones")
