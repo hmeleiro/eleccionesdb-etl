@@ -4,7 +4,7 @@ title: "Restaurar data-raw/"
 
 # Restaurar data-raw/ para reproducir el ETL
 
-Para ejecutar el pipeline ETL necesitas poblar el directorio `data-raw/` con los datos originales. Por motivos de tamaño y licencia, estos archivos no están en el repositorio.
+Para ejecutar el pipeline ETL necesitas poblar el directorio `data-raw/` con los datos originales. Por motivos de tamaño, estos archivos no están en el repositorio.
 
 ## Descarga automática de datos
 

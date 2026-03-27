@@ -33,9 +33,10 @@ Además incluye:
 - `partidos_recodes.xlsx` — Tabla maestra de recodificación/agrupación de partidos.
 
 
-[!TIP]
-> **¿Quieres reproducir el ETL completo?**<br>
-> Consulta cómo poblar `data-raw/` en la guía: [Restaurar data-raw/](restaurar-data-raw.qmd)
+:::{.callout-tip}
+**¿Quieres reproducir el ETL completo?**<br>
+Consulta cómo poblar `data-raw/` en la guía: [Restaurar data-raw/](restaurar-data-raw.qmd)
+:::
 
 ## Fase 2: Generación de datos intermedios (`code/01-generate-data/`)
 
