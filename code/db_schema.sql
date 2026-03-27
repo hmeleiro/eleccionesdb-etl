@@ -1,5 +1,5 @@
 -- Conéctate primero a la base:
--- \c electionsdb
+-- \c elecionesdb
 
 BEGIN;
 

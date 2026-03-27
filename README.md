@@ -182,3 +182,34 @@ run_fact_checks()
 6.  Validar: `run_dimension_checks()` y `run_fact_checks()`.
 7.  Cargar en BD: `code/03-writedb/write-db.R`.
 8.  Exportar: `code/04-export/export-descargas.R`.
+
+## Restaurar data-raw/ para reproducir el ETL
+
+Los archivos originales de datos (`data-raw/`) no se incluyen en el repositorio por cuestiones de tamaño. Para poblar este directorio y poder ejecutar el pipeline ETL:
+
+### Descarga automática de datos (sin credenciales)
+
+1. Asegúrate de tener R y los paquetes necesarios (`readr`, `httr`, `fs`, `purrr`).
+2. Ejecuta:
+
+```r
+source("code/00-setup/download_data_raw.R")
+```
+
+Esto descargará todos los archivos listados en el índice público y los colocará en su ruta correspondiente bajo `data-raw/`.
+
+- El índice de archivos se encuentra en: `docs-site/data_index.csv` (ajusta la URL en el script si lo alojas en otro sitio).
+- El script es idempotente: solo descarga archivos que no existen localmente.
+
+### ¿Cómo se genera el índice? (solo admins)
+
+1. Configura las variables en `.env` (`CF_S3_ACCESS_KEY`, `CF_S3_SECRET_KEY`, `CF_S3_ENDPOINT`, `CF_S3_BUCKET`, `CF_S3_PUBLIC_BASE_URL`).
+2. Ejecuta:
+
+```r
+source("code/00-setup/generate_data_index.R")
+```
+
+Esto crea/actualiza el archivo `docs-site/data_index.csv` con la lista de archivos y URLs públicas.
+
+> Si los datos del bucket cambian, recuerda regenerar y volver a publicar el índice.
