@@ -1,5 +1,6 @@
 # Rendered Quarto output (served by GitHub Pages)
 docs/
+docs-site/changelog-template.qmd
 
 # R session / workspace files
 .Rhistory
