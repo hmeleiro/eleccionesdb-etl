@@ -32,6 +32,11 @@ Además incluye:
 - `representantes/` — Escaños asignados y representantes electos por provincia y municipio.
 - `partidos_recodes.xlsx` — Tabla maestra de recodificación/agrupación de partidos.
 
+
+[!TIP]
+> **¿Quieres reproducir el ETL completo?**<br>
+> Consulta cómo poblar `data-raw/` en la guía: [Restaurar data-raw/](restaurar-data-raw.qmd)
+
 ## Fase 2: Generación de datos intermedios (`code/01-generate-data/`)
 
 Transforma los datos en bruto en tablas intermedias estandarizadas (formato RDS) en `data-processed/`.
