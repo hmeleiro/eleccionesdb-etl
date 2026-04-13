@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="es">
+  <head><script src="/eleccionesdb-etl/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=eleccionesdb-etl/livereload" data-no-instant defer></script><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fuentes de datos · eleccionesdb</title>
+<meta name="description" content="Origen y detalle de las fuentes de datos de eleccionesdb" />
+<meta name="author" content="Héctor Meleiro" />
+
+
+<meta property="og:title" content="Fuentes de datos" />
+<meta
+  property="og:description"
+  content="Origen y detalle de las fuentes de datos de eleccionesdb"
+/>
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/eleccionesdb-etl/fuentes/" />
+<meta property="og:site_name" content="eleccionesdb" />
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+
+
+
+<link rel="stylesheet" href="/eleccionesdb-etl/css/main.min.1d7d384ccfead7ae54d18fbd5f0768ddaf92c0c4b64794234f72f5bcf30e4191.css" integrity="sha256-HX04TM/q165U0Y&#43;9Xwdo3a&#43;SwMS2R5QjT3L1vPMOQZE=" />
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: "neutral" });</script>
+</head>
+
+  <body><header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="site-logo">
+      <span class="logo-icon">◆</span>
+      <span class="logo-text">eleccionesdb</span>
+    </a>
+
+    <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
+      <span class="hamburger"></span>
+    </button>
+
+    <nav class="site-nav" id="site-nav">
+      <ul class="nav-list">
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/" class="nav-link">
+              Inicio
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/pipeline/" class="nav-link">
+              Pipeline
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/modelo-datos/" class="nav-link">
+              Modelo de datos
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/fuentes/" class="nav-link is-active">
+              Fuentes
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/descargas/" class="nav-link">
+              Descargas
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/cobertura/" class="nav-link">
+              Cobertura
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/changelog/" class="nav-link">
+              Changelog
+            </a>
+          </li>
+        
+        <li class="nav-item">
+          <a href="https://github.com/hmeleiro/eleccionesdb-etl" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  (function () {
+    const toggle = document.querySelector(".menu-toggle");
+    const nav = document.getElementById("site-nav");
+    if (toggle && nav) {
+      toggle.addEventListener("click", function () {
+        const expanded = this.getAttribute("aria-expanded") === "true";
+        this.setAttribute("aria-expanded", !expanded);
+        nav.classList.toggle("is-open");
+      });
+    }
+  })();
+</script>
+<main id="content">
+  <article class="page-single">
+    <div class="container">
+      <div class="page-header">
+        <h1>Fuentes de datos</h1>
+        
+          <p class="page-desc">Origen y detalle de las fuentes de datos de eleccionesdb</p>
+        
+      </div>
+      <div class="page-content prose">
+        <h2 id="resumen-de-fuentes">Resumen de fuentes</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Elección</th>
+          <th>Fuente principal</th>
+          <th>Formato</th>
+          <th>API/Manual</th>
+          <th>Cobertura</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Congreso</td>
+          <td>Infoelectoral (Ministerio del Interior)</td>
+          <td>R package</td>
+          <td>API (paquete)</td>
+          <td>Todas las convocatorias</td>
+      </tr>
+      <tr>
+          <td>Andalucía</td>
+          <td>Junta de Andalucía (SIEL)</td>
+          <td>REST JSON</td>
+          <td>API</td>
+          <td>Todas</td>
+      </tr>
+      <tr>
+          <td>Aragón</td>
+          <td>Gobierno de Aragón (datos abiertos)</td>
+          <td>CSV/XLSX</td>
+          <td>Manual</td>
+          <td>2011–2023</td>
+      </tr>
+      <tr>
+          <td>Asturias</td>
+          <td>SADEI + GIPEYOP</td>
+          <td>.px + XLSX</td>
+          <td>Scraping + manual</td>
+          <td>Todas</td>
+      </tr>
+      <tr>
+          <td>Baleares</td>
+          <td>IBESTAT + GIPEYOP</td>
+          <td>.px + XLSX</td>
+          <td>Manual</td>
+          <td>1983–2023</td>
+      </tr>
+      <tr>
+          <td>Canarias</td>
+          <td>PARCAN + ISTAC + GIPEYOP</td>
+          <td>CSV + XLSX</td>
+          <td>API + manual</td>
+          <td>1983–2023</td>
+      </tr>
+      <tr>
+          <td>Castilla y León</td>
+          <td>Junta de Castilla y León</td>
+          <td>CSV (<code>;</code>, Latin-1)</td>
+          <td>Manual</td>
+          <td>1983–2022</td>
+      </tr>
+      <tr>
+          <td>Cataluña</td>
+          <td>Generalitat de Catalunya</td>
+          <td>CSV</td>
+          <td>Manual</td>
+          <td>1980–2023</td>
+      </tr>
+      <tr>
+          <td>C. Valenciana</td>
+          <td>Generalitat Valenciana</td>
+          <td>CSV + XLSX</td>
+          <td>Manual</td>
+          <td>1983–2023</td>
+      </tr>
+      <tr>
+          <td>C. de Madrid</td>
+          <td>Comunidad de Madrid</td>
+          <td>XLS/XLSX</td>
+          <td>Manual</td>
+          <td>1983–2023</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="detalle-por-elección--comunidad">Detalle por elección / comunidad</h2>
+<h3 id="congreso-00-congreso">Congreso (<code>00-congreso</code>)</h3>
+<ul>
+<li><strong>Fuente</strong>: Paquete R <a href="https://ropenspain.github.io/infoelectoral/"><code>infoelectoral</code></a> (datos del Ministerio del Interior).</li>
+<li><strong>Método</strong>: Funciones <code>provincias()</code>, <code>municipios()</code>, <code>mesas()</code> del paquete.</li>
+<li><strong>Granularidad</strong>: Provincia, municipio y sección censal (mesa).</li>
+<li><strong>Ficheros brutos</strong>: No hay CSV en <code>data-raw/</code>; el paquete descarga directamente desde la fuente oficial.</li>
+<li><strong>Scripts</strong>: <code>sauron_formats.R</code> (orquestador) → <code>format_provincias.R</code>, <code>format_municipios.R</code>, <code>format_secciones.R</code>.</li>
+<li><strong>Notas</strong>: Separa CER (residentes) de CERA (residentes ausentes).</li>
+</ul>
+<hr>
+<h3 id="andalucía-01-andalucia">Andalucía (<code>01-andalucia</code>)</h3>
+<ul>
+<li><strong>Fuente</strong>: API del <a href="https://resultadoseleccionesandalucia.es/">Sistema de Información Electoral de Andalucía</a> de la Junta de Andalucía.</li>
+<li><strong>URL base</strong>: <code>https://ws040.juntadeandalucia.es/siel-api/v1</code></li>
+<li><strong>Método</strong>: REST API (<code>httr::GET</code>) con endpoints: <code>/opciones/fconvocatoria</code>, <code>/opciones/provincia</code>, <code>/opciones/municipio</code>, <code>/opciones/distrito</code>, <code>/opciones/seccion</code>.</li>
+<li><strong>Granularidad</strong>: Provincia, municipio y sección censal.</li>
+<li><strong>Ficheros brutos</strong>: <code>resumen_{provincias,municipios,secciones}.csv</code>, <code>escrutinio_{provincias,municipios,secciones}.csv</code>, <code>nomenclators/*.rds</code>.</li>
+<li><strong>Scripts</strong>: <code>00_fetch-nomenclators.R</code> → <code>01-06_fetch-info/votos-*.R</code> (descarga paralela con <code>future_pmap_dfr</code>) → <code>07-format-data.R</code>.</li>
+<li><strong>Notas</strong>: Descarga paralela con rate limiting (5 reintentos, 2s de pausa base). CERA en municipio=901. Agrega a nivel CCAA.</li>
+</ul>
+<hr>
+<h3 id="aragón-02-aragon">Aragón (<code>02-aragon</code>)</h3>
+<ul>
+<li><strong>Fuente</strong>: <a href="https://opendata.aragon.es/">Portal de datos abiertos</a> del Gobierno de Aragón.</li>
+<li><strong>Método</strong>: Ficheros CSV/XLSX descargados manualmente.</li>
+<li><strong>Granularidad</strong>: Municipal y provincial (histórico); mesa/sección en elecciones recientes.</li>
+<li><strong>Ficheros brutos</strong>: <code>Resultados electorales agrupados a escala municipal (histórico).csv</code>, <code>Resultados electorales agrupados a escala provincial (histórico).xlsx</code>, carpetas por año (<code>2011/</code>, <code>2015/</code>, <code>2019/</code>, <code>2023/</code>).</li>
+<li><strong>Scripts</strong>: <code>01_format-info.R</code> (resumen/participación), <code>02_format-votos.R</code> (votos por partido).</li>
+<li><strong>Notas</strong>: CERA identificado como municipio=&lsquo;000&rsquo;. Formatos de tabla variables por año. Cobertura: 2011–2023.</li>
+</ul>
+<hr>
+<h3 id="asturias-03-asturias">Asturias (<code>03-asturias</code>)</h3>
+<ul>
+<li><strong>Fuente</strong>: Doble fuente — <a href="https://www.sadei.es/sadei/resultados-electorales/elecciones-autonomicas_249_1_ap.html">SADEI</a> (pre-2015) + <a href="https://gipeyop.uv.es/gipeyop/sea.html">GIPEYOP</a> (2015+).</li>
+<li><strong>Método</strong>: SADEI: scraping web + lectura de ficheros <code>.px</code> (paquete <code>pxR</code>). GIPEYOP: lectura directa de xlsx.</li>
+<li><strong>Granularidad</strong>: Mesa (2015+), municipal (pre-2015).</li>
+<li><strong>Ficheros brutos</strong>: <code>SADEI/*.px</code>, <code>gipeyop/Asturias{2015,2019,2023}_mesas.xlsx</code>, <code>censo_ine/</code>, <code>correspondencia_municipio-circunscripcion.xlsx</code>.</li>
+<li><strong>Scripts</strong>: <code>00_get-nomenclator-sadei.R</code>, <code>01_format-data.R</code>.</li>
+<li><strong>Notas</strong>: Asturias tiene circunscripciones sub-provinciales (Occidente/Centro/Oriente, códigos 331/332/333). Transformaciones pivot complejas para el formato <code>.px</code>.</li>
+</ul>
+<hr>
+<h3 id="baleares-04-baleares">Baleares (<code>04-baleares</code>)</h3>
+<ul>
+<li><strong>Fuente</strong>: <a href="https://ibestat.es/edatos/apps/statistical-visualizer/visualizer/collection.html?resourceType=collection&amp;agencyId=IBESTAT&amp;resourceId=000199A_000001">IBESTAT</a> (Institut d&rsquo;Estadística de les Illes Balears) + <a href="https://gipeyop.uv.es/gipeyop/sea.html">GIPEYOP</a>.</li>
+<li><strong>Método</strong>: Lectura de ficheros <code>.px</code> (formato PX-WEB estadístico) con <code>pxR::read.px()</code>.</li>
+<li><strong>Granularidad</strong>: Mesa/sección.</li>
+<li><strong>Ficheros brutos</strong>: Carpetas por año (<code>1983/</code>–<code>2023/</code>) con ficheros <code>.px</code>, <code>22codislas.xlsx</code> (mapeo islas), <code>cera/</code>, <code>gipeyop/</code>.</li>
+<li><strong>Scripts</strong>: <code>format.R</code>.</li>
+<li><strong>Notas</strong>: Circunscripciones insulares (Mallorca, Menorca, Ibiza, Formentera). Códigos de 12 caracteres (pre-1995) vs 10 caracteres (1995+). Cobertura: 1983–2023.</li>
+</ul>
+<hr>
+<h3 id="canarias-05-canarias">Canarias (<code>05-canarias</code>)</h3>
+<ul>
+<li><strong>Fuente</strong>: <a href="https://www.parcan.es/elecciones/">PARCAN</a> (1999+) + <a href="https://www.gobiernodecanarias.org/istac/estadisticas/sociedad/elecciones/Elecciones/C00010A.html">ISTAC</a> + <a href="https://gipeyop.uv.es/gipeyop/sea.html">GIPEYOP</a> (1983–2015).</li>
+<li><strong>Método</strong>: PARCAN: descarga CSV por municipio. ISTAC: lectura de xlsx. GIPEYOP: lectura de xlsx.</li>
+<li><strong>Granularidad</strong>: Municipal (PARCAN), provincial/sección (GIPEYOP/ISTAC).</li>
+<li><strong>Ficheros brutos</strong>: <code>parcan/</code> (CSV por municipio), <code>istac/</code> (datasets ISTAC xlsx), <code>gipeyop/Canarias{1983,1987}_provincias.xlsx</code>, <code>Canarias{1991-2015}_secciones.xlsx</code>.</li>
+<li><strong>Scripts</strong>: <code>00_download-data-parcan.R</code>, <code>format.R</code>.</li>
+<li><strong>Notas</strong>: 7 circunscripciones insulares (Fuerteventura, Gran Canaria, La Gomera, El Hierro, La Palma, Tenerife, Lanzarote) + circunscripción autonómica. Cobertura: 1983–2023.</li>
+</ul>
+<hr>
+<h3 id="castilla-y-león-07-cyl">Castilla y León (<code>07-cyl</code>)</h3>
+<ul>
+<li><strong>Fuente</strong>: <a href="https://jcyl.opendatasoft.com/explore/dataset/resultados-electorales-1983-actualidad/information/">Portal de datos abiertos</a> de la Junta de Castilla y León.</li>
+<li><strong>Método</strong>: Ficheros CSV descargados manualmente.</li>
+<li><strong>Granularidad</strong>: Mesa (código de mesa parseado a sección/distrito/municipio/provincia).</li>
+<li><strong>Ficheros brutos</strong>: Un CSV por año (<code>1983.csv</code>–<code>2022.csv</code>), delimitados por <code>;</code>, codificación Latin-1.</li>
+<li><strong>Scripts</strong>: <code>format.R</code>.</li>
+<li><strong>Notas</strong>: Parsea la estructura del código de mesa para extraer provincia/municipio/distrito/sección. Agrega por niveles. Cobertura: 1983–2022.</li>
+</ul>
+<hr>
+<h3 id="cataluña-09-catalunya">Cataluña (<code>09-catalunya</code>)</h3>
+<ul>
+<li><strong>Fuente</strong>: <a href="https://eleccions.gencat.cat/es/resultats-i-eleccions-anteriors/resultats-electorals/#/">Generalitat de Catalunya</a>.</li>
+<li><strong>Método</strong>: Ficheros CSV descargados (datos abiertos electorales).</li>
+<li><strong>Granularidad</strong>: Mesa.</li>
+<li><strong>Ficheros brutos</strong>: Patrón de nombre <code>A{YYYY}{N}-{TIPO}-ME.csv</code> (ej: <code>A20231-Columnes-ME.csv</code>).</li>
+<li><strong>Scripts</strong>: <code>01_format-data.R</code>.</li>
+<li><strong>Notas</strong>: Nombres de columna en catalán. Locale con coma decimal y punto de agrupación. CERA en municipio=&lsquo;998&rsquo;. Cobertura: 1980–2023.</li>
+</ul>
+<hr>
+<h3 id="comunidad-valenciana-10-comunidad-valenciana">Comunidad Valenciana (<code>10-comunidad-valenciana</code>)</h3>
+<ul>
+<li><strong>Fuente</strong>: <a href="https://portaldadesobertes.gva.es/es">Portal de Datos Abiertos</a> de la Generalitat Valenciana.</li>
+<li><strong>Método</strong>: Ficheros CSV y xlsx descargados manualmente.</li>
+<li><strong>Granularidad</strong>: Mesa/sección.</li>
+<li><strong>Ficheros brutos</strong>: CSV por año (<code>1987.csv</code>–<code>2023.csv</code>) + <code>Comunitat Valenciana1983_municipios.xlsx</code> (1983 en formato especial).</li>
+<li><strong>Scripts</strong>: <code>format.R</code>.</li>
+<li><strong>Notas</strong>: Naming de columnas variable entre años. Codificación variable. 1983 es xlsx con resultados municipales precalculados. Cobertura: 1983–2023.</li>
+</ul>
+<hr>
+<h3 id="comunidad-de-madrid-13-comunidad-madrid">Comunidad de Madrid (<code>13-comunidad-madrid</code>)</h3>
+<ul>
+<li><strong>Fuente</strong>: <a href="https://www.comunidad.madrid/gobierno/datos-abiertos">Portal de Datos Abiertos</a> de la Comunidad de Madrid.</li>
+<li><strong>Método</strong>: Ficheros Excel (.xls/.xlsx) descargados manualmente.</li>
+<li><strong>Granularidad</strong>: Mesa.</li>
+<li><strong>Ficheros brutos</strong>: <code>{año}_Mesas.xls</code> (1995–2021), <code>datos_electorales_elecciones_autonomicas_comunidad_de_madrid_2023.xlsx</code> (2023, formato diferente), <code>Madrid{1983,1987,1991}_circunscripcion.xlsx</code> (histórico).</li>
+<li><strong>Scripts</strong>: <code>format.R</code>.</li>
+<li><strong>Notas</strong>: 2003 tiene dos elecciones (mayo y octubre). Multi-header parsing en Excel. Circunscripción única (provincial). Cobertura: 1983–2023.</li>
+</ul>
+<hr>
+<h2 id="fuentes-transversales">Fuentes transversales</h2>
+<h3 id="fechas-de-elecciones">Fechas de elecciones</h3>
+<ul>
+<li><strong>Fichero</strong>: <code>data-raw/fechas_elecciones.csv</code> — contiene <code>tipo_eleccion</code>, <code>fecha</code> (en texto español, ej: &ldquo;9 de junio de 2024&rdquo;), <code>ccaa</code>.</li>
+<li><strong>Fuente alternativa</strong>: Scraping de la <a href="https://www.juntaelectoralcentral.es">Junta Electoral Central</a> (<code>fechas-elecciones-scrap.R</code>).</li>
+</ul>
+<h3 id="códigos-territoriales">Códigos territoriales</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Fichero</th>
+          <th>Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>codigos_secciones.rds</code></td>
+          <td>Códigos de secciones censales canónicos</td>
+      </tr>
+      <tr>
+          <td><code>codigos_secciones_infoelectoral.rds</code></td>
+          <td>Codificación alternativa Infoelectoral</td>
+      </tr>
+      <tr>
+          <td><code>codigos_secciones_{01,03,07}.rds</code></td>
+          <td>Secciones específicas por CCAA (Andalucía, Asturias, CyL)</td>
+      </tr>
+      <tr>
+          <td><code>circunscripciones.csv</code></td>
+          <td>Circunscripciones sub-provinciales (Asturias, Canarias, Baleares)</td>
+      </tr>
+      <tr>
+          <td><code>correspondencia_municipio_circunscripcion.csv</code></td>
+          <td>Mapeo municipio → circunscripción</td>
+      </tr>
+      <tr>
+          <td><code>nombres_municipios.csv</code></td>
+          <td>Nomenclátor de municipios (INE)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="representantes-y-escaños">Representantes y escaños</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Fichero</th>
+          <th>Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>nrepresentantes_prov.xlsx</code></td>
+          <td>Escaños asignados por provincia/circunscripción y elección</td>
+      </tr>
+      <tr>
+          <td><code>nrepresentantes_muni.xlsx</code></td>
+          <td>Escaños asignados por municipio (locales)</td>
+      </tr>
+      <tr>
+          <td><code>representantes_prov.xlsx</code></td>
+          <td>Representantes electos por provincia</td>
+      </tr>
+      <tr>
+          <td><code>representantes_muni.xlsx</code></td>
+          <td>Representantes electos por municipio</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="agradecimientos">Agradecimientos</h2>
+<p>Parte de los datos históricos a nivel de mesa provienen del <a href="https://gipeyop.uv.es/gipeyop/sea.html"><strong>Spanish Electoral Archive (SEA)</strong></a>, elaborado por el <a href="https://gipeyop.uv.es/"><strong>GIPEYOP</strong> (Grupo de Investigación en Procesos Electorales y Opinión Pública)</a> de la Universitat de València. Agradecemos enormemente su labor de recopilación y puesta a disposición de estos datos electorales.</p>
+
+      </div>
+    </div>
+  </article>
+</main><footer class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon">◆</span>
+        <span class="footer-title">eleccionesdb</span>
+        <p class="footer-desc">Base de datos relacional abierta con resultados electorales de España.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Documentación</h4>
+          <ul>
+            <li><a href="/eleccionesdb-etl/pipeline/">Pipeline</a></li>
+            <li><a href="/eleccionesdb-etl/modelo-datos/">Modelo de datos</a></li>
+            <li><a href="/eleccionesdb-etl/fuentes/">Fuentes</a></li>
+            <li><a href="/eleccionesdb-etl/descargas/">Descargas</a></li>
+            <li><a href="/eleccionesdb-etl/cobertura/">Cobertura</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Proyecto</h4>
+          <ul>
+            <li><a href="https://spainelectoralproject.com/" target="_blank" rel="noopener">Spain Electoral Project</a></li>
+            <li><a href="https://hmeleiro.github.io/eleccionesdb-api/" target="_blank" rel="noopener">EleccionesDB API</a></li>
+            <li><a href="https://github.com/hmeleiro/eleccionesdb-etl" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <a href="https://spainelectoralproject.com/" target="_blank" rel="noopener">Spain Electoral Project</a>. Contenido disponible bajo licencia abierta.</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

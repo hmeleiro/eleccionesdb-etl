@@ -1,14 +1,13 @@
 ---
 title: "Arquitectura del pipeline"
+description: "Flujo ETL completo de eleccionesdb"
 ---
 
 ## Visión general
 
 El proyecto sigue un pipeline ETL en cuatro fases, implementado íntegramente en R. El flujo transforma datos electorales en bruto procedentes de múltiples fuentes heterogéneas (CSV, Excel, `.px`, APIs) en una base de datos relacional PostgreSQL normalizada y en formatos descargables (Parquet, SQLite, CSV).
 
-```{mermaid}
-%%| label: fig-pipeline
-%%| fig-cap: "Flujo completo del pipeline ETL de eleccionesdb"
+<div class="mermaid">
 flowchart LR
   A["📁 data-raw/\n(Datos en bruto)"] --> B["⚙️ 01-generate-data/\n(Generación)"]
   B --> C["📂 data-processed/\n(Intermedios)"]
@@ -18,7 +17,7 @@ flowchart LR
   F --> G["🐘 PostgreSQL"]
   E --> H["📦 04-export/\n(Exportación)"]
   H --> I["💾 descargas/\n(Parquet, SQLite, CSV)"]
-```
+</div>
 
 ## Fase 1: Datos en bruto (`data-raw/`)
 
@@ -32,13 +31,12 @@ Además incluye:
 - `representantes/` — Escaños asignados y representantes electos por provincia y municipio.
 - `partidos_recodes.xlsx` — Tabla maestra de recodificación/agrupación de partidos.
 
+<div class="callout callout-tip">
+<strong>¿Quieres reproducir el ETL completo?</strong>
+<p>Consulta cómo poblar <code>data-raw/</code> en la guía: <a href="../restaurar-data-raw/">Restaurar data-raw/</a></p>
+</div>
 
-:::{.callout-tip}
-**¿Quieres reproducir el ETL completo?**<br>
-Consulta cómo poblar `data-raw/` en la guía: [Restaurar data-raw/](restaurar-data-raw.qmd)
-:::
-
-## Fase 2: Generación de datos intermedios (`code/01-generate-data/`)
+## Fase 2: Generación de datos intermedios (`R/01-generate-data/`)
 
 Transforma los datos en bruto en tablas intermedias estandarizadas (formato RDS) en `data-processed/`.
 
@@ -53,7 +51,7 @@ Transforma los datos en bruto en tablas intermedias estandarizadas (formato RDS)
 
 ### Hechos (por comunidad autónoma)
 
-Cada subcarpeta de `code/01-generate-data/hechos/` contiene scripts específicos que generan dos ficheros RDS por autonomía en `data-processed/hechos/`:
+Cada subcarpeta de `R/01-generate-data/hechos/` contiene scripts específicos que generan dos ficheros RDS por autonomía en `data-processed/hechos/`:
 
 - `info.rds` — Resumen territorial: censo, participación, votos válidos, blancos, nulos.
 - `votos.rds` — Votos por partido y territorio.
@@ -71,7 +69,7 @@ Cada subcarpeta de `code/01-generate-data/hechos/` contiene scripts específicos
 | `10-comunidad-valenciana/` | C. Valenciana | `format.R` |
 | `13-comunidad-madrid/` | C. de Madrid | `format.R` |
 
-## Fase 3: Limpieza y unión (`code/02-clean-and-bind/`)
+## Fase 3: Limpieza y unión (`R/02-clean-and-bind/`)
 
 Une todos los datos intermedios de las distintas autonomías en las tablas finales del modelo relacional.
 
@@ -91,20 +89,20 @@ Script principal que:
 
 ### Validación
 
-Antes de la carga en BD, se ejecutan validaciones automáticas (`code/tests/`):
+Antes de la carga en BD, se ejecutan validaciones automáticas (`R/tests/`):
 
 - **`validate_data_processed.R`**: valida estructura, tipos, unicidad y coherencia lógica de los datos intermedios.
 - **`validate_tablas_finales.R`**: valida dimensiones (estructura, FKs, unicidad) y hechos (FKs a elecciones/territorios/partidos, rangos numéricos).
 
 ## Fase 4: Carga y exportación
 
-### Carga a PostgreSQL (`code/03-writedb/write-db.R`)
+### Carga a PostgreSQL (`R/03-writedb/write-db.R`)
 
 1. Ejecuta las validaciones de dimensiones y hechos.
 2. Trunca todas las tablas con `RESTART IDENTITY`.
 3. Recarga dimensiones y hechos completos con `DBI::dbWriteTable(..., append = TRUE)`.
 
-### Exportación a formatos descargables (`code/04-export/export-descargas.R`)
+### Exportación a formatos descargables (`R/04-export/export-descargas.R`)
 
 Genera tres formatos en `descargas/`:
 
@@ -117,20 +115,20 @@ Genera tres formatos en `descargas/`:
 ## Flujo típico desde cero
 
 1. Configurar `.env` con credenciales de PostgreSQL.
-2. Crear esquema en BD ejecutando `code/db_schema.sql`.
+2. Crear esquema en BD ejecutando `R/db_schema.sql`.
 3. Preparar ficheros de datos en `data-raw/`.
-4. Ejecutar scripts de generación por autonomía (`code/01-generate-data/hechos/*`).
+4. Ejecutar scripts de generación por autonomía (`R/01-generate-data/hechos/*`).
 5. Ejecutar scripts de dimensiones (elecciones, territorios, partidos).
 6. Detectar y asignar partidos nuevos.
-7. Unir hechos finales (`code/02-clean-and-bind/`).
+7. Unir hechos finales (`R/02-clean-and-bind/`).
 8. Validar.
-9. Cargar en BD (`code/03-writedb/write-db.R`).
-10. Exportar (`code/04-export/export-descargas.R`).
+9. Cargar en BD (`R/03-writedb/write-db.R`).
+10. Exportar (`R/04-export/export-descargas.R`).
 
 ## Flujo para nuevas elecciones
 
 1. Incorporar nuevos ficheros de resultados en `data-raw/hechos/<autonomía>/`.
-2. Ejecutar el script de formato correspondiente en `code/01-generate-data/hechos/<autonomía>/`.
+2. Ejecutar el script de formato correspondiente en `R/01-generate-data/hechos/<autonomía>/`.
 3. Ejecutar `new-partidos.R` para detectar nuevos partidos → revisar `partidos_recodes_pending.xlsx`.
 4. Incorporar nuevos partidos a `partidos_recodes.xlsx` y ejecutar `sync_partidos()`.
 5. Ejecutar `01-partidos-sin-id.R` y `02-bind-hechos.R`.

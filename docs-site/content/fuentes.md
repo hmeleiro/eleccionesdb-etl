@@ -1,5 +1,6 @@
 ---
 title: "Fuentes de datos"
+description: "Origen y detalle de las fuentes de datos de eleccionesdb"
 ---
 
 ## Resumen de fuentes
@@ -78,7 +79,7 @@ title: "Fuentes de datos"
 ### Canarias (`05-canarias`)
 
 - **Fuente**: [PARCAN](https://www.parcan.es/elecciones/) (1999+) + [ISTAC](https://www.gobiernodecanarias.org/istac/estadisticas/sociedad/elecciones/Elecciones/C00010A.html) + [GIPEYOP](https://gipeyop.uv.es/gipeyop/sea.html) (1983–2015).
-- **Método**: PARCAN: descarga CSV por municipio (API: `https://parcan.es/api/resultados_electorales/{year}/{circ}/{cmun}?format=csv`). ISTAC: lectura de xlsx. GIPEYOP: lectura de xlsx.
+- **Método**: PARCAN: descarga CSV por municipio. ISTAC: lectura de xlsx. GIPEYOP: lectura de xlsx.
 - **Granularidad**: Municipal (PARCAN), provincial/sección (GIPEYOP/ISTAC).
 - **Ficheros brutos**: `parcan/` (CSV por municipio), `istac/` (datasets ISTAC xlsx), `gipeyop/Canarias{1983,1987}_provincias.xlsx`, `Canarias{1991-2015}_secciones.xlsx`.
 - **Scripts**: `00_download-data-parcan.R`, `format.R`.

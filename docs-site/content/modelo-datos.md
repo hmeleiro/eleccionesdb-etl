@@ -1,17 +1,16 @@
 ---
 title: "Modelo de datos"
+description: "Esquema relacional y definición de tablas de eleccionesdb"
 ---
 
 ## Diagrama entidad-relación
 
-El esquema PostgreSQL de `eleccionesdb` sigue un modelo estrella con 5 tablas de dimensiones y 4 tablas de hechos (2 principales + 2 CERA).
+El esquema PostgreSQL de `eleccionesdb` sigue un modelo estrella con 6 tablas de dimensiones y 4 tablas de hechos (2 principales + 2 CERA).
 
-```{mermaid}
-%%| label: fig-er
-%%| fig-cap: "Diagrama entidad-relación del esquema de eleccionesdb"
+<div class="mermaid">
 erDiagram
     tipos_eleccion {
-        VARCHAR codigo PK "G, A, L, E, S"
+        VARCHAR codigo PK
         VARCHAR descripcion
     }
 
@@ -29,9 +28,16 @@ erDiagram
         VARCHAR slug
     }
 
+    elecciones_fuentes {
+        INT eleccion_id PK
+        VARCHAR fuente
+        VARCHAR url_fuente
+        TEXT observaciones
+    }
+
     territorios {
         INT id PK
-        ENUM tipo "ccaa, provincia, municipio..."
+        VARCHAR tipo
         CHAR codigo_ccaa
         CHAR codigo_provincia
         CHAR codigo_municipio
@@ -100,26 +106,38 @@ erDiagram
         INT votos
     }
 
-    tipos_eleccion ||--o{ elecciones : "tipo_eleccion"
-    territorios ||--o{ territorios : "parent_id"
-    partidos_recode ||--o{ partidos : "partido_recode_id"
+    tipos_eleccion ||--o{ elecciones : tipo_eleccion
+    elecciones ||--o| elecciones_fuentes : eleccion_id
+    territorios ||--o{ territorios : parent_id
+    partidos_recode ||--o{ partidos : partido_recode_id
 
-    elecciones ||--o{ resumen_territorial : "eleccion_id"
-    territorios ||--o{ resumen_territorial : "territorio_id"
+    elecciones ||--o{ resumen_territorial : eleccion_id
+    territorios ||--o{ resumen_territorial : territorio_id
 
-    elecciones ||--o{ votos_territoriales : "eleccion_id"
-    territorios ||--o{ votos_territoriales : "territorio_id"
-    partidos ||--o{ votos_territoriales : "partido_id"
+    elecciones ||--o{ votos_territoriales : eleccion_id
+    territorios ||--o{ votos_territoriales : territorio_id
+    partidos ||--o{ votos_territoriales : partido_id
 
-    elecciones ||--o{ resumen_cera : "eleccion_id"
-    territorios ||--o{ resumen_cera : "territorio_id"
+    elecciones ||--o{ resumen_cera : eleccion_id
+    territorios ||--o{ resumen_cera : territorio_id
 
-    elecciones ||--o{ votos_cera : "eleccion_id"
-    territorios ||--o{ votos_cera : "territorio_id"
-    partidos ||--o{ votos_cera : "partido_id"
-```
+    elecciones ||--o{ votos_cera : eleccion_id
+    territorios ||--o{ votos_cera : territorio_id
+    partidos ||--o{ votos_cera : partido_id
+</div>
 
 ## Tablas de dimensiones
+
+### `elecciones_fuentes`
+
+Documenta la fuente oficial de los datos para cada elección. Una fila por `eleccion_id`.
+
+| Columna | Tipo | Descripción |
+|---------|------|-------------|
+| `eleccion_id` | `INT` PK, FK | Referencia a `elecciones.id` |
+| `fuente` | `VARCHAR(255)` | Nombre de la fuente (ej: Ministerio del Interior) |
+| `url_fuente` | `VARCHAR(500)` | URL a la fuente oficial |
+| `observaciones` | `TEXT` | Notas u observaciones adicionales (opcional) |
 
 ### `tipos_eleccion`
 
@@ -234,9 +252,7 @@ Tablas análogas a `resumen_territorial` y `votos_territoriales` para el voto CE
 
 El campo `parent_id` de la tabla `territorios` codifica la siguiente jerarquía:
 
-```{mermaid}
-%%| label: fig-hierarchy
-%%| fig-cap: "Jerarquía territorial con parent_id"
+<div class="mermaid">
 flowchart TD
     CCAA["🏛️ Comunidad Autónoma\n(tipo = ccaa)"]
     PROV["🗺️ Provincia\n(tipo = provincia)"]
@@ -251,7 +267,7 @@ flowchart TD
     PROV --> MUNI
     MUNI --> DIST
     DIST --> SECC
-```
+</div>
 
 - Cada **CCAA** es padre de sus **provincias**.
 - Cada **provincia** es padre de sus **municipios** (o de **circunscripciones** sub-provinciales en Canarias, Asturias y Baleares).

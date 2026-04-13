@@ -1,0 +1,53 @@
+baseURL = "https://hmeleiro.github.io/eleccionesdb-etl/"
+languageCode = "es"
+defaultContentLanguage = "es"
+title = "eleccionesdb"
+
+[build]
+  [build.buildStats]
+    enable = true
+
+[params]
+  description = "Base de datos relacional abierta con resultados electorales de España."
+  author = "Héctor Meleiro"
+  github = "https://github.com/hmeleiro/eleccionesdb-etl"
+  parentProject = "https://spainelectoralproject.com/"
+  apiSite = "https://hmeleiro.github.io/eleccionesdb-api/"
+
+[menus]
+  [[menus.main]]
+    name = "Inicio"
+    pageRef = "/"
+    weight = 10
+  [[menus.main]]
+    name = "Pipeline"
+    pageRef = "/pipeline/"
+    weight = 20
+  [[menus.main]]
+    name = "Modelo de datos"
+    pageRef = "/modelo-datos/"
+    weight = 30
+  [[menus.main]]
+    name = "Fuentes"
+    pageRef = "/fuentes/"
+    weight = 40
+  [[menus.main]]
+    name = "Descargas"
+    pageRef = "/descargas/"
+    weight = 50
+  [[menus.main]]
+    name = "Cobertura"
+    pageRef = "/cobertura/"
+    weight = 60
+  [[menus.main]]
+    name = "Changelog"
+    pageRef = "/changelog/"
+    weight = 70
+
+[markup]
+  [markup.highlight]
+    style = "hrdark"
+    lineNos = false
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true

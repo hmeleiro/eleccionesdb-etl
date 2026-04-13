@@ -1,0 +1,149 @@
+{{ define "main" }}
+  {{/* Hero */}}
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">eleccionesdb</h1>
+        <p class="hero-subtitle">Base de datos relacional abierta con resultados electorales de España: elecciones generales al Congreso y elecciones autonómicas de 9 comunidades autónomas. Cubre desde 1980 hasta 2023 y ofrece datos a nivel de provincia, municipio y sección censal.</p>
+        <div class="hero-actions">
+          <a href="{{ "descargas/" | relURL }}" class="btn btn-primary">Descargar datos →</a>
+          <a href="{{ "modelo-datos/" | relURL }}" class="btn btn-secondary">Ver modelo de datos</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{/* Qué contiene */}}
+  <section class="home-section">
+    <div class="container">
+      {{ partial "section-header.html" (dict "title" "¿Qué contiene?") }}
+      <div class="value-grid">
+        <div class="value-item">
+          <span class="value-icon">🗳️</span>
+          <h3>10 ámbitos electorales</h3>
+          <p>Congreso + 9 comunidades autónomas: Andalucía, Aragón, Asturias, Baleares, Canarias, Castilla y León, Cataluña, Comunidad Valenciana y Comunidad de Madrid.</p>
+        </div>
+        <div class="value-item">
+          <span class="value-icon">📅</span>
+          <h3>~40 años de datos</h3>
+          <p>Cobertura temporal desde 1980 (Cataluña) hasta 2023, con todas las convocatorias de elecciones generales y autonómicas disponibles.</p>
+        </div>
+        <div class="value-item">
+          <span class="value-icon">📦</span>
+          <h3>3 formatos de descarga</h3>
+          <p>Disponible en Parquet (análisis eficiente), SQLite (esquema relacional completo) y CSV planos (pre-joineados, listos para usar).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{/* Estructura */}}
+  <section class="home-section">
+    <div class="container">
+      {{ partial "section-header.html" (dict "title" "Estructura de la base de datos" "description" "Esquema estrella con tablas de dimensiones y hechos, diseñado para análisis electoral.") }}
+      <div class="value-grid">
+        <div class="value-item">
+          <span class="value-icon">📐</span>
+          <h3>5 dimensiones</h3>
+          <p>Tipos de elección, elecciones, territorios (con jerarquía CCAA → provincia → municipio → sección), recodificaciones de partidos y partidos.</p>
+        </div>
+        <div class="value-item">
+          <span class="value-icon">📊</span>
+          <h3>2 tablas de hechos</h3>
+          <p>Resumen territorial (censo, participación, votos válidos/blancos/nulos) y votos territoriales (votos y representantes electos por partido).</p>
+        </div>
+        <div class="value-item">
+          <span class="value-icon">✈️</span>
+          <h3>2 tablas CERA</h3>
+          <p>Resumen y votos de residentes ausentes (Censo de Españoles Residentes Ausentes).</p>
+        </div>
+      </div>
+      <div class="section-cta">
+        <a href="{{ "modelo-datos/" | relURL }}" class="btn btn-secondary">Ver modelo completo →</a>
+      </div>
+    </div>
+  </section>
+
+  {{/* Formatos de descarga */}}
+  <section class="home-section">
+    <div class="container">
+      {{ partial "section-header.html" (dict "title" "Formatos de descarga" "description" "Los datos están disponibles en tres formatos, pensados para diferentes perfiles de uso.") }}
+      <div class="format-grid">
+        <div class="format-card">
+          <span class="value-icon">⚡</span>
+          <h3>Parquet</h3>
+          <p>Tablas normalizadas en formato columnar. Ideal para R, Python y DuckDB.</p>
+        </div>
+        <div class="format-card">
+          <span class="value-icon">🗄️</span>
+          <h3>SQLite</h3>
+          <p>Esquema relacional completo con PKs, FKs e índices. Consultas SQL directas.</p>
+        </div>
+        <div class="format-card">
+          <span class="value-icon">📄</span>
+          <h3>CSV planos</h3>
+          <p>Tablas pre-joineadas listas para Excel, Google Sheets o importación directa.</p>
+        </div>
+      </div>
+      <div class="section-cta">
+        <a href="{{ "descargas/" | relURL }}" class="btn btn-primary">Ir a descargas →</a>
+      </div>
+    </div>
+  </section>
+
+  {{/* API */}}
+  <section class="home-section">
+    <div class="container">
+      {{ partial "section-header.html" (dict "title" "Acceso programático" "description" "¿Prefieres consultar los datos mediante una API? EleccionesDB API ofrece acceso REST gratuito, abierto y sin autenticación a toda la base de datos.") }}
+      <div class="value-grid" style="grid-template-columns: repeat(2, 1fr);">
+        <div class="value-item">
+          <span class="value-icon">🔌</span>
+          <h3>API REST abierta</h3>
+          <p>Endpoints para elecciones, territorios, partidos y resultados. Filtros flexibles, paginación y respuestas JSON.</p>
+        </div>
+        <div class="value-item">
+          <span class="value-icon">🚀</span>
+          <h3>Sin autenticación</h3>
+          <p>Acceso directo desde cualquier lenguaje: curl, Python, R, JavaScript. Sin claves, sin registro.</p>
+        </div>
+      </div>
+      <div class="section-cta">
+        <a href="{{ .Site.Params.apiSite }}" class="btn btn-primary" target="_blank" rel="noopener">Documentación de la API →</a>
+      </div>
+    </div>
+  </section>
+
+  {{/* Acceso rápido */}}
+  <section class="home-section">
+    <div class="container">
+      {{ partial "section-header.html" (dict "title" "Explorar la documentación") }}
+      <div class="quicklinks-grid">
+        <a href="{{ "pipeline/" | relURL }}" class="quicklink-card">
+          <span class="quicklink-icon">⚙️</span>
+          <h3>Pipeline ETL</h3>
+          <p>Arquitectura y fases del proceso</p>
+        </a>
+        <a href="{{ "modelo-datos/" | relURL }}" class="quicklink-card">
+          <span class="quicklink-icon">📐</span>
+          <h3>Modelo de datos</h3>
+          <p>Esquema ER y definición de tablas</p>
+        </a>
+        <a href="{{ "fuentes/" | relURL }}" class="quicklink-card">
+          <span class="quicklink-icon">📋</span>
+          <h3>Fuentes de datos</h3>
+          <p>Origen de los datos por comunidad</p>
+        </a>
+        <a href="{{ "cobertura/" | relURL }}" class="quicklink-card">
+          <span class="quicklink-icon">🗺️</span>
+          <h3>Cobertura</h3>
+          <p>Elecciones y granularidad disponible</p>
+        </a>
+        <a href="{{ .Site.Params.apiSite }}" class="quicklink-card" target="_blank" rel="noopener">
+          <span class="quicklink-icon">🔌</span>
+          <h3>EleccionesDB API</h3>
+          <p>Consultas REST a la base de datos</p>
+        </a>
+      </div>
+    </div>
+  </section>
+{{ end }}

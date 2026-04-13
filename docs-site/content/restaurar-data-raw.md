@@ -1,8 +1,7 @@
 ---
 title: "Restaurar data-raw/"
+description: "Cómo poblar el directorio data-raw/ para reproducir el ETL"
 ---
-
-# Restaurar data-raw/ para reproducir el ETL
 
 Para ejecutar el pipeline ETL necesitas poblar el directorio `data-raw/` con los datos originales. Por motivos de tamaño, estos archivos no están en el repositorio.
 
@@ -12,12 +11,12 @@ Para ejecutar el pipeline ETL necesitas poblar el directorio `data-raw/` con los
 2. Ejecuta el script:
 
 ```r
-source("code/00-setup/download_data_raw.R")
+source("R/00-setup/download_data_raw.R")
 ```
 
 Esto descargará todos los archivos listados en el índice público y los colocará en su ruta correspondiente bajo `data-raw/`.
 
-- El índice de archivos se encuentra en: [docs-site/data_index.csv](data_index.csv) (ajusta la URL si lo alojas en otro sitio).
+- El índice de archivos se encuentra en: `docs-site/data_index.csv` (ajusta la URL si lo alojas en otro sitio).
 - El script es idempotente: solo descarga archivos que no existen localmente.
 
 ## ¿Cómo se genera el índice?
@@ -28,7 +27,7 @@ Solo los administradores (con credenciales S3) pueden generar o actualizar el í
 2. Ejecuta:
 
 ```r
-source("code/00-setup/generate_data_index.R")
+source("R/00-setup/generate_data_index.R")
 ```
 
 Esto crea/actualiza el archivo `docs-site/data_index.csv` con la lista de archivos y URLs públicas.

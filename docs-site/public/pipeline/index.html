@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="es">
+  <head><script src="/eleccionesdb-etl/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=eleccionesdb-etl/livereload" data-no-instant defer></script><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Arquitectura del pipeline · eleccionesdb</title>
+<meta name="description" content="Flujo ETL completo de eleccionesdb" />
+<meta name="author" content="Héctor Meleiro" />
+
+
+<meta property="og:title" content="Arquitectura del pipeline" />
+<meta
+  property="og:description"
+  content="Flujo ETL completo de eleccionesdb"
+/>
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/eleccionesdb-etl/pipeline/" />
+<meta property="og:site_name" content="eleccionesdb" />
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+
+
+
+<link rel="stylesheet" href="/eleccionesdb-etl/css/main.min.1d7d384ccfead7ae54d18fbd5f0768ddaf92c0c4b64794234f72f5bcf30e4191.css" integrity="sha256-HX04TM/q165U0Y&#43;9Xwdo3a&#43;SwMS2R5QjT3L1vPMOQZE=" />
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: "neutral" });</script>
+</head>
+
+  <body><header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="site-logo">
+      <span class="logo-icon">◆</span>
+      <span class="logo-text">eleccionesdb</span>
+    </a>
+
+    <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
+      <span class="hamburger"></span>
+    </button>
+
+    <nav class="site-nav" id="site-nav">
+      <ul class="nav-list">
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/" class="nav-link">
+              Inicio
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/pipeline/" class="nav-link is-active">
+              Pipeline
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/modelo-datos/" class="nav-link">
+              Modelo de datos
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/fuentes/" class="nav-link">
+              Fuentes
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/descargas/" class="nav-link">
+              Descargas
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/cobertura/" class="nav-link">
+              Cobertura
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/changelog/" class="nav-link">
+              Changelog
+            </a>
+          </li>
+        
+        <li class="nav-item">
+          <a href="https://github.com/hmeleiro/eleccionesdb-etl" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  (function () {
+    const toggle = document.querySelector(".menu-toggle");
+    const nav = document.getElementById("site-nav");
+    if (toggle && nav) {
+      toggle.addEventListener("click", function () {
+        const expanded = this.getAttribute("aria-expanded") === "true";
+        this.setAttribute("aria-expanded", !expanded);
+        nav.classList.toggle("is-open");
+      });
+    }
+  })();
+</script>
+<main id="content">
+  <article class="page-single">
+    <div class="container">
+      <div class="page-header">
+        <h1>Arquitectura del pipeline</h1>
+        
+          <p class="page-desc">Flujo ETL completo de eleccionesdb</p>
+        
+      </div>
+      <div class="page-content prose">
+        <h2 id="visión-general">Visión general</h2>
+<p>El proyecto sigue un pipeline ETL en cuatro fases, implementado íntegramente en R. El flujo transforma datos electorales en bruto procedentes de múltiples fuentes heterogéneas (CSV, Excel, <code>.px</code>, APIs) en una base de datos relacional PostgreSQL normalizada y en formatos descargables (Parquet, SQLite, CSV).</p>
+<div class="mermaid">
+flowchart LR
+  A["📁 data-raw/\n(Datos en bruto)"] --> B["⚙️ 01-generate-data/\n(Generación)"]
+  B --> C["📂 data-processed/\n(Intermedios)"]
+  C --> D["🔗 02-clean-and-bind/\n(Limpieza y unión)"]
+  D --> E["📋 tablas-finales/\n(Tablas listas)"]
+  E --> F["🗄️ 03-writedb/\n(Carga a BD)"]
+  F --> G["🐘 PostgreSQL"]
+  E --> H["📦 04-export/\n(Exportación)"]
+  H --> I["💾 descargas/\n(Parquet, SQLite, CSV)"]
+</div>
+<h2 id="fase-1-datos-en-bruto-data-raw">Fase 1: Datos en bruto (<code>data-raw/</code>)</h2>
+<p>Contiene los ficheros originales tal como se obtienen de cada fuente: CSV, RDS, Excel (<code>.xls</code>/<code>.xlsx</code>), ficheros estadísticos PX-WEB (<code>.px</code>) y datos descargados vía API. Cada comunidad autónoma tiene su propia carpeta en <code>data-raw/hechos/</code>.</p>
+<p>Además incluye:</p>
+<ul>
+<li><code>fechas_elecciones.csv</code> — Fechas de todas las convocatorias electorales.</li>
+<li><code>codigos_territorios/</code> — Códigos de secciones censales (INE/Infoelectoral), circunscripciones sub-provinciales y correspondencias municipio–circunscripción.</li>
+<li><code>nombres_municipios.csv</code> — Nomenclátor de municipios del INE.</li>
+<li><code>representantes/</code> — Escaños asignados y representantes electos por provincia y municipio.</li>
+<li><code>partidos_recodes.xlsx</code> — Tabla maestra de recodificación/agrupación de partidos.</li>
+</ul>
+<div class="callout callout-tip">
+<strong>¿Quieres reproducir el ETL completo?</strong>
+<p>Consulta cómo poblar <code>data-raw/</code> en la guía: <a href="../restaurar-data-raw/">Restaurar data-raw/</a></p>
+</div>
+<h2 id="fase-2-generación-de-datos-intermedios-r01-generate-data">Fase 2: Generación de datos intermedios (<code>R/01-generate-data/</code>)</h2>
+<p>Transforma los datos en bruto en tablas intermedias estandarizadas (formato RDS) en <code>data-processed/</code>.</p>
+<h3 id="dimensiones">Dimensiones</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Script</th>
+          <th>Salida</th>
+          <th>Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>dimensiones/elecciones/fechas-elecciones-format.R</code></td>
+          <td><code>tablas-finales/dimensiones/elecciones</code></td>
+          <td>Normaliza fechas en español, codifica tipo de elección, genera slug</td>
+      </tr>
+      <tr>
+          <td><code>dimensiones/territorios/territorios.R</code></td>
+          <td><code>tablas-finales/dimensiones/territorios</code></td>
+          <td>Construye jerarquía territorial (CCAA → provincia → circunscripción → municipio → distrito → sección) con <code>parent_id</code></td>
+      </tr>
+      <tr>
+          <td><code>dimensiones/partidos/sync-partidos.R</code></td>
+          <td><code>tablas-finales/dimensiones/partidos</code>, <code>partidos_recode</code></td>
+          <td>Sincroniza partidos desde <code>partidos_recodes.xlsx</code></td>
+      </tr>
+      <tr>
+          <td><code>dimensiones/partidos/new-partidos.R</code></td>
+          <td><code>data-processed/partidos_recodes_pending.xlsx</code></td>
+          <td>Detecta partidos nuevos sin recodificación asignada</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="hechos-por-comunidad-autónoma">Hechos (por comunidad autónoma)</h3>
+<p>Cada subcarpeta de <code>R/01-generate-data/hechos/</code> contiene scripts específicos que generan dos ficheros RDS por autonomía en <code>data-processed/hechos/</code>:</p>
+<ul>
+<li><code>info.rds</code> — Resumen territorial: censo, participación, votos válidos, blancos, nulos.</li>
+<li><code>votos.rds</code> — Votos por partido y territorio.</li>
+</ul>
+<table>
+  <thead>
+      <tr>
+          <th>Carpeta</th>
+          <th>Ámbito</th>
+          <th>Scripts principales</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>00-congreso/</code></td>
+          <td>Congreso (nacional)</td>
+          <td><code>sauron_formats.R</code> → <code>format_provincias.R</code>, <code>format_municipios.R</code>, <code>format_secciones.R</code></td>
+      </tr>
+      <tr>
+          <td><code>01-andalucia/</code></td>
+          <td>Andalucía</td>
+          <td><code>00_fetch-nomenclators.R</code> → <code>01-06_fetch-*.R</code> → <code>07-format-data.R</code></td>
+      </tr>
+      <tr>
+          <td><code>02-aragon/</code></td>
+          <td>Aragón</td>
+          <td><code>01_format-info.R</code>, <code>02_format-votos.R</code></td>
+      </tr>
+      <tr>
+          <td><code>03-asturias/</code></td>
+          <td>Asturias</td>
+          <td><code>00_get-nomenclator-sadei.R</code>, <code>01_format-data.R</code></td>
+      </tr>
+      <tr>
+          <td><code>04-baleares/</code></td>
+          <td>Baleares</td>
+          <td><code>format.R</code></td>
+      </tr>
+      <tr>
+          <td><code>05-canarias/</code></td>
+          <td>Canarias</td>
+          <td><code>00_download-data-parcan.R</code>, <code>format.R</code></td>
+      </tr>
+      <tr>
+          <td><code>07-cyl/</code></td>
+          <td>Castilla y León</td>
+          <td><code>format.R</code></td>
+      </tr>
+      <tr>
+          <td><code>09-catalunya/</code></td>
+          <td>Cataluña</td>
+          <td><code>01_format-data.R</code></td>
+      </tr>
+      <tr>
+          <td><code>10-comunidad-valenciana/</code></td>
+          <td>C. Valenciana</td>
+          <td><code>format.R</code></td>
+      </tr>
+      <tr>
+          <td><code>13-comunidad-madrid/</code></td>
+          <td>C. de Madrid</td>
+          <td><code>format.R</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="fase-3-limpieza-y-unión-r02-clean-and-bind">Fase 3: Limpieza y unión (<code>R/02-clean-and-bind/</code>)</h2>
+<p>Une todos los datos intermedios de las distintas autonomías en las tablas finales del modelo relacional.</p>
+<h3 id="01-partidos-sin-idr"><code>01-partidos-sin-id.R</code></h3>
+<p>Detecta partidos que aparecen en los datos de votos pero aún no tienen un ID asignado en la dimensión <code>partidos</code>. Los incorpora automáticamente a <code>tablas-finales/dimensiones/partidos</code>.</p>
+<h3 id="02-bind-hechosr"><code>02-bind-hechos.R</code></h3>
+<p>Script principal que:</p>
+<ol>
+<li>Lee todos los <code>info.rds</code> y <code>votos.rds</code> de <code>data-processed/hechos/</code>.</li>
+<li>Asigna <code>partido_id</code> por matching case-insensitive de <code>(siglas, denominacion)</code>. <strong>Falla si quedan votos sin partido asignado.</strong></li>
+<li>Incorpora <code>nrepresentantes</code> (escaños asignables) y <code>representantes</code> (electos) desde las funciones auxiliares de <code>utils.R</code>.</li>
+<li>Agrupa votos a granularidad <code>(eleccion_id, territorio_id, partido_id)</code>.</li>
+<li>Genera las tablas finales:
+<ul>
+<li><code>tablas-finales/hechos/info.rds</code> → <code>resumen_territorial</code></li>
+<li><code>tablas-finales/hechos/votos.rds</code> → <code>votos_territoriales</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="validación">Validación</h3>
+<p>Antes de la carga en BD, se ejecutan validaciones automáticas (<code>R/tests/</code>):</p>
+<ul>
+<li><strong><code>validate_data_processed.R</code></strong>: valida estructura, tipos, unicidad y coherencia lógica de los datos intermedios.</li>
+<li><strong><code>validate_tablas_finales.R</code></strong>: valida dimensiones (estructura, FKs, unicidad) y hechos (FKs a elecciones/territorios/partidos, rangos numéricos).</li>
+</ul>
+<h2 id="fase-4-carga-y-exportación">Fase 4: Carga y exportación</h2>
+<h3 id="carga-a-postgresql-r03-writedbwrite-dbr">Carga a PostgreSQL (<code>R/03-writedb/write-db.R</code>)</h3>
+<ol>
+<li>Ejecuta las validaciones de dimensiones y hechos.</li>
+<li>Trunca todas las tablas con <code>RESTART IDENTITY</code>.</li>
+<li>Recarga dimensiones y hechos completos con <code>DBI::dbWriteTable(..., append = TRUE)</code>.</li>
+</ol>
+<h3 id="exportación-a-formatos-descargables-r04-exportexport-descargasr">Exportación a formatos descargables (<code>R/04-export/export-descargas.R</code>)</h3>
+<p>Genera tres formatos en <code>descargas/</code>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Formato</th>
+          <th>Ruta</th>
+          <th>Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Parquet</strong></td>
+          <td><code>descargas/parquet/dimensiones/</code>, <code>descargas/parquet/hechos/</code></td>
+          <td>Tablas individuales en formato columnar eficiente</td>
+      </tr>
+      <tr>
+          <td><strong>SQLite</strong></td>
+          <td><code>descargas/eleccionesdb.sqlite</code></td>
+          <td>Esquema relacional completo con PKs, FKs, UNIQUE e índices</td>
+      </tr>
+      <tr>
+          <td><strong>CSV planos</strong></td>
+          <td><code>descargas/csv/resumen_territorial.csv</code>, <code>descargas/csv/votos_territoriales.csv</code></td>
+          <td>Tablas de hechos con todas las dimensiones pre-joineadas</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="flujo-típico-desde-cero">Flujo típico desde cero</h2>
+<ol>
+<li>Configurar <code>.env</code> con credenciales de PostgreSQL.</li>
+<li>Crear esquema en BD ejecutando <code>R/db_schema.sql</code>.</li>
+<li>Preparar ficheros de datos en <code>data-raw/</code>.</li>
+<li>Ejecutar scripts de generación por autonomía (<code>R/01-generate-data/hechos/*</code>).</li>
+<li>Ejecutar scripts de dimensiones (elecciones, territorios, partidos).</li>
+<li>Detectar y asignar partidos nuevos.</li>
+<li>Unir hechos finales (<code>R/02-clean-and-bind/</code>).</li>
+<li>Validar.</li>
+<li>Cargar en BD (<code>R/03-writedb/write-db.R</code>).</li>
+<li>Exportar (<code>R/04-export/export-descargas.R</code>).</li>
+</ol>
+<h2 id="flujo-para-nuevas-elecciones">Flujo para nuevas elecciones</h2>
+<ol>
+<li>Incorporar nuevos ficheros de resultados en <code>data-raw/hechos/&lt;autonomía&gt;/</code>.</li>
+<li>Ejecutar el script de formato correspondiente en <code>R/01-generate-data/hechos/&lt;autonomía&gt;/</code>.</li>
+<li>Ejecutar <code>new-partidos.R</code> para detectar nuevos partidos → revisar <code>partidos_recodes_pending.xlsx</code>.</li>
+<li>Incorporar nuevos partidos a <code>partidos_recodes.xlsx</code> y ejecutar <code>sync_partidos()</code>.</li>
+<li>Ejecutar <code>01-partidos-sin-id.R</code> y <code>02-bind-hechos.R</code>.</li>
+<li>Validar, cargar en BD y exportar.</li>
+</ol>
+
+      </div>
+    </div>
+  </article>
+</main><footer class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon">◆</span>
+        <span class="footer-title">eleccionesdb</span>
+        <p class="footer-desc">Base de datos relacional abierta con resultados electorales de España.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Documentación</h4>
+          <ul>
+            <li><a href="/eleccionesdb-etl/pipeline/">Pipeline</a></li>
+            <li><a href="/eleccionesdb-etl/modelo-datos/">Modelo de datos</a></li>
+            <li><a href="/eleccionesdb-etl/fuentes/">Fuentes</a></li>
+            <li><a href="/eleccionesdb-etl/descargas/">Descargas</a></li>
+            <li><a href="/eleccionesdb-etl/cobertura/">Cobertura</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Proyecto</h4>
+          <ul>
+            <li><a href="https://spainelectoralproject.com/" target="_blank" rel="noopener">Spain Electoral Project</a></li>
+            <li><a href="https://hmeleiro.github.io/eleccionesdb-api/" target="_blank" rel="noopener">EleccionesDB API</a></li>
+            <li><a href="https://github.com/hmeleiro/eleccionesdb-etl" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <a href="https://spainelectoralproject.com/" target="_blank" rel="noopener">Spain Electoral Project</a>. Contenido disponible bajo licencia abierta.</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

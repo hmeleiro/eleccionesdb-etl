@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="es">
+  <head><script src="/eleccionesdb-etl/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=eleccionesdb-etl/livereload" data-no-instant defer></script><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Categories · eleccionesdb</title>
+<meta name="description" content="Base de datos relacional abierta con resultados electorales de España." />
+<meta name="author" content="Héctor Meleiro" />
+
+
+<meta property="og:title" content="Categories" />
+<meta
+  property="og:description"
+  content="Base de datos relacional abierta con resultados electorales de España."
+/>
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://localhost:1313/eleccionesdb-etl/categories/" />
+<meta property="og:site_name" content="eleccionesdb" />
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+
+
+
+<link rel="stylesheet" href="/eleccionesdb-etl/css/main.min.1d7d384ccfead7ae54d18fbd5f0768ddaf92c0c4b64794234f72f5bcf30e4191.css" integrity="sha256-HX04TM/q165U0Y&#43;9Xwdo3a&#43;SwMS2R5QjT3L1vPMOQZE=" />
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: "neutral" });</script>
+</head>
+
+  <body><header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="site-logo">
+      <span class="logo-icon">◆</span>
+      <span class="logo-text">eleccionesdb</span>
+    </a>
+
+    <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
+      <span class="hamburger"></span>
+    </button>
+
+    <nav class="site-nav" id="site-nav">
+      <ul class="nav-list">
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/" class="nav-link">
+              Inicio
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/pipeline/" class="nav-link">
+              Pipeline
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/modelo-datos/" class="nav-link">
+              Modelo de datos
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/fuentes/" class="nav-link">
+              Fuentes
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/descargas/" class="nav-link">
+              Descargas
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/cobertura/" class="nav-link">
+              Cobertura
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/changelog/" class="nav-link">
+              Changelog
+            </a>
+          </li>
+        
+        <li class="nav-item">
+          <a href="https://github.com/hmeleiro/eleccionesdb-etl" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  (function () {
+    const toggle = document.querySelector(".menu-toggle");
+    const nav = document.getElementById("site-nav");
+    if (toggle && nav) {
+      toggle.addEventListener("click", function () {
+        const expanded = this.getAttribute("aria-expanded") === "true";
+        this.setAttribute("aria-expanded", !expanded);
+        nav.classList.toggle("is-open");
+      });
+    }
+  })();
+</script>
+<main id="content">
+  <article class="list-page">
+    <div class="container">
+      <div class="page-header">
+        <h1>Categories</h1>
+        
+      </div>
+      <div class="page-content prose">
+        
+      </div>
+    </div>
+  </article>
+</main><footer class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon">◆</span>
+        <span class="footer-title">eleccionesdb</span>
+        <p class="footer-desc">Base de datos relacional abierta con resultados electorales de España.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Documentación</h4>
+          <ul>
+            <li><a href="/eleccionesdb-etl/pipeline/">Pipeline</a></li>
+            <li><a href="/eleccionesdb-etl/modelo-datos/">Modelo de datos</a></li>
+            <li><a href="/eleccionesdb-etl/fuentes/">Fuentes</a></li>
+            <li><a href="/eleccionesdb-etl/descargas/">Descargas</a></li>
+            <li><a href="/eleccionesdb-etl/cobertura/">Cobertura</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Proyecto</h4>
+          <ul>
+            <li><a href="https://spainelectoralproject.com/" target="_blank" rel="noopener">Spain Electoral Project</a></li>
+            <li><a href="https://hmeleiro.github.io/eleccionesdb-api/" target="_blank" rel="noopener">EleccionesDB API</a></li>
+            <li><a href="https://github.com/hmeleiro/eleccionesdb-etl" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <a href="https://spainelectoralproject.com/" target="_blank" rel="noopener">Spain Electoral Project</a>. Contenido disponible bajo licencia abierta.</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

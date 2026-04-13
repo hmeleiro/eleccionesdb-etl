@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="es">
+  <head><script src="/eleccionesdb-etl/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=eleccionesdb-etl/livereload" data-no-instant defer></script><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cobertura electoral · eleccionesdb</title>
+<meta name="description" content="Elecciones cubiertas y granularidad disponible en eleccionesdb" />
+<meta name="author" content="Héctor Meleiro" />
+
+
+<meta property="og:title" content="Cobertura electoral" />
+<meta
+  property="og:description"
+  content="Elecciones cubiertas y granularidad disponible en eleccionesdb"
+/>
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/eleccionesdb-etl/cobertura/" />
+<meta property="og:site_name" content="eleccionesdb" />
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+
+
+
+<link rel="stylesheet" href="/eleccionesdb-etl/css/main.min.1d7d384ccfead7ae54d18fbd5f0768ddaf92c0c4b64794234f72f5bcf30e4191.css" integrity="sha256-HX04TM/q165U0Y&#43;9Xwdo3a&#43;SwMS2R5QjT3L1vPMOQZE=" />
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: "neutral" });</script>
+</head>
+
+  <body><header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="site-logo">
+      <span class="logo-icon">◆</span>
+      <span class="logo-text">eleccionesdb</span>
+    </a>
+
+    <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
+      <span class="hamburger"></span>
+    </button>
+
+    <nav class="site-nav" id="site-nav">
+      <ul class="nav-list">
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/" class="nav-link">
+              Inicio
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/pipeline/" class="nav-link">
+              Pipeline
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/modelo-datos/" class="nav-link">
+              Modelo de datos
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/fuentes/" class="nav-link">
+              Fuentes
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/descargas/" class="nav-link">
+              Descargas
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/cobertura/" class="nav-link is-active">
+              Cobertura
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/eleccionesdb-etl/changelog/" class="nav-link">
+              Changelog
+            </a>
+          </li>
+        
+        <li class="nav-item">
+          <a href="https://github.com/hmeleiro/eleccionesdb-etl" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  (function () {
+    const toggle = document.querySelector(".menu-toggle");
+    const nav = document.getElementById("site-nav");
+    if (toggle && nav) {
+      toggle.addEventListener("click", function () {
+        const expanded = this.getAttribute("aria-expanded") === "true";
+        this.setAttribute("aria-expanded", !expanded);
+        nav.classList.toggle("is-open");
+      });
+    }
+  })();
+</script>
+<main id="content">
+  <article class="page-single">
+    <div class="container">
+      <div class="page-header">
+        <h1>Cobertura electoral</h1>
+        
+          <p class="page-desc">Elecciones cubiertas y granularidad disponible en eleccionesdb</p>
+        
+      </div>
+      <div class="page-content prose">
+        <h2 id="matriz-de-cobertura">Matriz de cobertura</h2>
+<p>La siguiente tabla muestra las elecciones cubiertas en la base de datos, organizadas por ámbito y año.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Ámbito</th>
+          <th>Años cubiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Congreso (nacional)</td>
+          <td>Todas las convocatorias desde 1977</td>
+      </tr>
+      <tr>
+          <td>Andalucía</td>
+          <td>Todas las convocatorias</td>
+      </tr>
+      <tr>
+          <td>Aragón</td>
+          <td>2011–2023</td>
+      </tr>
+      <tr>
+          <td>Asturias</td>
+          <td>Todas las convocatorias</td>
+      </tr>
+      <tr>
+          <td>Baleares</td>
+          <td>1983–2023</td>
+      </tr>
+      <tr>
+          <td>Canarias</td>
+          <td>1983–2023</td>
+      </tr>
+      <tr>
+          <td>Castilla y León</td>
+          <td>1983–2022</td>
+      </tr>
+      <tr>
+          <td>Cataluña</td>
+          <td>1980–2023</td>
+      </tr>
+      <tr>
+          <td>C. Valenciana</td>
+          <td>1983–2023</td>
+      </tr>
+      <tr>
+          <td>C. de Madrid</td>
+          <td>1983–2023</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="granularidad-disponible">Granularidad disponible</h2>
+<p>La granularidad de los datos varía según el tipo de elección y la fuente de datos:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Ámbito</th>
+          <th>Granularidad máxima</th>
+          <th>Notas</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Congreso</td>
+          <td>Sección censal</td>
+          <td>Todas las convocatorias, datos vía paquete <code>infoelectoral</code></td>
+      </tr>
+      <tr>
+          <td>Andalucía</td>
+          <td>Sección censal</td>
+          <td>API del Sistema de Información Electoral de Andalucía</td>
+      </tr>
+      <tr>
+          <td>Aragón</td>
+          <td>Sección censal (recientes) / Municipal (histórico)</td>
+          <td>Datos abiertos Gobierno de Aragón. 2011–2023</td>
+      </tr>
+      <tr>
+          <td>Asturias</td>
+          <td>Mesa (2015+) / Municipal (pre-2015)</td>
+          <td>SADEI (histórico) + GIPEYOP (reciente)</td>
+      </tr>
+      <tr>
+          <td>Baleares</td>
+          <td>Sección censal</td>
+          <td>IBESTAT + GIPEYOP. 1983–2023</td>
+      </tr>
+      <tr>
+          <td>Canarias</td>
+          <td>Municipal (PARCAN) / Sección (GIPEYOP)</td>
+          <td>Múltiples fuentes. 1983–2023</td>
+      </tr>
+      <tr>
+          <td>Castilla y León</td>
+          <td>Mesa</td>
+          <td>Datos abiertos Junta de CyL. 1983–2022</td>
+      </tr>
+      <tr>
+          <td>Cataluña</td>
+          <td>Mesa</td>
+          <td>Datos abiertos Generalitat. 1980–2023</td>
+      </tr>
+      <tr>
+          <td>C. Valenciana</td>
+          <td>Sección censal</td>
+          <td>Datos abiertos GVA. 1983–2023</td>
+      </tr>
+      <tr>
+          <td>C. de Madrid</td>
+          <td>Mesa</td>
+          <td>Datos abiertos Comunidad de Madrid. 1983–2023</td>
+      </tr>
+  </tbody>
+</table>
+<div class="callout callout-note">
+<strong>Nota</strong>
+<p>La base de datos almacena resultados agregados a múltiples niveles territoriales (CCAA, provincia, circunscripción, municipio, distrito, sección censal) según la disponibilidad de la fuente original. Consulta la sección de <a href="../fuentes/">fuentes de datos</a> para más detalles sobre cada comunidad.</p>
+</div>
+
+      </div>
+    </div>
+  </article>
+</main><footer class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon">◆</span>
+        <span class="footer-title">eleccionesdb</span>
+        <p class="footer-desc">Base de datos relacional abierta con resultados electorales de España.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Documentación</h4>
+          <ul>
+            <li><a href="/eleccionesdb-etl/pipeline/">Pipeline</a></li>
+            <li><a href="/eleccionesdb-etl/modelo-datos/">Modelo de datos</a></li>
+            <li><a href="/eleccionesdb-etl/fuentes/">Fuentes</a></li>
+            <li><a href="/eleccionesdb-etl/descargas/">Descargas</a></li>
+            <li><a href="/eleccionesdb-etl/cobertura/">Cobertura</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Proyecto</h4>
+          <ul>
+            <li><a href="https://spainelectoralproject.com/" target="_blank" rel="noopener">Spain Electoral Project</a></li>
+            <li><a href="https://hmeleiro.github.io/eleccionesdb-api/" target="_blank" rel="noopener">EleccionesDB API</a></li>
+            <li><a href="https://github.com/hmeleiro/eleccionesdb-etl" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <a href="https://spainelectoralproject.com/" target="_blank" rel="noopener">Spain Electoral Project</a>. Contenido disponible bajo licencia abierta.</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

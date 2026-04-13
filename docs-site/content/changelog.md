@@ -1,15 +1,17 @@
 ---
 title: "Registro de cambios"
+description: "Historial de versiones de eleccionesdb"
 ---
 
-::: {.callout-tip}
-## Versionado de datasets
-Los datasets de `eleccionesdb` se versionan con [versionado semántico](https://semver.org/lang/es/):
-
-- **Mayor** (X.0.0): cambios incompatibles en el esquema (renombrado de columnas, cambio de tipos, eliminación de tablas).
-- **Menor** (0.X.0): nuevos datos o nuevas tablas sin romper compatibilidad.
-- **Parche** (0.0.X): correcciones de datos, errores en valores, ajustes menores.
-:::
+<div class="callout callout-tip">
+<strong>Versionado de datasets</strong>
+<p>Los datasets de <code>eleccionesdb</code> se versionan con <a href="https://semver.org/lang/es/">versionado semántico</a>:</p>
+<ul>
+<li><strong>Mayor</strong> (X.0.0): cambios incompatibles en el esquema (renombrado de columnas, cambio de tipos, eliminación de tablas).</li>
+<li><strong>Menor</strong> (0.X.0): nuevos datos o nuevas tablas sin romper compatibilidad.</li>
+<li><strong>Parche</strong> (0.0.X): correcciones de datos, errores en valores, ajustes menores.</li>
+</ul>
+</div>
 
 ---
 
@@ -33,6 +35,3 @@ Primera versión pública de la base de datos.
 - Parquet (tablas normalizadas).
 - SQLite (esquema relacional con PKs, FKs, índices).
 - CSV planos pre-joineados.
-
----
-
