@@ -8,15 +8,24 @@ description: "Origen y detalle de las fuentes de datos de eleccionesdb"
 | Elección | Fuente principal | Formato | API/Manual | Cobertura |
 |----------|------------------|---------|------------|-----------|
 | Congreso | Infoelectoral (Ministerio del Interior) | R package | API (paquete) | Todas las convocatorias |
+| Municipales | Infoelectoral (Ministerio del Interior) | R package | API (paquete) | Todas las convocatorias |
 | Andalucía | Junta de Andalucía (SIEL) | REST JSON | API | Todas |
 | Aragón | Gobierno de Aragón (datos abiertos) | CSV/XLSX | Manual | 2011–2023 |
 | Asturias | SADEI + GIPEYOP | .px + XLSX | Scraping + manual | Todas |
 | Baleares | IBESTAT + GIPEYOP | .px + XLSX | Manual | 1983–2023 |
 | Canarias | PARCAN + ISTAC + GIPEYOP | CSV + XLSX | API + manual | 1983–2023 |
+| Cantabria | GIPEYOP | XLSX | Manual | 1983–2023 |
+| Castilla-La Mancha | Junta de Castilla-La Mancha (datos abiertos) | CSV/XLSX | Descarga | 1983–2023 |
 | Castilla y León | Junta de Castilla y León | CSV (`;`, Latin-1) | Manual | 1983–2022 |
 | Cataluña | Generalitat de Catalunya | CSV | Manual | 1980–2023 |
 | C. Valenciana | Generalitat Valenciana | CSV + XLSX | Manual | 1983–2023 |
+| Extremadura | Junta de Extremadura | XLSX | Manual | 1983–2023 |
+| Galicia | Xunta de Galicia | XLS/XLSX | Manual | 1981–2024 |
 | C. de Madrid | Comunidad de Madrid | XLS/XLSX | Manual | 1983–2023 |
+| Murcia | Región de Murcia | XLS | Manual | 1983–2023 |
+| Navarra | Gobierno de Navarra | CSV + XLS | Manual | 1979–2023 |
+| País Vasco | Gobierno Vasco | XLS/XLSX | Manual | 1980–2024 |
+| La Rioja | Gobierno de La Rioja | XLS | Manual | 1983–2023 |
 
 ## Detalle por elección / comunidad
 
@@ -160,4 +169,4 @@ description: "Origen y detalle de las fuentes de datos de eleccionesdb"
 
 ## Agradecimientos
 
-Parte de los datos históricos a nivel de mesa provienen del [**Spanish Electoral Archive (SEA)**](https://gipeyop.uv.es/gipeyop/sea.html), elaborado por el [**GIPEYOP** (Grupo de Investigación en Procesos Electorales y Opinión Pública)](https://gipeyop.uv.es/) de la Universitat de València. Agradecemos enormemente su labor de recopilación y puesta a disposición de estos datos electorales.
+Cuando no se ha encontrado una fuente oficial directa se han empleado los datos históricos  del [**Spanish Electoral Archive (SEA)**](https://gipeyop.uv.es/gipeyop/sea.html), elaborado por el [**GIPEYOP** (Grupo de Investigación en Procesos Electorales y Opinión Pública)](https://gipeyop.uv.es/) de la Universitat de València. Agradecemos enormemente su labor de recopilación y puesta a disposición de estos datos electorales.

@@ -26,7 +26,7 @@
 
 
 
-<link rel="stylesheet" href="/eleccionesdb-etl/css/main.min.1d7d384ccfead7ae54d18fbd5f0768ddaf92c0c4b64794234f72f5bcf30e4191.css" integrity="sha256-HX04TM/q165U0Y&#43;9Xwdo3a&#43;SwMS2R5QjT3L1vPMOQZE=" />
+<link rel="stylesheet" href="/eleccionesdb-etl/css/main.min.c46a8eb202ad32add79402a0acb79601e4f63d55d3a27e8b8e24a8c19a659478.css" integrity="sha256-xGqOsgKtMq3XlAKgrLeWAeT2PVXTon6LjiSowZpllHg=" />
 
 
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
@@ -124,6 +124,26 @@
 <div class="callout callout-tip">
 <strong>¿Prefieres acceso programático?</strong>
 <p><a href="https://hmeleiro.github.io/eleccionesdb-api/" target="_blank" rel="noopener">EleccionesDB API</a> ofrece una API REST gratuita, abierta y sin autenticación para consultar todos estos datos directamente desde tu código.</p>
+</div>
+<div class="download-options">
+  <div class="download-option">
+    <span class="download-option-icon">🗂️</span>
+    <h3>Parquet</h3>
+    <p>Tablas normalizadas en formato columnar. Ideal para R, Python y DuckDB.</p>
+    <a href="https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/parquet.zip" class="btn btn-primary">⬇ Descargar Parquet</a>
+  </div>
+  <div class="download-option">
+    <span class="download-option-icon">🗄️</span>
+    <h3>SQLite</h3>
+    <p>Base de datos relacional en un solo fichero. Ideal para consultas SQL sin servidor.</p>
+    <a href="https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb.sqlite" class="btn btn-primary">⬇ Descargar SQLite</a>
+  </div>
+  <div class="download-option">
+    <span class="download-option-icon">📄</span>
+    <h3>CSV planos</h3>
+    <p>Tablas pre-joineadas listas para usar en Excel, Google Sheets o cualquier herramienta.</p>
+    <a href="https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/csv.zip" class="btn btn-primary">⬇ Descargar CSV</a>
+  </div>
 </div>
 <h2 id="parquet">Parquet</h2>
 <p><strong>Ideal para</strong>: análisis de datos con R, Python, DuckDB o cualquier herramienta compatible con Apache Arrow.</p>

@@ -721,6 +721,49 @@ pre code {
   color: #9ca3af;
 }
 
+/* --- Download options -------------------------------------- */
+.download-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+  margin: var(--space-6) 0 var(--space-10);
+}
+
+.download-option {
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transition: box-shadow var(--transition);
+}
+.download-option:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.download-option-icon {
+  font-size: var(--text-2xl);
+}
+
+.download-option h3 {
+  font-size: var(--text-xl);
+  margin: 0;
+}
+
+.download-option p {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  flex: 1;
+}
+
+.download-option .btn {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
 /* --- Responsive -------------------------------------------- */
 @media (max-width: 64rem) {
   .page-with-toc {
@@ -778,6 +821,10 @@ pre code {
   }
 
   .format-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .download-options {
     grid-template-columns: 1fr;
   }
 
