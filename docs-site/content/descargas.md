@@ -15,19 +15,19 @@ Los datos de `eleccionesdb` están disponibles para descarga en tres formatos, p
     <span class="download-option-icon">🗂️</span>
     <h3>Parquet</h3>
     <p>Tablas normalizadas en formato columnar. Ideal para R, Python y DuckDB.</p>
-    <a href="https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/parquet.zip" class="btn btn-primary">⬇ Descargar Parquet</a>
+    <a href="https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb_parquet.zip" class="btn btn-primary">⬇ Descargar Parquet</a>
   </div>
   <div class="download-option">
     <span class="download-option-icon">🗄️</span>
     <h3>SQLite</h3>
     <p>Base de datos relacional en un solo fichero. Ideal para consultas SQL sin servidor.</p>
-    <a href="https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb.sqlite" class="btn btn-primary">⬇ Descargar SQLite</a>
+    <a href="https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb_sqlite.zip" class="btn btn-primary">⬇ Descargar SQLite</a>
   </div>
   <div class="download-option">
     <span class="download-option-icon">📄</span>
     <h3>CSV planos</h3>
     <p>Tablas pre-joineadas listas para usar en Excel, Google Sheets o cualquier herramienta.</p>
-    <a href="https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/csv.zip" class="btn btn-primary">⬇ Descargar CSV</a>
+    <a href="https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb_csv.zip" class="btn btn-primary">⬇ Descargar CSV</a>
   </div>
 </div>
 

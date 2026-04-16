@@ -4,7 +4,7 @@
 # Lista de paquetes CRAN requeridos
 cran_packages <- c(
     "dplyr", "readr", "stringr", "DBI", "RPostgreSQL", "dotenv",
-    "targets", "tarchetypes"
+    "targets", "tarchetypes", "zip"
 )
 
 # Instala paquetes CRAN que falten

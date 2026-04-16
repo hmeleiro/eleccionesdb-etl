@@ -13,6 +13,7 @@ library(dplyr)
 library(arrow)
 library(DBI)
 library(RSQLite)
+library(zip)
 
 # ---------------------------------------------------------------------------
 # 0. Leer tablas finales
@@ -281,17 +282,43 @@ message(
 )
 
 # ---------------------------------------------------------------------------
+# 4. Compresión ZIP
+# ---------------------------------------------------------------------------
+
+parquet_zip <- "descargas/eleccionesdb_parquet.zip"
+if (file.exists(parquet_zip)) invisible(file.remove(parquet_zip))
+parquet_files <- list.files("descargas/parquet", recursive = TRUE, full.names = TRUE)
+zipr(parquet_zip, files = parquet_files)
+unlink("descargas/parquet", recursive = TRUE)   # ← añadir
+message("[EXPORT] ZIP Parquet generado en ", parquet_zip)
+
+csv_zip <- "descargas/eleccionesdb_csv.zip"
+if (file.exists(csv_zip)) invisible(file.remove(csv_zip))
+csv_files <- list.files("descargas/csv", recursive = TRUE, full.names = TRUE)
+zipr(csv_zip, files = csv_files)
+unlink("descargas/csv", recursive = TRUE)        # ← añadir
+message("[EXPORT] ZIP CSV generado en ", csv_zip)
+
+sqlite_zip <- "descargas/eleccionesdb_sqlite.zip"
+if (file.exists(sqlite_zip)) invisible(file.remove(sqlite_zip))
+zipr(sqlite_zip, files = sqlite_path)
+invisible(file.remove(sqlite_path))              # ← añadir
+message("[EXPORT] ZIP SQLite generado en ", sqlite_zip)
+# ---------------------------------------------------------------------------
 # Resumen final
 # ---------------------------------------------------------------------------
 
 parquet_size <- sum(file.info(list.files("descargas/parquet", recursive = TRUE, full.names = TRUE))$size)
 sqlite_size <- file.info(sqlite_path)$size
 csv_size <- sum(file.info(list.files("descargas/csv", full.names = TRUE))$size)
+parquet_zip_size <- file.info(parquet_zip)$size
+sqlite_zip_size <- file.info(sqlite_zip)$size
+csv_zip_size <- file.info(csv_zip)$size
 
 format_mb <- function(bytes) sprintf("%.1f MB", bytes / 1024^2)
 
 message("\n[EXPORT] === Resumen ===")
-message("  Parquet: ", format_mb(parquet_size))
-message("  SQLite:  ", format_mb(sqlite_size))
-message("  CSV:     ", format_mb(csv_size))
+message("  Parquet: ", format_mb(parquet_size), "  →  ZIP: ", format_mb(parquet_zip_size))
+message("  SQLite:  ", format_mb(sqlite_size), "  →  ZIP: ", format_mb(sqlite_zip_size))
+message("  CSV:     ", format_mb(csv_size), "  →  ZIP: ", format_mb(csv_zip_size))
 message("[EXPORT] Completado.")

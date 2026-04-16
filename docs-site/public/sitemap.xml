@@ -2,24 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/eleccionesdb-etl/pipeline/</loc>
+    <loc>https://hmeleiro.github.io/eleccionesdb-etl/pipeline/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/categories/</loc>
+    <loc>https://hmeleiro.github.io/eleccionesdb-etl/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/cobertura/</loc>
+    <loc>https://hmeleiro.github.io/eleccionesdb-etl/cobertura/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/</loc>
+    <loc>https://hmeleiro.github.io/eleccionesdb-etl/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/descargas/</loc>
+    <loc>https://hmeleiro.github.io/eleccionesdb-etl/descargas/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/fuentes/</loc>
+    <loc>https://hmeleiro.github.io/eleccionesdb-etl/fuentes/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/modelo-datos/</loc>
+    <loc>https://hmeleiro.github.io/eleccionesdb-etl/modelo-datos/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/changelog/</loc>
+    <loc>https://hmeleiro.github.io/eleccionesdb-etl/changelog/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/restaurar-data-raw/</loc>
+    <loc>https://hmeleiro.github.io/eleccionesdb-etl/restaurar-data-raw/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/tags/</loc>
+    <loc>https://hmeleiro.github.io/eleccionesdb-etl/tags/</loc>
   </url>
 </urlset>
