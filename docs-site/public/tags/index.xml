@@ -2,10 +2,10 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on eleccionesdb</title>
-    <link>https://hmeleiro.github.io/eleccionesdb-etl/tags/</link>
+    <link>http://localhost:1313/eleccionesdb-etl/tags/</link>
     <description>Recent content in Tags on eleccionesdb</description>
     <generator>Hugo</generator>
     <language>es</language>
-    <atom:link href="https://hmeleiro.github.io/eleccionesdb-etl/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/eleccionesdb-etl/tags/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

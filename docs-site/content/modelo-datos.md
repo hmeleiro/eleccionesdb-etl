@@ -7,7 +7,7 @@ description: "Esquema relacional y definición de tablas de eleccionesdb"
 
 El esquema PostgreSQL de `eleccionesdb` sigue un modelo estrella con 6 tablas de dimensiones y 4 tablas de hechos (2 principales + 2 CERA).
 
-<div class="mermaid">
+{{< mermaid >}}
 erDiagram
     tipos_eleccion {
         VARCHAR codigo PK
@@ -124,7 +124,7 @@ erDiagram
     elecciones ||--o{ votos_cera : eleccion_id
     territorios ||--o{ votos_cera : territorio_id
     partidos ||--o{ votos_cera : partido_id
-</div>
+{{< /mermaid >}}
 
 ## Tablas de dimensiones
 
@@ -252,7 +252,7 @@ Tablas análogas a `resumen_territorial` y `votos_territoriales` para el voto CE
 
 El campo `parent_id` de la tabla `territorios` codifica la siguiente jerarquía:
 
-<div class="mermaid">
+{{< mermaid >}}
 flowchart TD
     CCAA["🏛️ Comunidad Autónoma\n(tipo = ccaa)"]
     PROV["🗺️ Provincia\n(tipo = provincia)"]
@@ -267,7 +267,7 @@ flowchart TD
     PROV --> MUNI
     MUNI --> DIST
     DIST --> SECC
-</div>
+{{< /mermaid >}}
 
 - Cada **CCAA** es padre de sus **provincias**.
 - Cada **provincia** es padre de sus **municipios** (o de **circunscripciones** sub-provinciales en Canarias, Asturias y Baleares).

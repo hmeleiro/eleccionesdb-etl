@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es">
-  <head><meta charset="utf-8" />
+  <head><script src="/eleccionesdb-etl/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=eleccionesdb-etl/livereload" data-no-instant defer></script><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Modelo de datos · eleccionesdb</title>
 <meta name="description" content="Esquema relacional y definición de tablas de eleccionesdb" />
@@ -13,7 +13,7 @@
   content="Esquema relacional y definición de tablas de eleccionesdb"
 />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://hmeleiro.github.io/eleccionesdb-etl/modelo-datos/" />
+<meta property="og:url" content="http://localhost:1313/eleccionesdb-etl/modelo-datos/" />
 <meta property="og:site_name" content="eleccionesdb" />
 
 
@@ -35,7 +35,7 @@
 
   <body><header class="site-header">
   <div class="container header-inner">
-    <a href="/" class="site-logo">
+    <a href="http://localhost:1313/eleccionesdb-etl/" class="site-logo">
       <span class="logo-icon">◆</span>
       <span class="logo-text">eleccionesdb</span>
     </a>
@@ -128,118 +128,119 @@ erDiagram
         VARCHAR codigo PK
         VARCHAR descripcion
     }
-<pre><code>elecciones {
-    INT id PK
-    VARCHAR tipo_eleccion FK
-    CHAR year
-    CHAR mes
-    CHAR dia
-    DATE fecha
-    CHAR codigo_ccaa
-    SMALLINT numero_vuelta
-    VARCHAR descripcion
-    VARCHAR ambito
-    VARCHAR slug
-}
 
-elecciones_fuentes {
-    INT eleccion_id PK
-    VARCHAR fuente
-    VARCHAR url_fuente
-    TEXT observaciones
-}
+    elecciones {
+        INT id PK
+        VARCHAR tipo_eleccion FK
+        CHAR year
+        CHAR mes
+        CHAR dia
+        DATE fecha
+        CHAR codigo_ccaa
+        SMALLINT numero_vuelta
+        VARCHAR descripcion
+        VARCHAR ambito
+        VARCHAR slug
+    }
 
-territorios {
-    INT id PK
-    VARCHAR tipo
-    CHAR codigo_ccaa
-    CHAR codigo_provincia
-    CHAR codigo_municipio
-    CHAR codigo_distrito
-    CHAR codigo_seccion
-    CHAR codigo_circunscripcion
-    VARCHAR nombre
-    VARCHAR codigo_completo
-    INT parent_id FK
-}
+    elecciones_fuentes {
+        INT eleccion_id PK
+        VARCHAR fuente
+        VARCHAR url_fuente
+        TEXT observaciones
+    }
 
-partidos_recode {
-    INT id PK
-    VARCHAR partido_recode
-    VARCHAR agrupacion
-    VARCHAR color
-}
+    territorios {
+        INT id PK
+        VARCHAR tipo
+        CHAR codigo_ccaa
+        CHAR codigo_provincia
+        CHAR codigo_municipio
+        CHAR codigo_distrito
+        CHAR codigo_seccion
+        CHAR codigo_circunscripcion
+        VARCHAR nombre
+        VARCHAR codigo_completo
+        INT parent_id FK
+    }
 
-partidos {
-    INT id PK
-    INT partido_recode_id FK
-    VARCHAR siglas
-    VARCHAR denominacion
-}
+    partidos_recode {
+        INT id PK
+        VARCHAR partido_recode
+        VARCHAR agrupacion
+        VARCHAR color
+    }
 
-resumen_territorial {
-    INT id PK
-    INT eleccion_id FK
-    INT territorio_id FK
-    INT censo_ine
-    INT participacion_1
-    INT participacion_2
-    INT participacion_3
-    INT votos_validos
-    INT abstenciones
-    INT votos_blancos
-    INT votos_nulos
-    INT nrepresentantes
-}
+    partidos {
+        INT id PK
+        INT partido_recode_id FK
+        VARCHAR siglas
+        VARCHAR denominacion
+    }
 
-votos_territoriales {
-    INT id PK
-    INT eleccion_id FK
-    INT territorio_id FK
-    INT partido_id FK
-    INT votos
-    INT representantes
-}
+    resumen_territorial {
+        INT id PK
+        INT eleccion_id FK
+        INT territorio_id FK
+        INT censo_ine
+        INT participacion_1
+        INT participacion_2
+        INT participacion_3
+        INT votos_validos
+        INT abstenciones
+        INT votos_blancos
+        INT votos_nulos
+        INT nrepresentantes
+    }
 
-resumen_cera {
-    INT id PK
-    INT eleccion_id FK
-    INT territorio_id FK
-    INT censo_ine
-    INT votos_validos
-    INT abstenciones
-    INT votos_blancos
-    INT votos_nulos
-}
+    votos_territoriales {
+        INT id PK
+        INT eleccion_id FK
+        INT territorio_id FK
+        INT partido_id FK
+        INT votos
+        INT representantes
+    }
 
-votos_cera {
-    INT id PK
-    INT eleccion_id FK
-    INT territorio_id FK
-    INT partido_id FK
-    INT votos
-}
+    resumen_cera {
+        INT id PK
+        INT eleccion_id FK
+        INT territorio_id FK
+        INT censo_ine
+        INT votos_validos
+        INT abstenciones
+        INT votos_blancos
+        INT votos_nulos
+    }
 
-tipos_eleccion ||--o{ elecciones : tipo_eleccion
-elecciones ||--o| elecciones_fuentes : eleccion_id
-territorios ||--o{ territorios : parent_id
-partidos_recode ||--o{ partidos : partido_recode_id
+    votos_cera {
+        INT id PK
+        INT eleccion_id FK
+        INT territorio_id FK
+        INT partido_id FK
+        INT votos
+    }
 
-elecciones ||--o{ resumen_territorial : eleccion_id
-territorios ||--o{ resumen_territorial : territorio_id
+    tipos_eleccion ||--o{ elecciones : tipo_eleccion
+    elecciones ||--o| elecciones_fuentes : eleccion_id
+    territorios ||--o{ territorios : parent_id
+    partidos_recode ||--o{ partidos : partido_recode_id
 
-elecciones ||--o{ votos_territoriales : eleccion_id
-territorios ||--o{ votos_territoriales : territorio_id
-partidos ||--o{ votos_territoriales : partido_id
+    elecciones ||--o{ resumen_territorial : eleccion_id
+    territorios ||--o{ resumen_territorial : territorio_id
 
-elecciones ||--o{ resumen_cera : eleccion_id
-territorios ||--o{ resumen_cera : territorio_id
+    elecciones ||--o{ votos_territoriales : eleccion_id
+    territorios ||--o{ votos_territoriales : territorio_id
+    partidos ||--o{ votos_territoriales : partido_id
 
-elecciones ||--o{ votos_cera : eleccion_id
-territorios ||--o{ votos_cera : territorio_id
-partidos ||--o{ votos_cera : partido_id
-</code></pre>
+    elecciones ||--o{ resumen_cera : eleccion_id
+    territorios ||--o{ resumen_cera : territorio_id
+
+    elecciones ||--o{ votos_cera : eleccion_id
+    territorios ||--o{ votos_cera : territorio_id
+    partidos ||--o{ votos_cera : partido_id
 </div>
+
 <h2 id="tablas-de-dimensiones">Tablas de dimensiones</h2>
 <h3 id="elecciones_fuentes"><code>elecciones_fuentes</code></h3>
 <p>Documenta la fuente oficial de los datos para cada elección. Una fila por <code>eleccion_id</code>.</p>
@@ -621,14 +622,15 @@ flowchart TD
     MUNI["🏘️ Municipio\n(tipo = municipio)"]
     DIST["📊 Distrito\n(tipo = distrito)"]
     SECC["📋 Sección censal\n(tipo = seccion)"]
-<pre><code>CCAA --&gt; PROV
-PROV --&gt; CIRC
-CIRC --&gt; MUNI
-PROV --&gt; MUNI
-MUNI --&gt; DIST
-DIST --&gt; SECC
-</code></pre>
+
+    CCAA --> PROV
+    PROV --> CIRC
+    CIRC --> MUNI
+    PROV --> MUNI
+    MUNI --> DIST
+    DIST --> SECC
 </div>
+
 <ul>
 <li>Cada <strong>CCAA</strong> es padre de sus <strong>provincias</strong>.</li>
 <li>Cada <strong>provincia</strong> es padre de sus <strong>municipios</strong> (o de <strong>circunscripciones</strong> sub-provinciales en Canarias, Asturias y Baleares).</li>
