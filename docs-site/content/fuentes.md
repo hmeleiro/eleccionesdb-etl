@@ -31,7 +31,7 @@ description: "Origen y detalle de las fuentes de datos de eleccionesdb"
 
 ### Congreso (`00-congreso`)
 
-- **Fuente**: Paquete R [`infoelectoral`](https://ropenspain.github.io/infoelectoral/) (datos del Ministerio del Interior).
+- **Fuente**: Paquete R [`infoelectoral`](https://infoelectoral.spainelectoralproject.com/) (datos del Ministerio del Interior).
 - **Método**: Funciones `provincias()`, `municipios()`, `mesas()` del paquete.
 - **Granularidad**: Provincia, municipio y sección censal (mesa).
 - **Ficheros brutos**: No hay CSV en `data-raw/`; el paquete descarga directamente desde la fuente oficial.

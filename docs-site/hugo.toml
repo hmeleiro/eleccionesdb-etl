@@ -12,7 +12,7 @@ title = "eleccionesdb"
   author = "Héctor Meleiro"
   github = "https://github.com/hmeleiro/eleccionesdb-etl"
   parentProject = "https://spainelectoralproject.com/"
-  apiSite = "https://hmeleiro.github.io/eleccionesdb-api/"
+  apiSite = "https://eleccionesdb-api.spainelectoralproject.com/"
 
 [menus]
   [[menus.main]]
