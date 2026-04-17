@@ -1,4 +1,4 @@
-baseURL = "https://hmeleiro.github.io/eleccionesdb-etl/"
+baseURL = "https://eleccionesdb.spainelectoralproject.com/"
 languageCode = "es"
 defaultContentLanguage = "es"
 title = "eleccionesdb"

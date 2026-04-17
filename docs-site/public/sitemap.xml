@@ -2,24 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/eleccionesdb-etl/pipeline/</loc>
+    <loc>http://localhost:1313/pipeline/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/categories/</loc>
+    <loc>http://localhost:1313/categories/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/cobertura/</loc>
+    <loc>http://localhost:1313/cobertura/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/</loc>
+    <loc>http://localhost:1313/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/descargas/</loc>
+    <loc>http://localhost:1313/descargas/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/fuentes/</loc>
+    <loc>http://localhost:1313/fuentes/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/modelo-datos/</loc>
+    <loc>http://localhost:1313/modelo-datos/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/changelog/</loc>
+    <loc>http://localhost:1313/changelog/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/restaurar-data-raw/</loc>
+    <loc>http://localhost:1313/restaurar-data-raw/</loc>
   </url><url>
-    <loc>http://localhost:1313/eleccionesdb-etl/tags/</loc>
+    <loc>http://localhost:1313/tags/</loc>
   </url>
 </urlset>
