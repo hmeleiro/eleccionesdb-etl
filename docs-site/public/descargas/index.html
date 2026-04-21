@@ -1,155 +1,7 @@
-<!doctype html>
-<html lang="es">
-  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Formatos de descarga · eleccionesdb</title>
-<meta name="description" content="Instrucciones de uso para cada formato de descarga de eleccionesdb" />
-<meta name="author" content="Héctor Meleiro" />
-
-
-<meta property="og:title" content="Formatos de descarga" />
-<meta
-  property="og:description"
-  content="Instrucciones de uso para cada formato de descarga de eleccionesdb"
-/>
-<meta property="og:type" content="article" />
-<meta property="og:url" content="http://localhost:1313/descargas/" />
-<meta property="og:site_name" content="eleccionesdb" />
-
-
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-  rel="stylesheet"
-/>
-
-
-
-<link rel="stylesheet" href="/css/main.min.c46a8eb202ad32add79402a0acb79601e4f63d55d3a27e8b8e24a8c19a659478.css" integrity="sha256-xGqOsgKtMq3XlAKgrLeWAeT2PVXTon6LjiSowZpllHg=" />
-
-
-<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({ startOnLoad: true, theme: "neutral" });</script>
-</head>
-
-  <body><header class="site-header">
-  <div class="container header-inner">
-    <a href="http://localhost:1313/" class="site-logo">
-      <span class="logo-icon">◆</span>
-      <span class="logo-text">eleccionesdb</span>
-    </a>
-
-    <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
-      <span class="hamburger"></span>
-    </button>
-
-    <nav class="site-nav" id="site-nav">
-      <ul class="nav-list">
-        
-          <li class="nav-item">
-            <a href="/" class="nav-link">
-              Inicio
-            </a>
-          </li>
-        
-          <li class="nav-item">
-            <a href="/pipeline/" class="nav-link">
-              Pipeline
-            </a>
-          </li>
-        
-          <li class="nav-item">
-            <a href="/modelo-datos/" class="nav-link">
-              Modelo de datos
-            </a>
-          </li>
-        
-          <li class="nav-item">
-            <a href="/fuentes/" class="nav-link">
-              Fuentes
-            </a>
-          </li>
-        
-          <li class="nav-item">
-            <a href="/descargas/" class="nav-link is-active">
-              Descargas
-            </a>
-          </li>
-        
-          <li class="nav-item">
-            <a href="/cobertura/" class="nav-link">
-              Cobertura
-            </a>
-          </li>
-        
-          <li class="nav-item">
-            <a href="/changelog/" class="nav-link">
-              Changelog
-            </a>
-          </li>
-        
-        <li class="nav-item">
-          <a href="https://github.com/hmeleiro/eleccionesdb-etl" class="nav-link" target="_blank" rel="noopener">GitHub</a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-</header>
-
-<script>
-  (function () {
-    const toggle = document.querySelector(".menu-toggle");
-    const nav = document.getElementById("site-nav");
-    if (toggle && nav) {
-      toggle.addEventListener("click", function () {
-        const expanded = this.getAttribute("aria-expanded") === "true";
-        this.setAttribute("aria-expanded", !expanded);
-        nav.classList.toggle("is-open");
-      });
-    }
-  })();
-</script>
-<main id="content">
-  <article class="page-single">
-    <div class="container">
-      <div class="page-header">
-        <h1>Formatos de descarga</h1>
-        
-          <p class="page-desc">Instrucciones de uso para cada formato de descarga de eleccionesdb</p>
-        
-      </div>
-      <div class="page-content prose">
-        <p>Los datos de <code>eleccionesdb</code> están disponibles para descarga en tres formatos, pensados para diferentes perfiles de uso y herramientas de análisis.</p>
-<div class="callout callout-tip">
-<strong>¿Prefieres acceso programático?</strong>
-<p><a href="https://eleccionesdb-api.spainelectoralproject.com/" target="_blank" rel="noopener">EleccionesDB API</a> ofrece una API REST gratuita, abierta y sin autenticación para consultar todos estos datos directamente desde tu código.</p>
-</div>
-<div class="download-options">
-  <div class="download-option">
-    <span class="download-option-icon">🗂️</span>
-    <h3>Parquet</h3>
-    <p>Tablas normalizadas en formato columnar. Ideal para R, Python y DuckDB.</p>
-    <a href="https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb_parquet.zip" class="btn btn-primary">⬇ Descargar Parquet</a>
-  </div>
-  <div class="download-option">
-    <span class="download-option-icon">🗄️</span>
-    <h3>SQLite</h3>
-    <p>Base de datos relacional en un solo fichero. Ideal para consultas SQL sin servidor.</p>
-    <a href="https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb_sqlite.zip" class="btn btn-primary">⬇ Descargar SQLite</a>
-  </div>
-  <div class="download-option">
-    <span class="download-option-icon">📄</span>
-    <h3>CSV planos</h3>
-    <p>Tablas pre-joineadas listas para usar en Excel, Google Sheets o cualquier herramienta.</p>
-    <a href="https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb_csv.zip" class="btn btn-primary">⬇ Descargar CSV</a>
-  </div>
-</div>
-<h2 id="parquet">Parquet</h2>
-<p><strong>Ideal para</strong>: análisis de datos con R, Python, DuckDB o cualquier herramienta compatible con Apache Arrow.</p>
-<h3 id="contenido">Contenido</h3>
-<p>Tablas individuales normalizadas en formato columnar:</p>
-<pre tabindex="0"><code>descargas/parquet/
+<!doctype html><html lang=es><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Formatos de descarga · eleccionesdb</title><meta name=description content="Instrucciones de uso para cada formato de descarga de eleccionesdb"><meta name=author content="Héctor Meleiro"><meta property="og:title" content="Formatos de descarga"><meta property="og:description" content="Instrucciones de uso para cada formato de descarga de eleccionesdb"><meta property="og:type" content="article"><meta property="og:url" content="https://eleccionesdb.spainelectoralproject.com/descargas/"><meta property="og:site_name" content="eleccionesdb"><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel=stylesheet><link rel=stylesheet href=/css/main.min.a274442a983c222a5b2608b4a4d0e99af90d69dfcc43825d0a878b987a4326a3.css integrity="sha256-onREKpg8IipbJgi0pNDpmvkNad/MQ4JdCoeLmHpDJqM="><script src=https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js></script><script>mermaid.initialize({startOnLoad:!0,theme:"neutral"})</script></head><body><header class=site-header><div class="container header-inner"><a href=https://eleccionesdb.spainelectoralproject.com/ class=site-logo><span class=logo-icon>◆</span>
+<span class=logo-text>eleccionesdb</span>
+</a><button class=menu-toggle aria-label="Abrir menú" aria-expanded=false>
+<span class=hamburger></span></button><nav class=site-nav id=site-nav><ul class=nav-list><li class=nav-item><a href=/ class=nav-link>Inicio</a></li><li class=nav-item><a href=/pipeline/ class=nav-link>Pipeline</a></li><li class=nav-item><a href=/modelo-datos/ class=nav-link>Modelo de datos</a></li><li class=nav-item><a href=/fuentes/ class=nav-link>Fuentes</a></li><li class=nav-item><a href=/descargas/ class="nav-link is-active">Descargas</a></li><li class=nav-item><a href=/cobertura/ class=nav-link>Cobertura</a></li><li class=nav-item><a href=/calidad/ class=nav-link>Calidad de los datos</a></li><li class=nav-item><a href=/changelog/ class=nav-link>Changelog</a></li><li class=nav-item><a href=https://github.com/hmeleiro/eleccionesdb-etl class=nav-link target=_blank rel=noopener>GitHub</a></li></ul></nav></div></header><script>(function(){const e=document.querySelector(".menu-toggle"),t=document.getElementById("site-nav");e&&t&&e.addEventListener("click",function(){const e=this.getAttribute("aria-expanded")==="true";this.setAttribute("aria-expanded",!e),t.classList.toggle("is-open")})})()</script><main id=content><article class=page-single><div class=container><div class=page-header><h1>Formatos de descarga</h1><p class=page-desc>Instrucciones de uso para cada formato de descarga de eleccionesdb</p></div><div class="page-content prose"><p>Los datos de <code>eleccionesdb</code> están disponibles para descarga en tres formatos, pensados para diferentes perfiles de uso y herramientas de análisis.</p><div class="callout callout-tip"><strong>¿Prefieres acceso programático?</strong><p><a href=https://eleccionesdb-api.spainelectoralproject.com/ target=_blank rel=noopener>EleccionesDB API</a> ofrece una API REST gratuita, abierta y sin autenticación para consultar todos estos datos directamente desde tu código.</p></div><div class=download-options><div class=download-option><span class=download-option-icon>🗂️</span><h3>Parquet</h3><p>Tablas normalizadas en formato columnar. Ideal para R, Python y DuckDB.</p><a href=https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb_parquet.zip class="btn btn-primary">⬇ Descargar Parquet</a></div><div class=download-option><span class=download-option-icon>🗄️</span><h3>SQLite</h3><p>Base de datos relacional en un solo fichero. Ideal para consultas SQL sin servidor.</p><a href=https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb_sqlite.zip class="btn btn-primary">⬇ Descargar SQLite</a></div><div class=download-option><span class=download-option-icon>📄</span><h3>CSV planos</h3><p>Tablas pre-joineadas listas para usar en Excel, Google Sheets o cualquier herramienta.</p><a href=https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb_csv.zip class="btn btn-primary">⬇ Descargar CSV</a></div></div><h2 id=parquet>Parquet</h2><p><strong>Ideal para</strong>: análisis de datos con R, Python, DuckDB o cualquier herramienta compatible con Apache Arrow.</p><h3 id=contenido>Contenido</h3><p>Tablas individuales normalizadas en formato columnar:</p><pre tabindex=0><code>descargas/parquet/
 ├── dimensiones/
 │   ├── elecciones.parquet
 │   ├── partidos.parquet
@@ -159,216 +11,79 @@
 └── hechos/
     ├── resumen_territorial.parquet
     └── votos_territoriales.parquet
-</code></pre><h3 id="ventajas">Ventajas</h3>
-<ul>
-<li>Formato columnar altamente eficiente en espacio y velocidad de lectura.</li>
-<li>Conserva tipos de datos (enteros, fechas, texto).</li>
-<li>Ideal para cargar en data frames y hacer análisis exploratorio.</li>
-<li>Compatible con DuckDB para consultas SQL directamente sobre los ficheros.</li>
-</ul>
-<h3 id="cómo-usarlo-en-r">Cómo usarlo en R</h3>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">library</span>(<span style="color:#58a1dd">arrow</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Leer una tabla</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">elecciones</span> <span style="color:#ff636f">&lt;-</span> <span style="color:#58a1dd">read_parquet</span>(<span style="color:#a6be9d">&#34;descargas/parquet/dimensiones/elecciones.parquet&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">votos</span> <span style="color:#ff636f">&lt;-</span> <span style="color:#58a1dd">read_parquet</span>(<span style="color:#a6be9d">&#34;descargas/parquet/hechos/votos_territoriales.parquet&#34;</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Unir dimensiones con hechos</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">library</span>(<span style="color:#58a1dd">dplyr</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">votos_con_partido</span> <span style="color:#ff636f">&lt;-</span> <span style="color:#58a1dd">votos</span> <span style="color:#ff636f">|&gt;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#58a1dd">left_join</span>(<span style="color:#58a1dd">read_parquet</span>(<span style="color:#a6be9d">&#34;descargas/parquet/dimensiones/partidos.parquet&#34;</span>),
-</span></span><span style="display:flex;"><span>            <span style="color:#58a1dd">by</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">c</span>(<span style="color:#a6be9d">&#34;partido_id&#34;</span> <span style="color:#ff636f">=</span> <span style="color:#a6be9d">&#34;id&#34;</span>))
-</span></span></code></pre></div><h3 id="cómo-usarlo-en-python">Cómo usarlo en Python</h3>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff636f">import</span> <span style="color:#58a1dd">pandas</span> <span style="color:#ff636f">as</span> <span style="color:#58a1dd">pd</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Leer una tabla</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">elecciones</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">pd</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">read_parquet</span>(<span style="color:#a6be9d">&#34;descargas/parquet/dimensiones/elecciones.parquet&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">votos</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">pd</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">read_parquet</span>(<span style="color:#a6be9d">&#34;descargas/parquet/hechos/votos_territoriales.parquet&#34;</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Con PyArrow</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff636f">import</span> <span style="color:#58a1dd">pyarrow.parquet</span> <span style="color:#ff636f">as</span> <span style="color:#58a1dd">pq</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">table</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">pq</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">read_table</span>(<span style="color:#a6be9d">&#34;descargas/parquet/hechos/votos_territoriales.parquet&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">df</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">table</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">to_pandas</span>()
-</span></span></code></pre></div><hr>
-<h2 id="sqlite">SQLite</h2>
-<p><strong>Ideal para</strong>: consultas SQL, exploración relacional, prototipos de aplicaciones.</p>
-<h3 id="contenido-1">Contenido</h3>
-<p>Un único fichero <code>descargas/eleccionesdb.sqlite</code> con el esquema relacional completo:</p>
-<ul>
-<li>Todas las tablas de dimensiones y hechos.</li>
-<li>Claves primarias (PKs) y claves foráneas (FKs).</li>
-<li>Restricciones UNIQUE.</li>
-<li>Índices para consultas eficientes.</li>
-</ul>
-<h3 id="ventajas-1">Ventajas</h3>
-<ul>
-<li>Base de datos relacional autocontenida en un solo fichero.</li>
-<li>No requiere servidor: funciona directamente en local.</li>
-<li>Permite consultas SQL complejas con JOINs, agregaciones, subqueries.</li>
-<li>Esquema con integridad referencial.</li>
-</ul>
-<h3 id="cómo-usarlo-en-r-1">Cómo usarlo en R</h3>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">library</span>(<span style="color:#58a1dd">DBI</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">library</span>(<span style="color:#58a1dd">RSQLite</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">con</span> <span style="color:#ff636f">&lt;-</span> <span style="color:#58a1dd">dbConnect</span>(<span style="color:#58a1dd">SQLite</span>(), <span style="color:#a6be9d">&#34;descargas/eleccionesdb.sqlite&#34;</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Listar tablas</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">dbListTables</span>(<span style="color:#58a1dd">con</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Consulta SQL</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">votos_psoe</span> <span style="color:#ff636f">&lt;-</span> <span style="color:#58a1dd">dbGetQuery</span>(<span style="color:#58a1dd">con</span>, <span style="color:#a6be9d">&#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  SELECT e.year, e.descripcion, SUM(v.votos) as total_votos
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  FROM votos_territoriales v
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  JOIN elecciones e ON v.eleccion_id = e.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  JOIN partidos p ON v.partido_id = p.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  JOIN partidos_recode pr ON p.partido_recode_id = pr.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  WHERE pr.partido_recode = &#39;PSOE&#39;
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  GROUP BY e.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  ORDER BY e.year
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">&#34;</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">dbDisconnect</span>(<span style="color:#58a1dd">con</span>)
-</span></span></code></pre></div><h3 id="cómo-usarlo-en-python-1">Cómo usarlo en Python</h3>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff636f">import</span> <span style="color:#58a1dd">sqlite3</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff636f">import</span> <span style="color:#58a1dd">pandas</span> <span style="color:#ff636f">as</span> <span style="color:#58a1dd">pd</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">con</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">sqlite3</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">connect</span>(<span style="color:#a6be9d">&#34;descargas/eleccionesdb.sqlite&#34;</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Listar tablas</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">tables</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">pd</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">read_sql</span>(<span style="color:#a6be9d">&#34;SELECT name FROM sqlite_master WHERE type=&#39;table&#39;&#34;</span>, <span style="color:#58a1dd">con</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Consulta SQL</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">df</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">pd</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">read_sql</span>(<span style="color:#a6be9d">&#34;&#34;&#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    SELECT e.year, e.descripcion, SUM(v.votos) as total_votos
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    FROM votos_territoriales v
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    JOIN elecciones e ON v.eleccion_id = e.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    JOIN partidos p ON v.partido_id = p.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    JOIN partidos_recode pr ON p.partido_recode_id = pr.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    WHERE pr.partido_recode = &#39;PSOE&#39;
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    GROUP BY e.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    ORDER BY e.year
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">&#34;&#34;&#34;</span>, <span style="color:#58a1dd">con</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">con</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">close</span>()
-</span></span></code></pre></div><hr>
-<h2 id="csv-planos-pre-joineados">CSV planos (pre-joineados)</h2>
-<p><strong>Ideal para</strong>: uso rápido, hojas de cálculo, importación directa sin necesidad de JOINs.</p>
-<h3 id="contenido-2">Contenido</h3>
-<p>Dos ficheros CSV con las tablas de hechos ya unidas con todas sus dimensiones:</p>
-<pre tabindex="0"><code>descargas/csv/
+</code></pre><h3 id=ventajas>Ventajas</h3><ul><li>Formato columnar altamente eficiente en espacio y velocidad de lectura.</li><li>Conserva tipos de datos (enteros, fechas, texto).</li><li>Ideal para cargar en data frames y hacer análisis exploratorio.</li><li>Compatible con DuckDB para consultas SQL directamente sobre los ficheros.</li></ul><h3 id=cómo-usarlo-en-r>Cómo usarlo en R</h3><div class=highlight><pre tabindex=0 style=color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-r data-lang=r><span style=display:flex><span><span style=color:#58a1dd>library</span>(<span style=color:#58a1dd>arrow</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#828b96;font-style:italic># Leer una tabla</span>
+</span></span><span style=display:flex><span><span style=color:#58a1dd>elecciones</span> <span style=color:#ff636f>&lt;-</span> <span style=color:#58a1dd>read_parquet</span>(<span style=color:#a6be9d>&#34;descargas/parquet/dimensiones/elecciones.parquet&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#58a1dd>votos</span> <span style=color:#ff636f>&lt;-</span> <span style=color:#58a1dd>read_parquet</span>(<span style=color:#a6be9d>&#34;descargas/parquet/hechos/votos_territoriales.parquet&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#828b96;font-style:italic># Unir dimensiones con hechos</span>
+</span></span><span style=display:flex><span><span style=color:#58a1dd>library</span>(<span style=color:#58a1dd>dplyr</span>)
+</span></span><span style=display:flex><span><span style=color:#58a1dd>votos_con_partido</span> <span style=color:#ff636f>&lt;-</span> <span style=color:#58a1dd>votos</span> <span style=color:#ff636f>|&gt;</span>
+</span></span><span style=display:flex><span>  <span style=color:#58a1dd>left_join</span>(<span style=color:#58a1dd>read_parquet</span>(<span style=color:#a6be9d>&#34;descargas/parquet/dimensiones/partidos.parquet&#34;</span>),
+</span></span><span style=display:flex><span>            <span style=color:#58a1dd>by</span> <span style=color:#ff636f>=</span> <span style=color:#58a1dd>c</span>(<span style=color:#a6be9d>&#34;partido_id&#34;</span> <span style=color:#ff636f>=</span> <span style=color:#a6be9d>&#34;id&#34;</span>))
+</span></span></code></pre></div><h3 id=cómo-usarlo-en-python>Cómo usarlo en Python</h3><div class=highlight><pre tabindex=0 style=color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#ff636f>import</span> <span style=color:#58a1dd>pandas</span> <span style=color:#ff636f>as</span> <span style=color:#58a1dd>pd</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#828b96;font-style:italic># Leer una tabla</span>
+</span></span><span style=display:flex><span><span style=color:#58a1dd>elecciones</span> <span style=color:#ff636f>=</span> <span style=color:#58a1dd>pd</span><span style=color:#ff636f>.</span><span style=color:#58a1dd>read_parquet</span>(<span style=color:#a6be9d>&#34;descargas/parquet/dimensiones/elecciones.parquet&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#58a1dd>votos</span> <span style=color:#ff636f>=</span> <span style=color:#58a1dd>pd</span><span style=color:#ff636f>.</span><span style=color:#58a1dd>read_parquet</span>(<span style=color:#a6be9d>&#34;descargas/parquet/hechos/votos_territoriales.parquet&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#828b96;font-style:italic># Con PyArrow</span>
+</span></span><span style=display:flex><span><span style=color:#ff636f>import</span> <span style=color:#58a1dd>pyarrow.parquet</span> <span style=color:#ff636f>as</span> <span style=color:#58a1dd>pq</span>
+</span></span><span style=display:flex><span><span style=color:#58a1dd>table</span> <span style=color:#ff636f>=</span> <span style=color:#58a1dd>pq</span><span style=color:#ff636f>.</span><span style=color:#58a1dd>read_table</span>(<span style=color:#a6be9d>&#34;descargas/parquet/hechos/votos_territoriales.parquet&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#58a1dd>df</span> <span style=color:#ff636f>=</span> <span style=color:#58a1dd>table</span><span style=color:#ff636f>.</span><span style=color:#58a1dd>to_pandas</span>()
+</span></span></code></pre></div><hr><h2 id=sqlite>SQLite</h2><p><strong>Ideal para</strong>: consultas SQL, exploración relacional, prototipos de aplicaciones.</p><h3 id=contenido-1>Contenido</h3><p>Un único fichero <code>descargas/eleccionesdb.sqlite</code> con el esquema relacional completo:</p><ul><li>Todas las tablas de dimensiones y hechos.</li><li>Claves primarias (PKs) y claves foráneas (FKs).</li><li>Restricciones UNIQUE.</li><li>Índices para consultas eficientes.</li></ul><h3 id=ventajas-1>Ventajas</h3><ul><li>Base de datos relacional autocontenida en un solo fichero.</li><li>No requiere servidor: funciona directamente en local.</li><li>Permite consultas SQL complejas con JOINs, agregaciones, subqueries.</li><li>Esquema con integridad referencial.</li></ul><h3 id=cómo-usarlo-en-r-1>Cómo usarlo en R</h3><div class=highlight><pre tabindex=0 style=color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-r data-lang=r><span style=display:flex><span><span style=color:#58a1dd>library</span>(<span style=color:#58a1dd>DBI</span>)
+</span></span><span style=display:flex><span><span style=color:#58a1dd>library</span>(<span style=color:#58a1dd>RSQLite</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#58a1dd>con</span> <span style=color:#ff636f>&lt;-</span> <span style=color:#58a1dd>dbConnect</span>(<span style=color:#58a1dd>SQLite</span>(), <span style=color:#a6be9d>&#34;descargas/eleccionesdb.sqlite&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#828b96;font-style:italic># Listar tablas</span>
+</span></span><span style=display:flex><span><span style=color:#58a1dd>dbListTables</span>(<span style=color:#58a1dd>con</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#828b96;font-style:italic># Consulta SQL</span>
+</span></span><span style=display:flex><span><span style=color:#58a1dd>votos_psoe</span> <span style=color:#ff636f>&lt;-</span> <span style=color:#58a1dd>dbGetQuery</span>(<span style=color:#58a1dd>con</span>, <span style=color:#a6be9d>&#34;
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>  SELECT e.year, e.descripcion, SUM(v.votos) as total_votos
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>  FROM votos_territoriales v
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>  JOIN elecciones e ON v.eleccion_id = e.id
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>  JOIN partidos p ON v.partido_id = p.id
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>  JOIN partidos_recode pr ON p.partido_recode_id = pr.id
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>  WHERE pr.partido_recode = &#39;PSOE&#39;
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>  GROUP BY e.id
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>  ORDER BY e.year
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#58a1dd>dbDisconnect</span>(<span style=color:#58a1dd>con</span>)
+</span></span></code></pre></div><h3 id=cómo-usarlo-en-python-1>Cómo usarlo en Python</h3><div class=highlight><pre tabindex=0 style=color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#ff636f>import</span> <span style=color:#58a1dd>sqlite3</span>
+</span></span><span style=display:flex><span><span style=color:#ff636f>import</span> <span style=color:#58a1dd>pandas</span> <span style=color:#ff636f>as</span> <span style=color:#58a1dd>pd</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#58a1dd>con</span> <span style=color:#ff636f>=</span> <span style=color:#58a1dd>sqlite3</span><span style=color:#ff636f>.</span><span style=color:#58a1dd>connect</span>(<span style=color:#a6be9d>&#34;descargas/eleccionesdb.sqlite&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#828b96;font-style:italic># Listar tablas</span>
+</span></span><span style=display:flex><span><span style=color:#58a1dd>tables</span> <span style=color:#ff636f>=</span> <span style=color:#58a1dd>pd</span><span style=color:#ff636f>.</span><span style=color:#58a1dd>read_sql</span>(<span style=color:#a6be9d>&#34;SELECT name FROM sqlite_master WHERE type=&#39;table&#39;&#34;</span>, <span style=color:#58a1dd>con</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#828b96;font-style:italic># Consulta SQL</span>
+</span></span><span style=display:flex><span><span style=color:#58a1dd>df</span> <span style=color:#ff636f>=</span> <span style=color:#58a1dd>pd</span><span style=color:#ff636f>.</span><span style=color:#58a1dd>read_sql</span>(<span style=color:#a6be9d>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>    SELECT e.year, e.descripcion, SUM(v.votos) as total_votos
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>    FROM votos_territoriales v
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>    JOIN elecciones e ON v.eleccion_id = e.id
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>    JOIN partidos p ON v.partido_id = p.id
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>    JOIN partidos_recode pr ON p.partido_recode_id = pr.id
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>    WHERE pr.partido_recode = &#39;PSOE&#39;
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>    GROUP BY e.id
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>    ORDER BY e.year
+</span></span></span><span style=display:flex><span><span style=color:#a6be9d>&#34;&#34;&#34;</span>, <span style=color:#58a1dd>con</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#58a1dd>con</span><span style=color:#ff636f>.</span><span style=color:#58a1dd>close</span>()
+</span></span></code></pre></div><hr><h2 id=csv-planos-pre-joineados>CSV planos (pre-joineados)</h2><p><strong>Ideal para</strong>: uso rápido, hojas de cálculo, importación directa sin necesidad de JOINs.</p><h3 id=contenido-2>Contenido</h3><p>Dos ficheros CSV con las tablas de hechos ya unidas con todas sus dimensiones:</p><pre tabindex=0><code>descargas/csv/
 ├── resumen_territorial.csv
 └── votos_territoriales.csv
-</code></pre><p>Cada fila incluye tanto los datos numéricos (votos, censo, participación) como los campos descriptivos de las dimensiones (nombre del territorio, siglas del partido, descripción de la elección, etc.).</p>
-<h3 id="ventajas-2">Ventajas</h3>
-<ul>
-<li>Listos para usar: no requieren JOINs ni esquema relacional.</li>
-<li>Abribles directamente en Excel, Google Sheets o cualquier editor de texto.</li>
-<li>Formato universal compatible con cualquier herramienta.</li>
-</ul>
-<h3 id="cómo-usarlo-en-r-2">Cómo usarlo en R</h3>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">library</span>(<span style="color:#58a1dd">readr</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">resumen</span> <span style="color:#ff636f">&lt;-</span> <span style="color:#58a1dd">read_csv</span>(<span style="color:#a6be9d">&#34;descargas/csv/resumen_territorial.csv&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">votos</span> <span style="color:#ff636f">&lt;-</span> <span style="color:#58a1dd">read_csv</span>(<span style="color:#a6be9d">&#34;descargas/csv/votos_territoriales.csv&#34;</span>)
-</span></span></code></pre></div><h3 id="cómo-usarlo-en-python-2">Cómo usarlo en Python</h3>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff636f">import</span> <span style="color:#58a1dd">pandas</span> <span style="color:#ff636f">as</span> <span style="color:#58a1dd">pd</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">resumen</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">pd</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">read_csv</span>(<span style="color:#a6be9d">&#34;descargas/csv/resumen_territorial.csv&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">votos</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">pd</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">read_csv</span>(<span style="color:#a6be9d">&#34;descargas/csv/votos_territoriales.csv&#34;</span>)
-</span></span></code></pre></div><hr>
-<h2 id="comparativa-de-formatos">Comparativa de formatos</h2>
-<table>
-  <thead>
-      <tr>
-          <th>Característica</th>
-          <th>Parquet</th>
-          <th>SQLite</th>
-          <th>CSV planos</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><strong>Estructura</strong></td>
-          <td>Tablas normalizadas individuales</td>
-          <td>Esquema relacional con FKs</td>
-          <td>Tablas pre-joineadas</td>
-      </tr>
-      <tr>
-          <td><strong>Requiere JOINs</strong></td>
-          <td>Sí</td>
-          <td>Sí (SQL)</td>
-          <td>No</td>
-      </tr>
-      <tr>
-          <td><strong>Tamaño en disco</strong></td>
-          <td>Muy compacto</td>
-          <td>Compacto</td>
-          <td>Grande</td>
-      </tr>
-      <tr>
-          <td><strong>Tipos de datos</strong></td>
-          <td>Preservados</td>
-          <td>Preservados</td>
-          <td>Todo como texto</td>
-      </tr>
-      <tr>
-          <td><strong>Consultas SQL</strong></td>
-          <td>Vía DuckDB</td>
-          <td>Nativo</td>
-          <td>No</td>
-      </tr>
-      <tr>
-          <td><strong>Herramientas</strong></td>
-          <td>R, Python, DuckDB, Spark</td>
-          <td>Cualquier cliente SQL</td>
-          <td>Excel, editores de texto, R, Python</td>
-      </tr>
-      <tr>
-          <td><strong>Integridad referencial</strong></td>
-          <td>No (ficheros sueltos)</td>
-          <td>Sí (FKs, PKs, UNIQUE)</td>
-          <td>No aplica</td>
-      </tr>
-  </tbody>
-</table>
-
-      </div>
-    </div>
-  </article>
-</main><footer class="site-footer">
-  <div class="container">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <span class="logo-icon">◆</span>
-        <span class="footer-title">eleccionesdb</span>
-        <p class="footer-desc">Base de datos relacional abierta con resultados electorales de España.</p>
-      </div>
-      <div class="footer-links">
-        <div class="footer-col">
-          <h4>Documentación</h4>
-          <ul>
-            <li><a href="/pipeline/">Pipeline</a></li>
-            <li><a href="/modelo-datos/">Modelo de datos</a></li>
-            <li><a href="/fuentes/">Fuentes</a></li>
-            <li><a href="/descargas/">Descargas</a></li>
-            <li><a href="/cobertura/">Cobertura</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Proyecto</h4>
-          <ul>
-            <li><a href="https://spainelectoralproject.com/" target="_blank" rel="noopener">Spain Electoral Project</a></li>
-            <li><a href="https://eleccionesdb-api.spainelectoralproject.com/" target="_blank" rel="noopener">EleccionesDB API</a></li>
-            <li><a href="https://github.com/hmeleiro/eleccionesdb-etl" target="_blank" rel="noopener">GitHub</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 <a href="https://spainelectoralproject.com/" target="_blank" rel="noopener">Spain Electoral Project</a>. Contenido disponible bajo licencia abierta.</p>
-    </div>
-  </div>
-</footer>
-</body>
-</html>
+</code></pre><p>Cada fila incluye tanto los datos numéricos (votos, censo, participación) como los campos descriptivos de las dimensiones (nombre del territorio, siglas del partido, descripción de la elección, etc.).</p><h3 id=ventajas-2>Ventajas</h3><ul><li>Listos para usar: no requieren JOINs ni esquema relacional.</li><li>Abribles directamente en Excel, Google Sheets o cualquier editor de texto.</li><li>Formato universal compatible con cualquier herramienta.</li></ul><h3 id=cómo-usarlo-en-r-2>Cómo usarlo en R</h3><div class=highlight><pre tabindex=0 style=color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-r data-lang=r><span style=display:flex><span><span style=color:#58a1dd>library</span>(<span style=color:#58a1dd>readr</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#58a1dd>resumen</span> <span style=color:#ff636f>&lt;-</span> <span style=color:#58a1dd>read_csv</span>(<span style=color:#a6be9d>&#34;descargas/csv/resumen_territorial.csv&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#58a1dd>votos</span> <span style=color:#ff636f>&lt;-</span> <span style=color:#58a1dd>read_csv</span>(<span style=color:#a6be9d>&#34;descargas/csv/votos_territoriales.csv&#34;</span>)
+</span></span></code></pre></div><h3 id=cómo-usarlo-en-python-2>Cómo usarlo en Python</h3><div class=highlight><pre tabindex=0 style=color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#ff636f>import</span> <span style=color:#58a1dd>pandas</span> <span style=color:#ff636f>as</span> <span style=color:#58a1dd>pd</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#58a1dd>resumen</span> <span style=color:#ff636f>=</span> <span style=color:#58a1dd>pd</span><span style=color:#ff636f>.</span><span style=color:#58a1dd>read_csv</span>(<span style=color:#a6be9d>&#34;descargas/csv/resumen_territorial.csv&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#58a1dd>votos</span> <span style=color:#ff636f>=</span> <span style=color:#58a1dd>pd</span><span style=color:#ff636f>.</span><span style=color:#58a1dd>read_csv</span>(<span style=color:#a6be9d>&#34;descargas/csv/votos_territoriales.csv&#34;</span>)
+</span></span></code></pre></div><hr><h2 id=comparativa-de-formatos>Comparativa de formatos</h2><table><thead><tr><th>Característica</th><th>Parquet</th><th>SQLite</th><th>CSV planos</th></tr></thead><tbody><tr><td><strong>Estructura</strong></td><td>Tablas normalizadas individuales</td><td>Esquema relacional con FKs</td><td>Tablas pre-joineadas</td></tr><tr><td><strong>Requiere JOINs</strong></td><td>Sí</td><td>Sí (SQL)</td><td>No</td></tr><tr><td><strong>Tamaño en disco</strong></td><td>Muy compacto</td><td>Compacto</td><td>Grande</td></tr><tr><td><strong>Tipos de datos</strong></td><td>Preservados</td><td>Preservados</td><td>Todo como texto</td></tr><tr><td><strong>Consultas SQL</strong></td><td>Vía DuckDB</td><td>Nativo</td><td>No</td></tr><tr><td><strong>Herramientas</strong></td><td>R, Python, DuckDB, Spark</td><td>Cualquier cliente SQL</td><td>Excel, editores de texto, R, Python</td></tr><tr><td><strong>Integridad referencial</strong></td><td>No (ficheros sueltos)</td><td>Sí (FKs, PKs, UNIQUE)</td><td>No aplica</td></tr></tbody></table></div></div></article></main><footer class=site-footer><div class=container><div class=footer-inner><div class=footer-brand><span class=logo-icon>◆</span>
+<span class=footer-title>eleccionesdb</span><p class=footer-desc>Base de datos relacional abierta con resultados electorales de España.</p></div><div class=footer-links><div class=footer-col><h4>Documentación</h4><ul><li><a href=/pipeline/>Pipeline</a></li><li><a href=/modelo-datos/>Modelo de datos</a></li><li><a href=/fuentes/>Fuentes</a></li><li><a href=/descargas/>Descargas</a></li><li><a href=/cobertura/>Cobertura</a></li></ul></div><div class=footer-col><h4>Proyecto</h4><ul><li><a href=https://spainelectoralproject.com/ target=_blank rel=noopener>Spain Electoral Project</a></li><li><a href=https://eleccionesdb-api.spainelectoralproject.com/ target=_blank rel=noopener>EleccionesDB API</a></li><li><a href=https://github.com/hmeleiro/eleccionesdb-etl target=_blank rel=noopener>GitHub</a></li></ul></div></div></div><div class=footer-bottom><p>© 2026 <a href=https://spainelectoralproject.com/ target=_blank rel=noopener>Spain Electoral Project</a>. Contenido disponible bajo licencia abierta.</p></div></div></footer></body></html>

@@ -47,7 +47,13 @@ library(readr)
 # ---------------------------------------------------------------------------
 
 # resumen_territorial-bound: mandatory keys
-INFO_REQUIRED_COLS <- c("eleccion_id", "territorio_id")
+# Includes the 5 core vote/count columns that must always be present in every
+# region and election type. Optional columns (participacion_*, nrepresentantes)
+# remain in INFO_ALLOWED_COLS only.
+INFO_REQUIRED_COLS <- c(
+    "eleccion_id", "territorio_id",
+    "censo_ine", "votos_validos", "abstenciones", "votos_blancos", "votos_nulos"
+)
 
 # All recognised column names for info files (superset; extra cols = warning)
 INFO_ALLOWED_COLS <- c(
@@ -207,7 +213,20 @@ validate_info <- function(df, label = "info") {
         )
     }
 
-    # 8. Logical consistency: votos_blancos <= votos_validos
+    # 8. NAs en columnas de datos obligatorias (warn only; pueden venir de la fuente)
+    na_data_cols <- intersect(
+        c("censo_ine", "votos_validos", "abstenciones", "votos_blancos", "votos_nulos"),
+        names(df)
+    )
+    for (col in na_data_cols) {
+        n_na <- sum(is.na(df[[col]]))
+        warn_if_any(
+            n_na > 0,
+            sprintf("[%s] %s contiene %d NAs", lbl, col, n_na)
+        )
+    }
+
+    # 9. Consistencia lógica: votos_blancos <= votos_validos
     if (all(c("votos_blancos", "votos_validos") %in% names(df))) {
         check_rows <- !is.na(df$votos_blancos) & !is.na(df$votos_validos)
         if (any(check_rows)) {
@@ -233,7 +252,7 @@ validate_info <- function(df, label = "info") {
         }
     }
 
-    # 10. votos_nulos <= votos_validos (warn only; some methodologies exclude nulos from validos)
+    # 10. Consistencia lógica: votos_nulos <= votos_validos (warn only; some methodologies exclude nulos from validos)
     if (all(c("votos_nulos", "votos_validos") %in% names(df))) {
         check_rows <- !is.na(df$votos_nulos) & !is.na(df$votos_validos)
         if (any(check_rows)) {
@@ -326,6 +345,10 @@ validate_votos <- function(df, label = "votos") {
     stop_if_any(
         neg_votos,
         sprintf("[%s] votos contiene %d valores negativos", lbl, sum(neg_votos))
+    )
+    warn_if_any(
+        is.na(df$votos),
+        sprintf("[%s] votos contiene %d NAs", lbl, sum(is.na(df$votos)))
     )
 
     # 7. representantes: numérico y no negativo (si existe)

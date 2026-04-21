@@ -1,700 +1,118 @@
-<!doctype html>
-<html lang="es">
-  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Modelo de datos · eleccionesdb</title>
-<meta name="description" content="Esquema relacional y definición de tablas de eleccionesdb" />
-<meta name="author" content="Héctor Meleiro" />
-
-
-<meta property="og:title" content="Modelo de datos" />
-<meta
-  property="og:description"
-  content="Esquema relacional y definición de tablas de eleccionesdb"
-/>
-<meta property="og:type" content="article" />
-<meta property="og:url" content="http://localhost:1313/modelo-datos/" />
-<meta property="og:site_name" content="eleccionesdb" />
-
-
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-  rel="stylesheet"
-/>
-
-
-
-<link rel="stylesheet" href="/css/main.min.c46a8eb202ad32add79402a0acb79601e4f63d55d3a27e8b8e24a8c19a659478.css" integrity="sha256-xGqOsgKtMq3XlAKgrLeWAeT2PVXTon6LjiSowZpllHg=" />
-
-
-<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({ startOnLoad: true, theme: "neutral" });</script>
-</head>
-
-  <body><header class="site-header">
-  <div class="container header-inner">
-    <a href="http://localhost:1313/" class="site-logo">
-      <span class="logo-icon">◆</span>
-      <span class="logo-text">eleccionesdb</span>
-    </a>
-
-    <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
-      <span class="hamburger"></span>
-    </button>
-
-    <nav class="site-nav" id="site-nav">
-      <ul class="nav-list">
-        
-          <li class="nav-item">
-            <a href="/" class="nav-link">
-              Inicio
-            </a>
-          </li>
-        
-          <li class="nav-item">
-            <a href="/pipeline/" class="nav-link">
-              Pipeline
-            </a>
-          </li>
-        
-          <li class="nav-item">
-            <a href="/modelo-datos/" class="nav-link is-active">
-              Modelo de datos
-            </a>
-          </li>
-        
-          <li class="nav-item">
-            <a href="/fuentes/" class="nav-link">
-              Fuentes
-            </a>
-          </li>
-        
-          <li class="nav-item">
-            <a href="/descargas/" class="nav-link">
-              Descargas
-            </a>
-          </li>
-        
-          <li class="nav-item">
-            <a href="/cobertura/" class="nav-link">
-              Cobertura
-            </a>
-          </li>
-        
-          <li class="nav-item">
-            <a href="/changelog/" class="nav-link">
-              Changelog
-            </a>
-          </li>
-        
-        <li class="nav-item">
-          <a href="https://github.com/hmeleiro/eleccionesdb-etl" class="nav-link" target="_blank" rel="noopener">GitHub</a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-</header>
-
-<script>
-  (function () {
-    const toggle = document.querySelector(".menu-toggle");
-    const nav = document.getElementById("site-nav");
-    if (toggle && nav) {
-      toggle.addEventListener("click", function () {
-        const expanded = this.getAttribute("aria-expanded") === "true";
-        this.setAttribute("aria-expanded", !expanded);
-        nav.classList.toggle("is-open");
-      });
-    }
-  })();
-</script>
-<main id="content">
-  <article class="page-single">
-    <div class="container">
-      <div class="page-header">
-        <h1>Modelo de datos</h1>
-        
-          <p class="page-desc">Esquema relacional y definición de tablas de eleccionesdb</p>
-        
-      </div>
-      <div class="page-content prose">
-        <h2 id="diagrama-entidad-relación">Diagrama entidad-relación</h2>
-<p>El esquema PostgreSQL de <code>eleccionesdb</code> sigue un modelo estrella con 6 tablas de dimensiones y 4 tablas de hechos (2 principales + 2 CERA).</p>
-<div class="mermaid">
-erDiagram
-    tipos_eleccion {
-        VARCHAR codigo PK
-        VARCHAR descripcion
-    }
-
-    elecciones {
-        INT id PK
-        VARCHAR tipo_eleccion FK
-        CHAR year
-        CHAR mes
-        CHAR dia
-        DATE fecha
-        CHAR codigo_ccaa
-        SMALLINT numero_vuelta
-        VARCHAR descripcion
-        VARCHAR ambito
-        VARCHAR slug
-    }
-
-    elecciones_fuentes {
-        INT eleccion_id PK
-        VARCHAR fuente
-        VARCHAR url_fuente
-        TEXT observaciones
-    }
-
-    territorios {
-        INT id PK
-        VARCHAR tipo
-        CHAR codigo_ccaa
-        CHAR codigo_provincia
-        CHAR codigo_municipio
-        CHAR codigo_distrito
-        CHAR codigo_seccion
-        CHAR codigo_circunscripcion
-        VARCHAR nombre
-        VARCHAR codigo_completo
-        INT parent_id FK
-    }
-
-    partidos_recode {
-        INT id PK
-        VARCHAR partido_recode
-        VARCHAR agrupacion
-        VARCHAR color
-    }
-
-    partidos {
-        INT id PK
-        INT partido_recode_id FK
-        VARCHAR siglas
-        VARCHAR denominacion
-    }
-
-    resumen_territorial {
-        INT id PK
-        INT eleccion_id FK
-        INT territorio_id FK
-        INT censo_ine
-        INT participacion_1
-        INT participacion_2
-        INT participacion_3
-        INT votos_validos
-        INT abstenciones
-        INT votos_blancos
-        INT votos_nulos
-        INT nrepresentantes
-    }
-
-    votos_territoriales {
-        INT id PK
-        INT eleccion_id FK
-        INT territorio_id FK
-        INT partido_id FK
-        INT votos
-        INT representantes
-    }
-
-    resumen_cera {
-        INT id PK
-        INT eleccion_id FK
-        INT territorio_id FK
-        INT censo_ine
-        INT votos_validos
-        INT abstenciones
-        INT votos_blancos
-        INT votos_nulos
-    }
-
-    votos_cera {
-        INT id PK
-        INT eleccion_id FK
-        INT territorio_id FK
-        INT partido_id FK
-        INT votos
-    }
-
-    tipos_eleccion ||--o{ elecciones : tipo_eleccion
-    elecciones ||--o| elecciones_fuentes : eleccion_id
-    territorios ||--o{ territorios : parent_id
-    partidos_recode ||--o{ partidos : partido_recode_id
-
-    elecciones ||--o{ resumen_territorial : eleccion_id
-    territorios ||--o{ resumen_territorial : territorio_id
-
-    elecciones ||--o{ votos_territoriales : eleccion_id
-    territorios ||--o{ votos_territoriales : territorio_id
-    partidos ||--o{ votos_territoriales : partido_id
-
-    elecciones ||--o{ resumen_cera : eleccion_id
-    territorios ||--o{ resumen_cera : territorio_id
-
-    elecciones ||--o{ votos_cera : eleccion_id
-    territorios ||--o{ votos_cera : territorio_id
-    partidos ||--o{ votos_cera : partido_id
-</div>
-
-<h2 id="tablas-de-dimensiones">Tablas de dimensiones</h2>
-<h3 id="elecciones_fuentes"><code>elecciones_fuentes</code></h3>
-<p>Documenta la fuente oficial de los datos para cada elección. Una fila por <code>eleccion_id</code>.</p>
-<table>
-  <thead>
-      <tr>
-          <th>Columna</th>
-          <th>Tipo</th>
-          <th>Descripción</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>eleccion_id</code></td>
-          <td><code>INT</code> PK, FK</td>
-          <td>Referencia a <code>elecciones.id</code></td>
-      </tr>
-      <tr>
-          <td><code>fuente</code></td>
-          <td><code>VARCHAR(255)</code></td>
-          <td>Nombre de la fuente (ej: Ministerio del Interior)</td>
-      </tr>
-      <tr>
-          <td><code>url_fuente</code></td>
-          <td><code>VARCHAR(500)</code></td>
-          <td>URL a la fuente oficial</td>
-      </tr>
-      <tr>
-          <td><code>observaciones</code></td>
-          <td><code>TEXT</code></td>
-          <td>Notas u observaciones adicionales (opcional)</td>
-      </tr>
-  </tbody>
-</table>
-<h3 id="tipos_eleccion"><code>tipos_eleccion</code></h3>
-<p>Catálogo de tipos de elección con un código de un carácter.</p>
-<table>
-  <thead>
-      <tr>
-          <th>Columna</th>
-          <th>Tipo</th>
-          <th>Descripción</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>codigo</code></td>
-          <td><code>VARCHAR(1)</code> PK</td>
-          <td>Código del tipo: <code>G</code> (Generales), <code>A</code> (Autonómicas), <code>L</code> (Locales), <code>E</code> (Europeas), <code>S</code> (Senado)</td>
-      </tr>
-      <tr>
-          <td><code>descripcion</code></td>
-          <td><code>VARCHAR(100)</code></td>
-          <td>Nombre descriptivo del tipo de elección</td>
-      </tr>
-  </tbody>
-</table>
-<h3 id="elecciones"><code>elecciones</code></h3>
-<p>Cada fila identifica una convocatoria electoral concreta.</p>
-<table>
-  <thead>
-      <tr>
-          <th>Columna</th>
-          <th>Tipo</th>
-          <th>Descripción</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>id</code></td>
-          <td><code>INT</code> PK</td>
-          <td>Identificador autogenerado</td>
-      </tr>
-      <tr>
-          <td><code>tipo_eleccion</code></td>
-          <td><code>VARCHAR(1)</code> FK</td>
-          <td>Referencia a <code>tipos_eleccion.codigo</code></td>
-      </tr>
-      <tr>
-          <td><code>year</code></td>
-          <td><code>CHAR(4)</code></td>
-          <td>Año de la elección</td>
-      </tr>
-      <tr>
-          <td><code>mes</code></td>
-          <td><code>CHAR(2)</code></td>
-          <td>Mes (con cero a la izquierda)</td>
-      </tr>
-      <tr>
-          <td><code>dia</code></td>
-          <td><code>CHAR(2)</code></td>
-          <td>Día (con cero a la izquierda)</td>
-      </tr>
-      <tr>
-          <td><code>fecha</code></td>
-          <td><code>DATE</code></td>
-          <td>Fecha completa</td>
-      </tr>
-      <tr>
-          <td><code>codigo_ccaa</code></td>
-          <td><code>CHAR(2)</code></td>
-          <td>Código de comunidad autónoma (NULL para generales)</td>
-      </tr>
-      <tr>
-          <td><code>numero_vuelta</code></td>
-          <td><code>SMALLINT</code></td>
-          <td>Número de vuelta (default 1)</td>
-      </tr>
-      <tr>
-          <td><code>descripcion</code></td>
-          <td><code>VARCHAR(255)</code></td>
-          <td>Texto descriptivo legible (ej: &ldquo;Generales junio 2016&rdquo;)</td>
-      </tr>
-      <tr>
-          <td><code>ambito</code></td>
-          <td><code>VARCHAR(50)</code></td>
-          <td>Ámbito: &ldquo;nacional&rdquo;, &ldquo;autonómico&rdquo;, etc.</td>
-      </tr>
-      <tr>
-          <td><code>slug</code></td>
-          <td><code>VARCHAR(50)</code></td>
-          <td>Identificador legible para URLs</td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Restricción UNIQUE</strong>: <code>(tipo_eleccion, year, mes, codigo_ccaa, numero_vuelta)</code></p>
-<h3 id="territorios"><code>territorios</code></h3>
-<p>Jerarquía territorial con auto-referencia vía <code>parent_id</code>. Cada registro representa un nivel territorial único.</p>
-<table>
-  <thead>
-      <tr>
-          <th>Columna</th>
-          <th>Tipo</th>
-          <th>Descripción</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>id</code></td>
-          <td><code>INT</code> PK</td>
-          <td>Identificador autogenerado</td>
-      </tr>
-      <tr>
-          <td><code>tipo</code></td>
-          <td><code>territorio_tipo</code> ENUM</td>
-          <td>Nivel: <code>ccaa</code>, <code>provincia</code>, <code>circunscripcion</code>, <code>municipio</code>, <code>distrito</code>, <code>seccion</code>, <code>cera</code></td>
-      </tr>
-      <tr>
-          <td><code>codigo_ccaa</code></td>
-          <td><code>CHAR(2)</code></td>
-          <td>Código INE de comunidad autónoma</td>
-      </tr>
-      <tr>
-          <td><code>codigo_provincia</code></td>
-          <td><code>CHAR(2)</code></td>
-          <td>Código INE de provincia</td>
-      </tr>
-      <tr>
-          <td><code>codigo_municipio</code></td>
-          <td><code>CHAR(3)</code></td>
-          <td>Código INE de municipio</td>
-      </tr>
-      <tr>
-          <td><code>codigo_distrito</code></td>
-          <td><code>CHAR(2)</code></td>
-          <td>Código de distrito censal</td>
-      </tr>
-      <tr>
-          <td><code>codigo_seccion</code></td>
-          <td><code>CHAR(4)</code></td>
-          <td>Código de sección censal</td>
-      </tr>
-      <tr>
-          <td><code>codigo_circunscripcion</code></td>
-          <td><code>CHAR(3)</code></td>
-          <td>Código de circunscripción (sub-provincial en Canarias, Asturias, Baleares)</td>
-      </tr>
-      <tr>
-          <td><code>nombre</code></td>
-          <td><code>VARCHAR(255)</code></td>
-          <td>Nombre del territorio</td>
-      </tr>
-      <tr>
-          <td><code>codigo_completo</code></td>
-          <td><code>VARCHAR(13)</code></td>
-          <td>Código concatenado completo</td>
-      </tr>
-      <tr>
-          <td><code>parent_id</code></td>
-          <td><code>INT</code> FK</td>
-          <td>Referencia al territorio padre en la jerarquía</td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Restricción UNIQUE</strong>: <code>(tipo, codigo_ccaa, codigo_provincia, codigo_municipio, codigo_distrito, codigo_seccion, codigo_circunscripcion)</code></p>
-<h3 id="partidos_recode"><code>partidos_recode</code></h3>
-<p>Agrupaciones y recodificaciones de partidos. Permite agrupar siglas históricas o regionales bajo una misma etiqueta analítica.</p>
-<table>
-  <thead>
-      <tr>
-          <th>Columna</th>
-          <th>Tipo</th>
-          <th>Descripción</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>id</code></td>
-          <td><code>INT</code> PK</td>
-          <td>Identificador autogenerado</td>
-      </tr>
-      <tr>
-          <td><code>partido_recode</code></td>
-          <td><code>VARCHAR(50)</code> UNIQUE</td>
-          <td>Nombre de la agrupación (ej: &ldquo;PSOE&rdquo;, &ldquo;PP&rdquo;, &ldquo;Otros&rdquo;)</td>
-      </tr>
-      <tr>
-          <td><code>agrupacion</code></td>
-          <td><code>VARCHAR(50)</code></td>
-          <td>Agrupación de nivel superior</td>
-      </tr>
-      <tr>
-          <td><code>color</code></td>
-          <td><code>VARCHAR(7)</code></td>
-          <td>Color hexadecimal para visualización</td>
-      </tr>
-  </tbody>
-</table>
-<h3 id="partidos"><code>partidos</code></h3>
-<p>Cada par único <code>(siglas, denominacion)</code> tal como aparece en los datos oficiales de cada elección.</p>
-<table>
-  <thead>
-      <tr>
-          <th>Columna</th>
-          <th>Tipo</th>
-          <th>Descripción</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>id</code></td>
-          <td><code>INT</code> PK</td>
-          <td>Identificador autogenerado</td>
-      </tr>
-      <tr>
-          <td><code>partido_recode_id</code></td>
-          <td><code>INT</code> FK</td>
-          <td>Referencia a <code>partidos_recode.id</code></td>
-      </tr>
-      <tr>
-          <td><code>siglas</code></td>
-          <td><code>VARCHAR(255)</code></td>
-          <td>Siglas del partido</td>
-      </tr>
-      <tr>
-          <td><code>denominacion</code></td>
-          <td><code>VARCHAR(255)</code></td>
-          <td>Denominación completa del partido</td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Restricción UNIQUE</strong>: <code>(siglas, denominacion)</code></p>
-<h2 id="tablas-de-hechos">Tablas de hechos</h2>
-<h3 id="resumen_territorial"><code>resumen_territorial</code></h3>
-<p>Resumen de censo, participación y votos agregados por elección y territorio. Una fila por cada combinación <code>(eleccion_id, territorio_id)</code>.</p>
-<table>
-  <thead>
-      <tr>
-          <th>Columna</th>
-          <th>Tipo</th>
-          <th>Descripción</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>eleccion_id</code></td>
-          <td><code>INT</code> FK</td>
-          <td>Referencia a <code>elecciones.id</code></td>
-      </tr>
-      <tr>
-          <td><code>territorio_id</code></td>
-          <td><code>INT</code> FK</td>
-          <td>Referencia a <code>territorios.id</code></td>
-      </tr>
-      <tr>
-          <td><code>censo_ine</code></td>
-          <td><code>INT</code></td>
-          <td>Censo electoral (electores con derecho a voto)</td>
-      </tr>
-      <tr>
-          <td><code>participacion_1</code></td>
-          <td><code>INT</code></td>
-          <td>Primer avance de participación</td>
-      </tr>
-      <tr>
-          <td><code>participacion_2</code></td>
-          <td><code>INT</code></td>
-          <td>Segundo avance de participación</td>
-      </tr>
-      <tr>
-          <td><code>participacion_3</code></td>
-          <td><code>INT</code></td>
-          <td>Participación final</td>
-      </tr>
-      <tr>
-          <td><code>votos_validos</code></td>
-          <td><code>INT</code></td>
-          <td>Total de votos válidos</td>
-      </tr>
-      <tr>
-          <td><code>abstenciones</code></td>
-          <td><code>INT</code></td>
-          <td>Abstenciones</td>
-      </tr>
-      <tr>
-          <td><code>votos_blancos</code></td>
-          <td><code>INT</code></td>
-          <td>Votos en blanco</td>
-      </tr>
-      <tr>
-          <td><code>votos_nulos</code></td>
-          <td><code>INT</code></td>
-          <td>Votos nulos</td>
-      </tr>
-      <tr>
-          <td><code>nrepresentantes</code></td>
-          <td><code>INT</code></td>
-          <td>Número de escaños asignados a ese territorio</td>
-      </tr>
-  </tbody>
-</table>
-<h3 id="votos_territoriales"><code>votos_territoriales</code></h3>
-<p>Votos por partido, elección y territorio. Una fila por cada combinación <code>(eleccion_id, territorio_id, partido_id)</code>.</p>
-<table>
-  <thead>
-      <tr>
-          <th>Columna</th>
-          <th>Tipo</th>
-          <th>Descripción</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><code>eleccion_id</code></td>
-          <td><code>INT</code> FK</td>
-          <td>Referencia a <code>elecciones.id</code></td>
-      </tr>
-      <tr>
-          <td><code>territorio_id</code></td>
-          <td><code>INT</code> FK</td>
-          <td>Referencia a <code>territorios.id</code></td>
-      </tr>
-      <tr>
-          <td><code>partido_id</code></td>
-          <td><code>INT</code> FK</td>
-          <td>Referencia a <code>partidos.id</code></td>
-      </tr>
-      <tr>
-          <td><code>votos</code></td>
-          <td><code>INT</code></td>
-          <td>Número de votos recibidos</td>
-      </tr>
-      <tr>
-          <td><code>representantes</code></td>
-          <td><code>INT</code></td>
-          <td>Representantes electos (si aplica)</td>
-      </tr>
-  </tbody>
-</table>
-<h3 id="resumen_cera-y-votos_cera"><code>resumen_cera</code> y <code>votos_cera</code></h3>
-<p>Tablas análogas a <code>resumen_territorial</code> y <code>votos_territoriales</code> para el voto CERA (Censo de Españoles Residentes Ausentes). Estructura similar pero sin avances de participación ni <code>nrepresentantes</code>.</p>
-<h2 id="jerarquía-territorial">Jerarquía territorial</h2>
-<p>El campo <code>parent_id</code> de la tabla <code>territorios</code> codifica la siguiente jerarquía:</p>
-<div class="mermaid">
-flowchart TD
-    CCAA["🏛️ Comunidad Autónoma\n(tipo = ccaa)"]
-    PROV["🗺️ Provincia\n(tipo = provincia)"]
-    CIRC["📍 Circunscripción\n(tipo = circunscripcion)"]
-    MUNI["🏘️ Municipio\n(tipo = municipio)"]
-    DIST["📊 Distrito\n(tipo = distrito)"]
-    SECC["📋 Sección censal\n(tipo = seccion)"]
-
-    CCAA --> PROV
-    PROV --> CIRC
-    CIRC --> MUNI
-    PROV --> MUNI
-    MUNI --> DIST
-    DIST --> SECC
-</div>
-
-<ul>
-<li>Cada <strong>CCAA</strong> es padre de sus <strong>provincias</strong>.</li>
-<li>Cada <strong>provincia</strong> es padre de sus <strong>municipios</strong> (o de <strong>circunscripciones</strong> sub-provinciales en Canarias, Asturias y Baleares).</li>
-<li>Las <strong>circunscripciones</strong> sub-provinciales (islas en Canarias y Baleares; Occidente/Centro/Oriente en Asturias) son padres de sus municipios.</li>
-<li>Cada <strong>municipio</strong> es padre de sus <strong>distritos</strong>.</li>
-<li>Cada <strong>distrito</strong> es padre de sus <strong>secciones censales</strong>.</li>
-</ul>
-<p>Este diseño permite navegar la jerarquía de forma recursiva: dado cualquier territorio, se puede subir o bajar en la jerarquía siguiendo <code>parent_id</code>.</p>
-<h2 id="sistema-de-partidos">Sistema de partidos</h2>
-<p>El modelo utiliza dos tablas separadas para gestionar la complejidad del panorama partidista español:</p>
-<h3 id="dos-niveles-de-detalle">Dos niveles de detalle</h3>
-<ol>
-<li>
-<p><strong><code>partidos</code></strong>: Recoge cada par <code>(siglas, denominacion)</code> tal como aparece en los datos oficiales. Un mismo partido puede aparecer con distintas denominaciones a lo largo de los años o en distintas comunidades.</p>
-</li>
-<li>
-<p><strong><code>partidos_recode</code></strong>: Agrupa las distintas apariciones bajo una etiqueta analítica común. Por ejemplo, todas las variantes de &ldquo;Partido Socialista Obrero Español&rdquo;, &ldquo;PSOE&rdquo;, &ldquo;PSC-PSOE&rdquo; pueden agruparse bajo el recode &ldquo;PSOE&rdquo;. Incluye además un campo <code>agrupacion</code> para agrupaciones de nivel superior y un <code>color</code> para visualización.</p>
-</li>
-</ol>
-<h3 id="flujo-de-asignación">Flujo de asignación</h3>
-<ol>
-<li>Los scripts de generación de datos producen votos con <code>(siglas, denominacion)</code> tal cual.</li>
-<li><code>new-partidos.R</code> detecta combinaciones nuevas sin recodificación asignada.</li>
-<li>Se revisan manualmente y se añaden a <code>partidos_recodes.xlsx</code>.</li>
-<li><code>sync-partidos.R</code> sincroniza las dimensiones <code>partidos</code> y <code>partidos_recode</code>.</li>
-<li><code>02-bind-hechos.R</code> asigna <code>partido_id</code> por matching case-insensitive — <strong>falla si quedan votos sin match</strong>.</li>
-</ol>
-
-      </div>
-    </div>
-  </article>
-</main><footer class="site-footer">
-  <div class="container">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <span class="logo-icon">◆</span>
-        <span class="footer-title">eleccionesdb</span>
-        <p class="footer-desc">Base de datos relacional abierta con resultados electorales de España.</p>
-      </div>
-      <div class="footer-links">
-        <div class="footer-col">
-          <h4>Documentación</h4>
-          <ul>
-            <li><a href="/pipeline/">Pipeline</a></li>
-            <li><a href="/modelo-datos/">Modelo de datos</a></li>
-            <li><a href="/fuentes/">Fuentes</a></li>
-            <li><a href="/descargas/">Descargas</a></li>
-            <li><a href="/cobertura/">Cobertura</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Proyecto</h4>
-          <ul>
-            <li><a href="https://spainelectoralproject.com/" target="_blank" rel="noopener">Spain Electoral Project</a></li>
-            <li><a href="https://eleccionesdb-api.spainelectoralproject.com/" target="_blank" rel="noopener">EleccionesDB API</a></li>
-            <li><a href="https://github.com/hmeleiro/eleccionesdb-etl" target="_blank" rel="noopener">GitHub</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 <a href="https://spainelectoralproject.com/" target="_blank" rel="noopener">Spain Electoral Project</a>. Contenido disponible bajo licencia abierta.</p>
-    </div>
-  </div>
-</footer>
-</body>
-</html>
+<!doctype html><html lang=es><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Modelo de datos · eleccionesdb</title><meta name=description content="Esquema relacional y definición de tablas de eleccionesdb"><meta name=author content="Héctor Meleiro"><meta property="og:title" content="Modelo de datos"><meta property="og:description" content="Esquema relacional y definición de tablas de eleccionesdb"><meta property="og:type" content="article"><meta property="og:url" content="https://eleccionesdb.spainelectoralproject.com/modelo-datos/"><meta property="og:site_name" content="eleccionesdb"><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel=stylesheet><link rel=stylesheet href=/css/main.min.a274442a983c222a5b2608b4a4d0e99af90d69dfcc43825d0a878b987a4326a3.css integrity="sha256-onREKpg8IipbJgi0pNDpmvkNad/MQ4JdCoeLmHpDJqM="><script src=https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js></script><script>mermaid.initialize({startOnLoad:!0,theme:"neutral"})</script></head><body><header class=site-header><div class="container header-inner"><a href=https://eleccionesdb.spainelectoralproject.com/ class=site-logo><span class=logo-icon>◆</span>
+<span class=logo-text>eleccionesdb</span>
+</a><button class=menu-toggle aria-label="Abrir menú" aria-expanded=false>
+<span class=hamburger></span></button><nav class=site-nav id=site-nav><ul class=nav-list><li class=nav-item><a href=/ class=nav-link>Inicio</a></li><li class=nav-item><a href=/pipeline/ class=nav-link>Pipeline</a></li><li class=nav-item><a href=/modelo-datos/ class="nav-link is-active">Modelo de datos</a></li><li class=nav-item><a href=/fuentes/ class=nav-link>Fuentes</a></li><li class=nav-item><a href=/descargas/ class=nav-link>Descargas</a></li><li class=nav-item><a href=/cobertura/ class=nav-link>Cobertura</a></li><li class=nav-item><a href=/calidad/ class=nav-link>Calidad de los datos</a></li><li class=nav-item><a href=/changelog/ class=nav-link>Changelog</a></li><li class=nav-item><a href=https://github.com/hmeleiro/eleccionesdb-etl class=nav-link target=_blank rel=noopener>GitHub</a></li></ul></nav></div></header><script>(function(){const e=document.querySelector(".menu-toggle"),t=document.getElementById("site-nav");e&&t&&e.addEventListener("click",function(){const e=this.getAttribute("aria-expanded")==="true";this.setAttribute("aria-expanded",!e),t.classList.toggle("is-open")})})()</script><main id=content><article class=page-single><div class=container><div class=page-header><h1>Modelo de datos</h1><p class=page-desc>Esquema relacional y definición de tablas de eleccionesdb</p></div><div class="page-content prose"><h2 id=diagrama-entidad-relación>Diagrama entidad-relación</h2><p>El esquema PostgreSQL de <code>eleccionesdb</code> sigue un modelo estrella con 6 tablas de dimensiones y 4 tablas de hechos (2 principales + 2 CERA).</p><div class=mermaid>erDiagram
+tipos_eleccion {
+VARCHAR codigo PK
+VARCHAR descripcion
+}
+elecciones {
+INT id PK
+VARCHAR tipo_eleccion FK
+CHAR year
+CHAR mes
+CHAR dia
+DATE fecha
+CHAR codigo_ccaa
+SMALLINT numero_vuelta
+VARCHAR descripcion
+VARCHAR ambito
+VARCHAR slug
+}
+elecciones_fuentes {
+INT eleccion_id PK
+VARCHAR fuente
+VARCHAR url_fuente
+TEXT observaciones
+}
+territorios {
+INT id PK
+VARCHAR tipo
+CHAR codigo_ccaa
+CHAR codigo_provincia
+CHAR codigo_municipio
+CHAR codigo_distrito
+CHAR codigo_seccion
+CHAR codigo_circunscripcion
+VARCHAR nombre
+VARCHAR codigo_completo
+INT parent_id FK
+}
+partidos_recode {
+INT id PK
+VARCHAR partido_recode
+VARCHAR agrupacion
+VARCHAR color
+}
+partidos {
+INT id PK
+INT partido_recode_id FK
+VARCHAR siglas
+VARCHAR denominacion
+}
+resumen_territorial {
+INT id PK
+INT eleccion_id FK
+INT territorio_id FK
+INT censo_ine
+INT participacion_1
+INT participacion_2
+INT participacion_3
+INT votos_validos
+INT abstenciones
+INT votos_blancos
+INT votos_nulos
+INT nrepresentantes
+}
+votos_territoriales {
+INT id PK
+INT eleccion_id FK
+INT territorio_id FK
+INT partido_id FK
+INT votos
+INT representantes
+}
+resumen_cera {
+INT id PK
+INT eleccion_id FK
+INT territorio_id FK
+INT censo_ine
+INT votos_validos
+INT abstenciones
+INT votos_blancos
+INT votos_nulos
+}
+votos_cera {
+INT id PK
+INT eleccion_id FK
+INT territorio_id FK
+INT partido_id FK
+INT votos
+}
+tipos_eleccion ||--o{ elecciones : tipo_eleccion
+elecciones ||--o| elecciones_fuentes : eleccion_id
+territorios ||--o{ territorios : parent_id
+partidos_recode ||--o{ partidos : partido_recode_id
+elecciones ||--o{ resumen_territorial : eleccion_id
+territorios ||--o{ resumen_territorial : territorio_id
+elecciones ||--o{ votos_territoriales : eleccion_id
+territorios ||--o{ votos_territoriales : territorio_id
+partidos ||--o{ votos_territoriales : partido_id
+elecciones ||--o{ resumen_cera : eleccion_id
+territorios ||--o{ resumen_cera : territorio_id
+elecciones ||--o{ votos_cera : eleccion_id
+territorios ||--o{ votos_cera : territorio_id
+partidos ||--o{ votos_cera : partido_id</div><h2 id=tablas-de-dimensiones>Tablas de dimensiones</h2><h3 id=elecciones_fuentes><code>elecciones_fuentes</code></h3><p>Documenta la fuente oficial de los datos para cada elección. Una fila por <code>eleccion_id</code>.</p><table><thead><tr><th>Columna</th><th>Tipo</th><th>Descripción</th></tr></thead><tbody><tr><td><code>eleccion_id</code></td><td><code>INT</code> PK, FK</td><td>Referencia a <code>elecciones.id</code></td></tr><tr><td><code>fuente</code></td><td><code>VARCHAR(255)</code></td><td>Nombre de la fuente (ej: Ministerio del Interior)</td></tr><tr><td><code>url_fuente</code></td><td><code>VARCHAR(500)</code></td><td>URL a la fuente oficial</td></tr><tr><td><code>observaciones</code></td><td><code>TEXT</code></td><td>Notas u observaciones adicionales (opcional)</td></tr></tbody></table><h3 id=tipos_eleccion><code>tipos_eleccion</code></h3><p>Catálogo de tipos de elección con un código de un carácter.</p><table><thead><tr><th>Columna</th><th>Tipo</th><th>Descripción</th></tr></thead><tbody><tr><td><code>codigo</code></td><td><code>VARCHAR(1)</code> PK</td><td>Código del tipo: <code>G</code> (Generales), <code>A</code> (Autonómicas), <code>L</code> (Locales), <code>E</code> (Europeas), <code>S</code> (Senado)</td></tr><tr><td><code>descripcion</code></td><td><code>VARCHAR(100)</code></td><td>Nombre descriptivo del tipo de elección</td></tr></tbody></table><h3 id=elecciones><code>elecciones</code></h3><p>Cada fila identifica una convocatoria electoral concreta.</p><table><thead><tr><th>Columna</th><th>Tipo</th><th>Descripción</th></tr></thead><tbody><tr><td><code>id</code></td><td><code>INT</code> PK</td><td>Identificador autogenerado</td></tr><tr><td><code>tipo_eleccion</code></td><td><code>VARCHAR(1)</code> FK</td><td>Referencia a <code>tipos_eleccion.codigo</code></td></tr><tr><td><code>year</code></td><td><code>CHAR(4)</code></td><td>Año de la elección</td></tr><tr><td><code>mes</code></td><td><code>CHAR(2)</code></td><td>Mes (con cero a la izquierda)</td></tr><tr><td><code>dia</code></td><td><code>CHAR(2)</code></td><td>Día (con cero a la izquierda)</td></tr><tr><td><code>fecha</code></td><td><code>DATE</code></td><td>Fecha completa</td></tr><tr><td><code>codigo_ccaa</code></td><td><code>CHAR(2)</code></td><td>Código de comunidad autónoma (NULL para generales)</td></tr><tr><td><code>numero_vuelta</code></td><td><code>SMALLINT</code></td><td>Número de vuelta (default 1)</td></tr><tr><td><code>descripcion</code></td><td><code>VARCHAR(255)</code></td><td>Texto descriptivo legible (ej: &ldquo;Generales junio 2016&rdquo;)</td></tr><tr><td><code>ambito</code></td><td><code>VARCHAR(50)</code></td><td>Ámbito: &ldquo;nacional&rdquo;, &ldquo;autonómico&rdquo;, etc.</td></tr><tr><td><code>slug</code></td><td><code>VARCHAR(50)</code></td><td>Identificador legible para URLs</td></tr></tbody></table><p><strong>Restricción UNIQUE</strong>: <code>(tipo_eleccion, year, mes, codigo_ccaa, numero_vuelta)</code></p><h3 id=territorios><code>territorios</code></h3><p>Jerarquía territorial con auto-referencia vía <code>parent_id</code>. Cada registro representa un nivel territorial único.</p><table><thead><tr><th>Columna</th><th>Tipo</th><th>Descripción</th></tr></thead><tbody><tr><td><code>id</code></td><td><code>INT</code> PK</td><td>Identificador autogenerado</td></tr><tr><td><code>tipo</code></td><td><code>territorio_tipo</code> ENUM</td><td>Nivel: <code>ccaa</code>, <code>provincia</code>, <code>circunscripcion</code>, <code>municipio</code>, <code>distrito</code>, <code>seccion</code>, <code>cera</code></td></tr><tr><td><code>codigo_ccaa</code></td><td><code>CHAR(2)</code></td><td>Código INE de comunidad autónoma</td></tr><tr><td><code>codigo_provincia</code></td><td><code>CHAR(2)</code></td><td>Código INE de provincia</td></tr><tr><td><code>codigo_municipio</code></td><td><code>CHAR(3)</code></td><td>Código INE de municipio</td></tr><tr><td><code>codigo_distrito</code></td><td><code>CHAR(2)</code></td><td>Código de distrito censal</td></tr><tr><td><code>codigo_seccion</code></td><td><code>CHAR(4)</code></td><td>Código de sección censal</td></tr><tr><td><code>codigo_circunscripcion</code></td><td><code>CHAR(3)</code></td><td>Código de circunscripción (sub-provincial en Canarias, Asturias, Baleares)</td></tr><tr><td><code>nombre</code></td><td><code>VARCHAR(255)</code></td><td>Nombre del territorio</td></tr><tr><td><code>codigo_completo</code></td><td><code>VARCHAR(13)</code></td><td>Código concatenado completo</td></tr><tr><td><code>parent_id</code></td><td><code>INT</code> FK</td><td>Referencia al territorio padre en la jerarquía</td></tr></tbody></table><p><strong>Restricción UNIQUE</strong>: <code>(tipo, codigo_ccaa, codigo_provincia, codigo_municipio, codigo_distrito, codigo_seccion, codigo_circunscripcion)</code></p><h3 id=partidos_recode><code>partidos_recode</code></h3><p>Agrupaciones y recodificaciones de partidos. Permite agrupar siglas históricas o regionales bajo una misma etiqueta analítica.</p><table><thead><tr><th>Columna</th><th>Tipo</th><th>Descripción</th></tr></thead><tbody><tr><td><code>id</code></td><td><code>INT</code> PK</td><td>Identificador autogenerado</td></tr><tr><td><code>partido_recode</code></td><td><code>VARCHAR(50)</code> UNIQUE</td><td>Nombre de la agrupación (ej: &ldquo;PSOE&rdquo;, &ldquo;PP&rdquo;, &ldquo;Otros&rdquo;)</td></tr><tr><td><code>agrupacion</code></td><td><code>VARCHAR(50)</code></td><td>Agrupación de nivel superior</td></tr><tr><td><code>color</code></td><td><code>VARCHAR(7)</code></td><td>Color hexadecimal para visualización</td></tr></tbody></table><h3 id=partidos><code>partidos</code></h3><p>Cada par único <code>(siglas, denominacion)</code> tal como aparece en los datos oficiales de cada elección.</p><table><thead><tr><th>Columna</th><th>Tipo</th><th>Descripción</th></tr></thead><tbody><tr><td><code>id</code></td><td><code>INT</code> PK</td><td>Identificador autogenerado</td></tr><tr><td><code>partido_recode_id</code></td><td><code>INT</code> FK</td><td>Referencia a <code>partidos_recode.id</code></td></tr><tr><td><code>siglas</code></td><td><code>VARCHAR(255)</code></td><td>Siglas del partido</td></tr><tr><td><code>denominacion</code></td><td><code>VARCHAR(255)</code></td><td>Denominación completa del partido</td></tr></tbody></table><p><strong>Restricción UNIQUE</strong>: <code>(siglas, denominacion)</code></p><h2 id=tablas-de-hechos>Tablas de hechos</h2><h3 id=resumen_territorial><code>resumen_territorial</code></h3><p>Resumen de censo, participación y votos agregados por elección y territorio. Una fila por cada combinación <code>(eleccion_id, territorio_id)</code>.</p><table><thead><tr><th>Columna</th><th>Tipo</th><th>Descripción</th></tr></thead><tbody><tr><td><code>eleccion_id</code></td><td><code>INT</code> FK</td><td>Referencia a <code>elecciones.id</code></td></tr><tr><td><code>territorio_id</code></td><td><code>INT</code> FK</td><td>Referencia a <code>territorios.id</code></td></tr><tr><td><code>censo_ine</code></td><td><code>INT</code></td><td>Censo electoral (electores con derecho a voto)</td></tr><tr><td><code>participacion_1</code></td><td><code>INT</code></td><td>Primer avance de participación</td></tr><tr><td><code>participacion_2</code></td><td><code>INT</code></td><td>Segundo avance de participación</td></tr><tr><td><code>participacion_3</code></td><td><code>INT</code></td><td>Participación final</td></tr><tr><td><code>votos_validos</code></td><td><code>INT</code></td><td>Total de votos válidos</td></tr><tr><td><code>abstenciones</code></td><td><code>INT</code></td><td>Abstenciones</td></tr><tr><td><code>votos_blancos</code></td><td><code>INT</code></td><td>Votos en blanco</td></tr><tr><td><code>votos_nulos</code></td><td><code>INT</code></td><td>Votos nulos</td></tr><tr><td><code>nrepresentantes</code></td><td><code>INT</code></td><td>Número de escaños asignados a ese territorio</td></tr></tbody></table><h3 id=votos_territoriales><code>votos_territoriales</code></h3><p>Votos por partido, elección y territorio. Una fila por cada combinación <code>(eleccion_id, territorio_id, partido_id)</code>.</p><table><thead><tr><th>Columna</th><th>Tipo</th><th>Descripción</th></tr></thead><tbody><tr><td><code>eleccion_id</code></td><td><code>INT</code> FK</td><td>Referencia a <code>elecciones.id</code></td></tr><tr><td><code>territorio_id</code></td><td><code>INT</code> FK</td><td>Referencia a <code>territorios.id</code></td></tr><tr><td><code>partido_id</code></td><td><code>INT</code> FK</td><td>Referencia a <code>partidos.id</code></td></tr><tr><td><code>votos</code></td><td><code>INT</code></td><td>Número de votos recibidos</td></tr><tr><td><code>representantes</code></td><td><code>INT</code></td><td>Representantes electos (si aplica)</td></tr></tbody></table><h3 id=resumen_cera-y-votos_cera><code>resumen_cera</code> y <code>votos_cera</code></h3><p>Tablas análogas a <code>resumen_territorial</code> y <code>votos_territoriales</code> para el voto CERA (Censo de Españoles Residentes Ausentes). Estructura similar pero sin avances de participación ni <code>nrepresentantes</code>.</p><h2 id=jerarquía-territorial>Jerarquía territorial</h2><p>El campo <code>parent_id</code> de la tabla <code>territorios</code> codifica la siguiente jerarquía:</p><div class=mermaid>flowchart TD
+CCAA["🏛️ Comunidad Autónoma\n(tipo = ccaa)"]
+PROV["🗺️ Provincia\n(tipo = provincia)"]
+CIRC["📍 Circunscripción\n(tipo = circunscripcion)"]
+MUNI["🏘️ Municipio\n(tipo = municipio)"]
+DIST["📊 Distrito\n(tipo = distrito)"]
+SECC["📋 Sección censal\n(tipo = seccion)"]
+CCAA --> PROV
+PROV --> CIRC
+CIRC --> MUNI
+PROV --> MUNI
+MUNI --> DIST
+DIST --> SECC</div><ul><li>Cada <strong>CCAA</strong> es padre de sus <strong>provincias</strong>.</li><li>Cada <strong>provincia</strong> es padre de sus <strong>municipios</strong> (o de <strong>circunscripciones</strong> sub-provinciales en Canarias, Asturias y Baleares).</li><li>Las <strong>circunscripciones</strong> sub-provinciales (islas en Canarias y Baleares; Occidente/Centro/Oriente en Asturias) son padres de sus municipios.</li><li>Cada <strong>municipio</strong> es padre de sus <strong>distritos</strong>.</li><li>Cada <strong>distrito</strong> es padre de sus <strong>secciones censales</strong>.</li></ul><p>Este diseño permite navegar la jerarquía de forma recursiva: dado cualquier territorio, se puede subir o bajar en la jerarquía siguiendo <code>parent_id</code>.</p><h2 id=sistema-de-partidos>Sistema de partidos</h2><p>El modelo utiliza dos tablas separadas para gestionar la complejidad del panorama partidista español:</p><h3 id=dos-niveles-de-detalle>Dos niveles de detalle</h3><ol><li><p><strong><code>partidos</code></strong>: Recoge cada par <code>(siglas, denominacion)</code> tal como aparece en los datos oficiales. Un mismo partido puede aparecer con distintas denominaciones a lo largo de los años o en distintas comunidades.</p></li><li><p><strong><code>partidos_recode</code></strong>: Agrupa las distintas apariciones bajo una etiqueta analítica común. Por ejemplo, todas las variantes de &ldquo;Partido Socialista Obrero Español&rdquo;, &ldquo;PSOE&rdquo;, &ldquo;PSC-PSOE&rdquo; pueden agruparse bajo el recode &ldquo;PSOE&rdquo;. Incluye además un campo <code>agrupacion</code> para agrupaciones de nivel superior y un <code>color</code> para visualización.</p></li></ol><h3 id=flujo-de-asignación>Flujo de asignación</h3><ol><li>Los scripts de generación de datos producen votos con <code>(siglas, denominacion)</code> tal cual.</li><li><code>new-partidos.R</code> detecta combinaciones nuevas sin recodificación asignada.</li><li>Se revisan manualmente y se añaden a <code>partidos_recodes.xlsx</code>.</li><li><code>sync-partidos.R</code> sincroniza las dimensiones <code>partidos</code> y <code>partidos_recode</code>.</li><li><code>02-bind-hechos.R</code> asigna <code>partido_id</code> por matching case-insensitive — <strong>falla si quedan votos sin match</strong>.</li></ol></div></div></article></main><footer class=site-footer><div class=container><div class=footer-inner><div class=footer-brand><span class=logo-icon>◆</span>
+<span class=footer-title>eleccionesdb</span><p class=footer-desc>Base de datos relacional abierta con resultados electorales de España.</p></div><div class=footer-links><div class=footer-col><h4>Documentación</h4><ul><li><a href=/pipeline/>Pipeline</a></li><li><a href=/modelo-datos/>Modelo de datos</a></li><li><a href=/fuentes/>Fuentes</a></li><li><a href=/descargas/>Descargas</a></li><li><a href=/cobertura/>Cobertura</a></li></ul></div><div class=footer-col><h4>Proyecto</h4><ul><li><a href=https://spainelectoralproject.com/ target=_blank rel=noopener>Spain Electoral Project</a></li><li><a href=https://eleccionesdb-api.spainelectoralproject.com/ target=_blank rel=noopener>EleccionesDB API</a></li><li><a href=https://github.com/hmeleiro/eleccionesdb-etl target=_blank rel=noopener>GitHub</a></li></ul></div></div></div><div class=footer-bottom><p>© 2026 <a href=https://spainelectoralproject.com/ target=_blank rel=noopener>Spain Electoral Project</a>. Contenido disponible bajo licencia abierta.</p></div></div></footer></body></html>

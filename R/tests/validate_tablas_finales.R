@@ -38,6 +38,10 @@ stop_if_not_all <- function(cond, msg) {
   if (!all(cond)) stop(msg, call. = FALSE)
 }
 
+warn_if_any <- function(cond, msg) {
+  if (any(cond, na.rm = TRUE)) warning(msg, call. = FALSE)
+}
+
 # Read from path only if df is NULL; otherwise use df as-is.
 .resolve_df <- function(df, path, read_fn, ...) {
   if (!is.null(df)) {
@@ -345,6 +349,20 @@ validate_hechos_info <- function(df, label = "hechos/info") {
     !duplicated(df[, c("eleccion_id", "territorio_id")]),
     paste0("[", label, "] UNIQUE (eleccion_id, territorio_id) violado")
   )
+
+  # NAs en columnas de datos obligatorias (warn only; pueden venir de la fuente)
+  na_data_cols <- intersect(
+    c("censo_ine", "votos_validos", "abstenciones", "votos_blancos", "votos_nulos"),
+    names(df)
+  )
+  for (col in na_data_cols) {
+    n_na <- sum(is.na(df[[col]]))
+    warn_if_any(
+      n_na > 0,
+      sprintf("[%s] %s contiene %d NAs", label, col, n_na)
+    )
+  }
+
   message(sprintf("  [OK] %s (%d filas)", label, nrow(df)))
   invisible(df)
 }
@@ -379,6 +397,14 @@ validate_hechos_votos <- function(df, label = "hechos/votos") {
     !duplicated(df[, c("eleccion_id", "territorio_id", "partido_id")]),
     paste0("[", label, "] UNIQUE (eleccion_id, territorio_id, partido_id) violado")
   )
+
+  # NAs en votos (warn only)
+  n_na_votos <- sum(is.na(df$votos))
+  warn_if_any(
+    n_na_votos > 0,
+    sprintf("[%s] votos contiene %d NAs", label, n_na_votos)
+  )
+
   message(sprintf("  [OK] %s (%d filas)", label, nrow(df)))
   invisible(df)
 }

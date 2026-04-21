@@ -15,13 +15,14 @@ description: "Historial de versiones de eleccionesdb"
 
 ---
 
-## v0.1.0 — 2026-03-27
+## v1.0.0 — 2026-04-20
 
 Primera versión pública de la base de datos.
 
 ### Nuevos datos
 
 - Elecciones generales al Congreso: todas las convocatorias.
+- Elecciones municipales: todas las convocatorias.
 - Elecciones autonómicas: Andalucía, Aragón, Asturias, Baleares, Canarias, Castilla y León, Cataluña, Comunidad Valenciana, Comunidad de Madrid.
 
 ### Modelo de datos

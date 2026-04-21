@@ -1,60 +1,573 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>eleccionesdb — Base de datos electoral de España on eleccionesdb</title>
-    <link>http://localhost:1313/</link>
-    <description>Recent content in eleccionesdb — Base de datos electoral de España on eleccionesdb</description>
-    <generator>Hugo</generator>
-    <language>es</language>
-    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Arquitectura del pipeline</title>
-      <link>http://localhost:1313/pipeline/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/pipeline/</guid>
-      <description>&lt;h2 id=&#34;visión-general&#34;&gt;Visión general&lt;/h2&gt;&#xA;&lt;p&gt;El proyecto sigue un pipeline ETL en cuatro fases, implementado íntegramente en R. El flujo transforma datos electorales en bruto procedentes de múltiples fuentes heterogéneas (CSV, Excel, &lt;code&gt;.px&lt;/code&gt;, APIs) en una base de datos relacional PostgreSQL normalizada y en formatos descargables (Parquet, SQLite, CSV).&lt;/p&gt;&#xA;&lt;div class=&#34;mermaid&#34;&gt;&#xD;&#xA;flowchart LR&#xD;&#xA;  A[&#34;📁 data-raw/\n(Datos en bruto)&#34;] --&gt; B[&#34;⚙️ 01-generate-data/\n(Generación)&#34;]&#xD;&#xA;  B --&gt; C[&#34;📂 data-processed/\n(Intermedios)&#34;]&#xD;&#xA;  C --&gt; D[&#34;🔗 02-clean-and-bind/\n(Limpieza y unión)&#34;]&#xD;&#xA;  D --&gt; E[&#34;📋 tablas-finales/\n(Tablas listas)&#34;]&#xD;&#xA;  E --&gt; F[&#34;🗄️ 03-writedb/\n(Carga a BD)&#34;]&#xD;&#xA;  F --&gt; G[&#34;🐘 PostgreSQL&#34;]&#xD;&#xA;  E --&gt; H[&#34;📦 04-export/\n(Exportación)&#34;]&#xD;&#xA;  H --&gt; I[&#34;💾 descargas/\n(Parquet, SQLite, CSV)&#34;]&#xD;&#xA;&lt;/div&gt;&#xD;&#xA;&lt;h2 id=&#34;fase-1-datos-en-bruto-data-raw&#34;&gt;Fase 1: Datos en bruto (&lt;code&gt;data-raw/&lt;/code&gt;)&lt;/h2&gt;&#xA;&lt;p&gt;Contiene los ficheros originales tal como se obtienen de cada fuente: CSV, RDS, Excel (&lt;code&gt;.xls&lt;/code&gt;/&lt;code&gt;.xlsx&lt;/code&gt;), ficheros estadísticos PX-WEB (&lt;code&gt;.px&lt;/code&gt;) y datos descargados vía API. Cada comunidad autónoma tiene su propia carpeta en &lt;code&gt;data-raw/hechos/&lt;/code&gt;.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Cobertura electoral</title>
-      <link>http://localhost:1313/cobertura/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/cobertura/</guid>
-      <description>&lt;h2 id=&#34;matriz-de-cobertura&#34;&gt;Matriz de cobertura&lt;/h2&gt;&#xA;&lt;p&gt;La siguiente tabla muestra las elecciones cubiertas en la base de datos, organizadas por ámbito y año.&lt;/p&gt;&#xA;&lt;table&gt;&#xA;  &lt;thead&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;th&gt;Ámbito&lt;/th&gt;&#xA;          &lt;th&gt;Años cubiertos&lt;/th&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/thead&gt;&#xA;  &lt;tbody&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Congreso (nacional)&lt;/td&gt;&#xA;          &lt;td&gt;Todas las convocatorias desde 1977&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Andalucía&lt;/td&gt;&#xA;          &lt;td&gt;Todas las convocatorias&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Aragón&lt;/td&gt;&#xA;          &lt;td&gt;2011–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Asturias&lt;/td&gt;&#xA;          &lt;td&gt;Todas las convocatorias&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Baleares&lt;/td&gt;&#xA;          &lt;td&gt;1983–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Canarias&lt;/td&gt;&#xA;          &lt;td&gt;1983–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Castilla y León&lt;/td&gt;&#xA;          &lt;td&gt;1983–2022&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Cataluña&lt;/td&gt;&#xA;          &lt;td&gt;1980–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;C. Valenciana&lt;/td&gt;&#xA;          &lt;td&gt;1983–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;C. de Madrid&lt;/td&gt;&#xA;          &lt;td&gt;1983–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/tbody&gt;&#xA;&lt;/table&gt;&#xA;&lt;h2 id=&#34;granularidad-disponible&#34;&gt;Granularidad disponible&lt;/h2&gt;&#xA;&lt;p&gt;La granularidad de los datos varía según el tipo de elección y la fuente de datos:&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Formatos de descarga</title>
-      <link>http://localhost:1313/descargas/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/descargas/</guid>
-      <description>&lt;p&gt;Los datos de &lt;code&gt;eleccionesdb&lt;/code&gt; están disponibles para descarga en tres formatos, pensados para diferentes perfiles de uso y herramientas de análisis.&lt;/p&gt;&#xA;&lt;div class=&#34;callout callout-tip&#34;&gt;&#xD;&#xA;&lt;strong&gt;¿Prefieres acceso programático?&lt;/strong&gt;&#xD;&#xA;&lt;p&gt;&lt;a href=&#34;https://eleccionesdb-api.spainelectoralproject.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;EleccionesDB API&lt;/a&gt; ofrece una API REST gratuita, abierta y sin autenticación para consultar todos estos datos directamente desde tu código.&lt;/p&gt;&#xD;&#xA;&lt;/div&gt;&#xD;&#xA;&lt;div class=&#34;download-options&#34;&gt;&#xD;&#xA;  &lt;div class=&#34;download-option&#34;&gt;&#xD;&#xA;    &lt;span class=&#34;download-option-icon&#34;&gt;🗂️&lt;/span&gt;&#xD;&#xA;    &lt;h3&gt;Parquet&lt;/h3&gt;&#xD;&#xA;    &lt;p&gt;Tablas normalizadas en formato columnar. Ideal para R, Python y DuckDB.&lt;/p&gt;&#xD;&#xA;    &lt;a href=&#34;https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb_parquet.zip&#34; class=&#34;btn btn-primary&#34;&gt;⬇ Descargar Parquet&lt;/a&gt;&#xD;&#xA;  &lt;/div&gt;&#xD;&#xA;  &lt;div class=&#34;download-option&#34;&gt;&#xD;&#xA;    &lt;span class=&#34;download-option-icon&#34;&gt;🗄️&lt;/span&gt;&#xD;&#xA;    &lt;h3&gt;SQLite&lt;/h3&gt;&#xD;&#xA;    &lt;p&gt;Base de datos relacional en un solo fichero. Ideal para consultas SQL sin servidor.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Fuentes de datos</title>
-      <link>http://localhost:1313/fuentes/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/fuentes/</guid>
-      <description>&lt;h2 id=&#34;resumen-de-fuentes&#34;&gt;Resumen de fuentes&lt;/h2&gt;&#xA;&lt;table&gt;&#xA;  &lt;thead&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;th&gt;Elección&lt;/th&gt;&#xA;          &lt;th&gt;Fuente principal&lt;/th&gt;&#xA;          &lt;th&gt;Formato&lt;/th&gt;&#xA;          &lt;th&gt;API/Manual&lt;/th&gt;&#xA;          &lt;th&gt;Cobertura&lt;/th&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/thead&gt;&#xA;  &lt;tbody&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Congreso&lt;/td&gt;&#xA;          &lt;td&gt;Infoelectoral (Ministerio del Interior)&lt;/td&gt;&#xA;          &lt;td&gt;R package&lt;/td&gt;&#xA;          &lt;td&gt;API (paquete)&lt;/td&gt;&#xA;          &lt;td&gt;Todas las convocatorias&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Municipales&lt;/td&gt;&#xA;          &lt;td&gt;Infoelectoral (Ministerio del Interior)&lt;/td&gt;&#xA;          &lt;td&gt;R package&lt;/td&gt;&#xA;          &lt;td&gt;API (paquete)&lt;/td&gt;&#xA;          &lt;td&gt;Todas las convocatorias&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Andalucía&lt;/td&gt;&#xA;          &lt;td&gt;Junta de Andalucía (SIEL)&lt;/td&gt;&#xA;          &lt;td&gt;REST JSON&lt;/td&gt;&#xA;          &lt;td&gt;API&lt;/td&gt;&#xA;          &lt;td&gt;Todas&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Aragón&lt;/td&gt;&#xA;          &lt;td&gt;Gobierno de Aragón (datos abiertos)&lt;/td&gt;&#xA;          &lt;td&gt;CSV/XLSX&lt;/td&gt;&#xA;          &lt;td&gt;Manual&lt;/td&gt;&#xA;          &lt;td&gt;2011–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Asturias&lt;/td&gt;&#xA;          &lt;td&gt;SADEI + GIPEYOP&lt;/td&gt;&#xA;          &lt;td&gt;.px + XLSX&lt;/td&gt;&#xA;          &lt;td&gt;Scraping + manual&lt;/td&gt;&#xA;          &lt;td&gt;Todas&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Baleares&lt;/td&gt;&#xA;          &lt;td&gt;IBESTAT + GIPEYOP&lt;/td&gt;&#xA;          &lt;td&gt;.px + XLSX&lt;/td&gt;&#xA;          &lt;td&gt;Manual&lt;/td&gt;&#xA;          &lt;td&gt;1983–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Canarias&lt;/td&gt;&#xA;          &lt;td&gt;PARCAN + ISTAC + GIPEYOP&lt;/td&gt;&#xA;          &lt;td&gt;CSV + XLSX&lt;/td&gt;&#xA;          &lt;td&gt;API + manual&lt;/td&gt;&#xA;          &lt;td&gt;1983–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Cantabria&lt;/td&gt;&#xA;          &lt;td&gt;GIPEYOP&lt;/td&gt;&#xA;          &lt;td&gt;XLSX&lt;/td&gt;&#xA;          &lt;td&gt;Manual&lt;/td&gt;&#xA;          &lt;td&gt;1983–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Castilla-La Mancha&lt;/td&gt;&#xA;          &lt;td&gt;Junta de Castilla-La Mancha (datos abiertos)&lt;/td&gt;&#xA;          &lt;td&gt;CSV/XLSX&lt;/td&gt;&#xA;          &lt;td&gt;Descarga&lt;/td&gt;&#xA;          &lt;td&gt;1983–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Castilla y León&lt;/td&gt;&#xA;          &lt;td&gt;Junta de Castilla y León&lt;/td&gt;&#xA;          &lt;td&gt;CSV (&lt;code&gt;;&lt;/code&gt;, Latin-1)&lt;/td&gt;&#xA;          &lt;td&gt;Manual&lt;/td&gt;&#xA;          &lt;td&gt;1983–2022&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Cataluña&lt;/td&gt;&#xA;          &lt;td&gt;Generalitat de Catalunya&lt;/td&gt;&#xA;          &lt;td&gt;CSV&lt;/td&gt;&#xA;          &lt;td&gt;Manual&lt;/td&gt;&#xA;          &lt;td&gt;1980–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;C. Valenciana&lt;/td&gt;&#xA;          &lt;td&gt;Generalitat Valenciana&lt;/td&gt;&#xA;          &lt;td&gt;CSV + XLSX&lt;/td&gt;&#xA;          &lt;td&gt;Manual&lt;/td&gt;&#xA;          &lt;td&gt;1983–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Extremadura&lt;/td&gt;&#xA;          &lt;td&gt;Junta de Extremadura&lt;/td&gt;&#xA;          &lt;td&gt;XLSX&lt;/td&gt;&#xA;          &lt;td&gt;Manual&lt;/td&gt;&#xA;          &lt;td&gt;1983–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Galicia&lt;/td&gt;&#xA;          &lt;td&gt;Xunta de Galicia&lt;/td&gt;&#xA;          &lt;td&gt;XLS/XLSX&lt;/td&gt;&#xA;          &lt;td&gt;Manual&lt;/td&gt;&#xA;          &lt;td&gt;1981–2024&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;C. de Madrid&lt;/td&gt;&#xA;          &lt;td&gt;Comunidad de Madrid&lt;/td&gt;&#xA;          &lt;td&gt;XLS/XLSX&lt;/td&gt;&#xA;          &lt;td&gt;Manual&lt;/td&gt;&#xA;          &lt;td&gt;1983–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Murcia&lt;/td&gt;&#xA;          &lt;td&gt;Región de Murcia&lt;/td&gt;&#xA;          &lt;td&gt;XLS&lt;/td&gt;&#xA;          &lt;td&gt;Manual&lt;/td&gt;&#xA;          &lt;td&gt;1983–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;Navarra&lt;/td&gt;&#xA;          &lt;td&gt;Gobierno de Navarra&lt;/td&gt;&#xA;          &lt;td&gt;CSV + XLS&lt;/td&gt;&#xA;          &lt;td&gt;Manual&lt;/td&gt;&#xA;          &lt;td&gt;1979–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;País Vasco&lt;/td&gt;&#xA;          &lt;td&gt;Gobierno Vasco&lt;/td&gt;&#xA;          &lt;td&gt;XLS/XLSX&lt;/td&gt;&#xA;          &lt;td&gt;Manual&lt;/td&gt;&#xA;          &lt;td&gt;1980–2024&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;La Rioja&lt;/td&gt;&#xA;          &lt;td&gt;Gobierno de La Rioja&lt;/td&gt;&#xA;          &lt;td&gt;XLS&lt;/td&gt;&#xA;          &lt;td&gt;Manual&lt;/td&gt;&#xA;          &lt;td&gt;1983–2023&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/tbody&gt;&#xA;&lt;/table&gt;&#xA;&lt;h2 id=&#34;detalle-por-elección--comunidad&#34;&gt;Detalle por elección / comunidad&lt;/h2&gt;&#xA;&lt;h3 id=&#34;congreso-00-congreso&#34;&gt;Congreso (&lt;code&gt;00-congreso&lt;/code&gt;)&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: Paquete R &lt;a href=&#34;https://infoelectoral.spainelectoralproject.com/&#34;&gt;&lt;code&gt;infoelectoral&lt;/code&gt;&lt;/a&gt; (datos del Ministerio del Interior).&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: Funciones &lt;code&gt;provincias()&lt;/code&gt;, &lt;code&gt;municipios()&lt;/code&gt;, &lt;code&gt;mesas()&lt;/code&gt; del paquete.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Provincia, municipio y sección censal (mesa).&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: No hay CSV en &lt;code&gt;data-raw/&lt;/code&gt;; el paquete descarga directamente desde la fuente oficial.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;sauron_formats.R&lt;/code&gt; (orquestador) → &lt;code&gt;format_provincias.R&lt;/code&gt;, &lt;code&gt;format_municipios.R&lt;/code&gt;, &lt;code&gt;format_secciones.R&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: Separa CER (residentes) de CERA (residentes ausentes).&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h3 id=&#34;andalucía-01-andalucia&#34;&gt;Andalucía (&lt;code&gt;01-andalucia&lt;/code&gt;)&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: API del &lt;a href=&#34;https://resultadoseleccionesandalucia.es/&#34;&gt;Sistema de Información Electoral de Andalucía&lt;/a&gt; de la Junta de Andalucía.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;URL base&lt;/strong&gt;: &lt;code&gt;https://ws040.juntadeandalucia.es/siel-api/v1&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: REST API (&lt;code&gt;httr::GET&lt;/code&gt;) con endpoints: &lt;code&gt;/opciones/fconvocatoria&lt;/code&gt;, &lt;code&gt;/opciones/provincia&lt;/code&gt;, &lt;code&gt;/opciones/municipio&lt;/code&gt;, &lt;code&gt;/opciones/distrito&lt;/code&gt;, &lt;code&gt;/opciones/seccion&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Provincia, municipio y sección censal.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: &lt;code&gt;resumen_{provincias,municipios,secciones}.csv&lt;/code&gt;, &lt;code&gt;escrutinio_{provincias,municipios,secciones}.csv&lt;/code&gt;, &lt;code&gt;nomenclators/*.rds&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;00_fetch-nomenclators.R&lt;/code&gt; → &lt;code&gt;01-06_fetch-info/votos-*.R&lt;/code&gt; (descarga paralela con &lt;code&gt;future_pmap_dfr&lt;/code&gt;) → &lt;code&gt;07-format-data.R&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: Descarga paralela con rate limiting (5 reintentos, 2s de pausa base). CERA en municipio=901. Agrega a nivel CCAA.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h3 id=&#34;aragón-02-aragon&#34;&gt;Aragón (&lt;code&gt;02-aragon&lt;/code&gt;)&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: &lt;a href=&#34;https://opendata.aragon.es/&#34;&gt;Portal de datos abiertos&lt;/a&gt; del Gobierno de Aragón.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: Ficheros CSV/XLSX descargados manualmente.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Municipal y provincial (histórico); mesa/sección en elecciones recientes.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: &lt;code&gt;Resultados electorales agrupados a escala municipal (histórico).csv&lt;/code&gt;, &lt;code&gt;Resultados electorales agrupados a escala provincial (histórico).xlsx&lt;/code&gt;, carpetas por año (&lt;code&gt;2011/&lt;/code&gt;, &lt;code&gt;2015/&lt;/code&gt;, &lt;code&gt;2019/&lt;/code&gt;, &lt;code&gt;2023/&lt;/code&gt;).&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;01_format-info.R&lt;/code&gt; (resumen/participación), &lt;code&gt;02_format-votos.R&lt;/code&gt; (votos por partido).&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: CERA identificado como municipio=&amp;lsquo;000&amp;rsquo;. Formatos de tabla variables por año. Cobertura: 2011–2023.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h3 id=&#34;asturias-03-asturias&#34;&gt;Asturias (&lt;code&gt;03-asturias&lt;/code&gt;)&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: Doble fuente — &lt;a href=&#34;https://www.sadei.es/sadei/resultados-electorales/elecciones-autonomicas_249_1_ap.html&#34;&gt;SADEI&lt;/a&gt; (pre-2015) + &lt;a href=&#34;https://gipeyop.uv.es/gipeyop/sea.html&#34;&gt;GIPEYOP&lt;/a&gt; (2015+).&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: SADEI: scraping web + lectura de ficheros &lt;code&gt;.px&lt;/code&gt; (paquete &lt;code&gt;pxR&lt;/code&gt;). GIPEYOP: lectura directa de xlsx.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Mesa (2015+), municipal (pre-2015).&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: &lt;code&gt;SADEI/*.px&lt;/code&gt;, &lt;code&gt;gipeyop/Asturias{2015,2019,2023}_mesas.xlsx&lt;/code&gt;, &lt;code&gt;censo_ine/&lt;/code&gt;, &lt;code&gt;correspondencia_municipio-circunscripcion.xlsx&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;00_get-nomenclator-sadei.R&lt;/code&gt;, &lt;code&gt;01_format-data.R&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: Asturias tiene circunscripciones sub-provinciales (Occidente/Centro/Oriente, códigos 331/332/333). Transformaciones pivot complejas para el formato &lt;code&gt;.px&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h3 id=&#34;baleares-04-baleares&#34;&gt;Baleares (&lt;code&gt;04-baleares&lt;/code&gt;)&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: &lt;a href=&#34;https://ibestat.es/edatos/apps/statistical-visualizer/visualizer/collection.html?resourceType=collection&amp;amp;agencyId=IBESTAT&amp;amp;resourceId=000199A_000001&#34;&gt;IBESTAT&lt;/a&gt; (Institut d&amp;rsquo;Estadística de les Illes Balears) + &lt;a href=&#34;https://gipeyop.uv.es/gipeyop/sea.html&#34;&gt;GIPEYOP&lt;/a&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: Lectura de ficheros &lt;code&gt;.px&lt;/code&gt; (formato PX-WEB estadístico) con &lt;code&gt;pxR::read.px()&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Mesa/sección.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: Carpetas por año (&lt;code&gt;1983/&lt;/code&gt;–&lt;code&gt;2023/&lt;/code&gt;) con ficheros &lt;code&gt;.px&lt;/code&gt;, &lt;code&gt;22codislas.xlsx&lt;/code&gt; (mapeo islas), &lt;code&gt;cera/&lt;/code&gt;, &lt;code&gt;gipeyop/&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;format.R&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: Circunscripciones insulares (Mallorca, Menorca, Ibiza, Formentera). Códigos de 12 caracteres (pre-1995) vs 10 caracteres (1995+). Cobertura: 1983–2023.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h3 id=&#34;canarias-05-canarias&#34;&gt;Canarias (&lt;code&gt;05-canarias&lt;/code&gt;)&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: &lt;a href=&#34;https://www.parcan.es/elecciones/&#34;&gt;PARCAN&lt;/a&gt; (1999+) + &lt;a href=&#34;https://www.gobiernodecanarias.org/istac/estadisticas/sociedad/elecciones/Elecciones/C00010A.html&#34;&gt;ISTAC&lt;/a&gt; + &lt;a href=&#34;https://gipeyop.uv.es/gipeyop/sea.html&#34;&gt;GIPEYOP&lt;/a&gt; (1983–2015).&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: PARCAN: descarga CSV por municipio. ISTAC: lectura de xlsx. GIPEYOP: lectura de xlsx.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Municipal (PARCAN), provincial/sección (GIPEYOP/ISTAC).&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: &lt;code&gt;parcan/&lt;/code&gt; (CSV por municipio), &lt;code&gt;istac/&lt;/code&gt; (datasets ISTAC xlsx), &lt;code&gt;gipeyop/Canarias{1983,1987}_provincias.xlsx&lt;/code&gt;, &lt;code&gt;Canarias{1991-2015}_secciones.xlsx&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;00_download-data-parcan.R&lt;/code&gt;, &lt;code&gt;format.R&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: 7 circunscripciones insulares (Fuerteventura, Gran Canaria, La Gomera, El Hierro, La Palma, Tenerife, Lanzarote) + circunscripción autonómica. Cobertura: 1983–2023.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h3 id=&#34;castilla-y-león-07-cyl&#34;&gt;Castilla y León (&lt;code&gt;07-cyl&lt;/code&gt;)&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: &lt;a href=&#34;https://jcyl.opendatasoft.com/explore/dataset/resultados-electorales-1983-actualidad/information/&#34;&gt;Portal de datos abiertos&lt;/a&gt; de la Junta de Castilla y León.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: Ficheros CSV descargados manualmente.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Mesa (código de mesa parseado a sección/distrito/municipio/provincia).&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: Un CSV por año (&lt;code&gt;1983.csv&lt;/code&gt;–&lt;code&gt;2022.csv&lt;/code&gt;), delimitados por &lt;code&gt;;&lt;/code&gt;, codificación Latin-1.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;format.R&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: Parsea la estructura del código de mesa para extraer provincia/municipio/distrito/sección. Agrega por niveles. Cobertura: 1983–2022.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h3 id=&#34;cataluña-09-catalunya&#34;&gt;Cataluña (&lt;code&gt;09-catalunya&lt;/code&gt;)&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: &lt;a href=&#34;https://eleccions.gencat.cat/es/resultats-i-eleccions-anteriors/resultats-electorals/#/&#34;&gt;Generalitat de Catalunya&lt;/a&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: Ficheros CSV descargados (datos abiertos electorales).&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Mesa.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: Patrón de nombre &lt;code&gt;A{YYYY}{N}-{TIPO}-ME.csv&lt;/code&gt; (ej: &lt;code&gt;A20231-Columnes-ME.csv&lt;/code&gt;).&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;01_format-data.R&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: Nombres de columna en catalán. Locale con coma decimal y punto de agrupación. CERA en municipio=&amp;lsquo;998&amp;rsquo;. Cobertura: 1980–2023.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h3 id=&#34;comunidad-valenciana-10-comunidad-valenciana&#34;&gt;Comunidad Valenciana (&lt;code&gt;10-comunidad-valenciana&lt;/code&gt;)&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: &lt;a href=&#34;https://portaldadesobertes.gva.es/es&#34;&gt;Portal de Datos Abiertos&lt;/a&gt; de la Generalitat Valenciana.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: Ficheros CSV y xlsx descargados manualmente.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Mesa/sección.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: CSV por año (&lt;code&gt;1987.csv&lt;/code&gt;–&lt;code&gt;2023.csv&lt;/code&gt;) + &lt;code&gt;Comunitat Valenciana1983_municipios.xlsx&lt;/code&gt; (1983 en formato especial).&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;format.R&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: Naming de columnas variable entre años. Codificación variable. 1983 es xlsx con resultados municipales precalculados. Cobertura: 1983–2023.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h3 id=&#34;comunidad-de-madrid-13-comunidad-madrid&#34;&gt;Comunidad de Madrid (&lt;code&gt;13-comunidad-madrid&lt;/code&gt;)&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: &lt;a href=&#34;https://www.comunidad.madrid/gobierno/datos-abiertos&#34;&gt;Portal de Datos Abiertos&lt;/a&gt; de la Comunidad de Madrid.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: Ficheros Excel (.xls/.xlsx) descargados manualmente.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Mesa.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: &lt;code&gt;{año}_Mesas.xls&lt;/code&gt; (1995–2021), &lt;code&gt;datos_electorales_elecciones_autonomicas_comunidad_de_madrid_2023.xlsx&lt;/code&gt; (2023, formato diferente), &lt;code&gt;Madrid{1983,1987,1991}_circunscripcion.xlsx&lt;/code&gt; (histórico).&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;format.R&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: 2003 tiene dos elecciones (mayo y octubre). Multi-header parsing en Excel. Circunscripción única (provincial). Cobertura: 1983–2023.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;fuentes-transversales&#34;&gt;Fuentes transversales&lt;/h2&gt;&#xA;&lt;h3 id=&#34;fechas-de-elecciones&#34;&gt;Fechas de elecciones&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Fichero&lt;/strong&gt;: &lt;code&gt;data-raw/fechas_elecciones.csv&lt;/code&gt; — contiene &lt;code&gt;tipo_eleccion&lt;/code&gt;, &lt;code&gt;fecha&lt;/code&gt; (en texto español, ej: &amp;ldquo;9 de junio de 2024&amp;rdquo;), &lt;code&gt;ccaa&lt;/code&gt;.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Fuente alternativa&lt;/strong&gt;: Scraping de la &lt;a href=&#34;https://www.juntaelectoralcentral.es&#34;&gt;Junta Electoral Central&lt;/a&gt; (&lt;code&gt;fechas-elecciones-scrap.R&lt;/code&gt;).&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h3 id=&#34;códigos-territoriales&#34;&gt;Códigos territoriales&lt;/h3&gt;&#xA;&lt;table&gt;&#xA;  &lt;thead&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;th&gt;Fichero&lt;/th&gt;&#xA;          &lt;th&gt;Descripción&lt;/th&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/thead&gt;&#xA;  &lt;tbody&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;&lt;code&gt;codigos_secciones.rds&lt;/code&gt;&lt;/td&gt;&#xA;          &lt;td&gt;Códigos de secciones censales canónicos&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;&lt;code&gt;codigos_secciones_infoelectoral.rds&lt;/code&gt;&lt;/td&gt;&#xA;          &lt;td&gt;Codificación alternativa Infoelectoral&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;&lt;code&gt;codigos_secciones_{01,03,07}.rds&lt;/code&gt;&lt;/td&gt;&#xA;          &lt;td&gt;Secciones específicas por CCAA (Andalucía, Asturias, CyL)&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;&lt;code&gt;circunscripciones.csv&lt;/code&gt;&lt;/td&gt;&#xA;          &lt;td&gt;Circunscripciones sub-provinciales (Asturias, Canarias, Baleares)&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;&lt;code&gt;correspondencia_municipio_circunscripcion.csv&lt;/code&gt;&lt;/td&gt;&#xA;          &lt;td&gt;Mapeo municipio → circunscripción&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;&lt;code&gt;nombres_municipios.csv&lt;/code&gt;&lt;/td&gt;&#xA;          &lt;td&gt;Nomenclátor de municipios (INE)&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/tbody&gt;&#xA;&lt;/table&gt;&#xA;&lt;h3 id=&#34;representantes-y-escaños&#34;&gt;Representantes y escaños&lt;/h3&gt;&#xA;&lt;table&gt;&#xA;  &lt;thead&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;th&gt;Fichero&lt;/th&gt;&#xA;          &lt;th&gt;Descripción&lt;/th&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/thead&gt;&#xA;  &lt;tbody&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;&lt;code&gt;nrepresentantes_prov.xlsx&lt;/code&gt;&lt;/td&gt;&#xA;          &lt;td&gt;Escaños asignados por provincia/circunscripción y elección&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;&lt;code&gt;nrepresentantes_muni.xlsx&lt;/code&gt;&lt;/td&gt;&#xA;          &lt;td&gt;Escaños asignados por municipio (locales)&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;&lt;code&gt;representantes_prov.xlsx&lt;/code&gt;&lt;/td&gt;&#xA;          &lt;td&gt;Representantes electos por provincia&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;&lt;code&gt;representantes_muni.xlsx&lt;/code&gt;&lt;/td&gt;&#xA;          &lt;td&gt;Representantes electos por municipio&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/tbody&gt;&#xA;&lt;/table&gt;&#xA;&lt;h2 id=&#34;agradecimientos&#34;&gt;Agradecimientos&lt;/h2&gt;&#xA;&lt;p&gt;Cuando no se ha encontrado una fuente oficial directa se han empleado los datos históricos  del &lt;a href=&#34;https://gipeyop.uv.es/gipeyop/sea.html&#34;&gt;&lt;strong&gt;Spanish Electoral Archive (SEA)&lt;/strong&gt;&lt;/a&gt;, elaborado por el &lt;a href=&#34;https://gipeyop.uv.es/&#34;&gt;&lt;strong&gt;GIPEYOP&lt;/strong&gt; (Grupo de Investigación en Procesos Electorales y Opinión Pública)&lt;/a&gt; de la Universitat de València. Agradecemos enormemente su labor de recopilación y puesta a disposición de estos datos electorales.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Modelo de datos</title>
-      <link>http://localhost:1313/modelo-datos/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/modelo-datos/</guid>
-      <description>&lt;h2 id=&#34;diagrama-entidad-relación&#34;&gt;Diagrama entidad-relación&lt;/h2&gt;&#xA;&lt;p&gt;El esquema PostgreSQL de &lt;code&gt;eleccionesdb&lt;/code&gt; sigue un modelo estrella con 6 tablas de dimensiones y 4 tablas de hechos (2 principales + 2 CERA).&lt;/p&gt;&#xA;&lt;div class=&#34;mermaid&#34;&gt;&#xD;&#xA;erDiagram&#xD;&#xA;    tipos_eleccion {&#xD;&#xA;        VARCHAR codigo PK&#xD;&#xA;        VARCHAR descripcion&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    elecciones {&#xD;&#xA;        INT id PK&#xD;&#xA;        VARCHAR tipo_eleccion FK&#xD;&#xA;        CHAR year&#xD;&#xA;        CHAR mes&#xD;&#xA;        CHAR dia&#xD;&#xA;        DATE fecha&#xD;&#xA;        CHAR codigo_ccaa&#xD;&#xA;        SMALLINT numero_vuelta&#xD;&#xA;        VARCHAR descripcion&#xD;&#xA;        VARCHAR ambito&#xD;&#xA;        VARCHAR slug&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    elecciones_fuentes {&#xD;&#xA;        INT eleccion_id PK&#xD;&#xA;        VARCHAR fuente&#xD;&#xA;        VARCHAR url_fuente&#xD;&#xA;        TEXT observaciones&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    territorios {&#xD;&#xA;        INT id PK&#xD;&#xA;        VARCHAR tipo&#xD;&#xA;        CHAR codigo_ccaa&#xD;&#xA;        CHAR codigo_provincia&#xD;&#xA;        CHAR codigo_municipio&#xD;&#xA;        CHAR codigo_distrito&#xD;&#xA;        CHAR codigo_seccion&#xD;&#xA;        CHAR codigo_circunscripcion&#xD;&#xA;        VARCHAR nombre&#xD;&#xA;        VARCHAR codigo_completo&#xD;&#xA;        INT parent_id FK&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    partidos_recode {&#xD;&#xA;        INT id PK&#xD;&#xA;        VARCHAR partido_recode&#xD;&#xA;        VARCHAR agrupacion&#xD;&#xA;        VARCHAR color&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    partidos {&#xD;&#xA;        INT id PK&#xD;&#xA;        INT partido_recode_id FK&#xD;&#xA;        VARCHAR siglas&#xD;&#xA;        VARCHAR denominacion&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    resumen_territorial {&#xD;&#xA;        INT id PK&#xD;&#xA;        INT eleccion_id FK&#xD;&#xA;        INT territorio_id FK&#xD;&#xA;        INT censo_ine&#xD;&#xA;        INT participacion_1&#xD;&#xA;        INT participacion_2&#xD;&#xA;        INT participacion_3&#xD;&#xA;        INT votos_validos&#xD;&#xA;        INT abstenciones&#xD;&#xA;        INT votos_blancos&#xD;&#xA;        INT votos_nulos&#xD;&#xA;        INT nrepresentantes&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    votos_territoriales {&#xD;&#xA;        INT id PK&#xD;&#xA;        INT eleccion_id FK&#xD;&#xA;        INT territorio_id FK&#xD;&#xA;        INT partido_id FK&#xD;&#xA;        INT votos&#xD;&#xA;        INT representantes&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    resumen_cera {&#xD;&#xA;        INT id PK&#xD;&#xA;        INT eleccion_id FK&#xD;&#xA;        INT territorio_id FK&#xD;&#xA;        INT censo_ine&#xD;&#xA;        INT votos_validos&#xD;&#xA;        INT abstenciones&#xD;&#xA;        INT votos_blancos&#xD;&#xA;        INT votos_nulos&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    votos_cera {&#xD;&#xA;        INT id PK&#xD;&#xA;        INT eleccion_id FK&#xD;&#xA;        INT territorio_id FK&#xD;&#xA;        INT partido_id FK&#xD;&#xA;        INT votos&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    tipos_eleccion ||--o{ elecciones : tipo_eleccion&#xD;&#xA;    elecciones ||--o| elecciones_fuentes : eleccion_id&#xD;&#xA;    territorios ||--o{ territorios : parent_id&#xD;&#xA;    partidos_recode ||--o{ partidos : partido_recode_id&#xD;&#xA;&#xD;&#xA;    elecciones ||--o{ resumen_territorial : eleccion_id&#xD;&#xA;    territorios ||--o{ resumen_territorial : territorio_id&#xD;&#xA;&#xD;&#xA;    elecciones ||--o{ votos_territoriales : eleccion_id&#xD;&#xA;    territorios ||--o{ votos_territoriales : territorio_id&#xD;&#xA;    partidos ||--o{ votos_territoriales : partido_id&#xD;&#xA;&#xD;&#xA;    elecciones ||--o{ resumen_cera : eleccion_id&#xD;&#xA;    territorios ||--o{ resumen_cera : territorio_id&#xD;&#xA;&#xD;&#xA;    elecciones ||--o{ votos_cera : eleccion_id&#xD;&#xA;    territorios ||--o{ votos_cera : territorio_id&#xD;&#xA;    partidos ||--o{ votos_cera : partido_id&#xD;&#xA;&lt;/div&gt;&#xD;&#xA;&#xA;&lt;h2 id=&#34;tablas-de-dimensiones&#34;&gt;Tablas de dimensiones&lt;/h2&gt;&#xA;&lt;h3 id=&#34;elecciones_fuentes&#34;&gt;&lt;code&gt;elecciones_fuentes&lt;/code&gt;&lt;/h3&gt;&#xA;&lt;p&gt;Documenta la fuente oficial de los datos para cada elección. Una fila por &lt;code&gt;eleccion_id&lt;/code&gt;.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Registro de cambios</title>
-      <link>http://localhost:1313/changelog/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/changelog/</guid>
-      <description>&lt;div class=&#34;callout callout-tip&#34;&gt;&#xD;&#xA;&lt;strong&gt;Versionado de datasets&lt;/strong&gt;&#xD;&#xA;&lt;p&gt;Los datasets de &lt;code&gt;eleccionesdb&lt;/code&gt; se versionan con &lt;a href=&#34;https://semver.org/lang/es/&#34;&gt;versionado semántico&lt;/a&gt;:&lt;/p&gt;&#xD;&#xA;&lt;ul&gt;&#xD;&#xA;&lt;li&gt;&lt;strong&gt;Mayor&lt;/strong&gt; (X.0.0): cambios incompatibles en el esquema (renombrado de columnas, cambio de tipos, eliminación de tablas).&lt;/li&gt;&#xD;&#xA;&lt;li&gt;&lt;strong&gt;Menor&lt;/strong&gt; (0.X.0): nuevos datos o nuevas tablas sin romper compatibilidad.&lt;/li&gt;&#xD;&#xA;&lt;li&gt;&lt;strong&gt;Parche&lt;/strong&gt; (0.0.X): correcciones de datos, errores en valores, ajustes menores.&lt;/li&gt;&#xD;&#xA;&lt;/ul&gt;&#xD;&#xA;&lt;/div&gt;&#xD;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;v010--2026-03-27&#34;&gt;v0.1.0 — 2026-03-27&lt;/h2&gt;&#xA;&lt;p&gt;Primera versión pública de la base de datos.&lt;/p&gt;&#xA;&lt;h3 id=&#34;nuevos-datos&#34;&gt;Nuevos datos&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Elecciones generales al Congreso: todas las convocatorias.&lt;/li&gt;&#xA;&lt;li&gt;Elecciones autonómicas: Andalucía, Aragón, Asturias, Baleares, Canarias, Castilla y León, Cataluña, Comunidad Valenciana, Comunidad de Madrid.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h3 id=&#34;modelo-de-datos&#34;&gt;Modelo de datos&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Esquema relacional con 5 dimensiones (&lt;code&gt;tipos_eleccion&lt;/code&gt;, &lt;code&gt;elecciones&lt;/code&gt;, &lt;code&gt;territorios&lt;/code&gt;, &lt;code&gt;partidos_recode&lt;/code&gt;, &lt;code&gt;partidos&lt;/code&gt;) y 4 tablas de hechos (&lt;code&gt;resumen_territorial&lt;/code&gt;, &lt;code&gt;votos_territoriales&lt;/code&gt;, &lt;code&gt;resumen_cera&lt;/code&gt;, &lt;code&gt;votos_cera&lt;/code&gt;).&lt;/li&gt;&#xA;&lt;li&gt;Jerarquía territorial completa: CCAA → provincia → circunscripción → municipio → distrito → sección censal.&lt;/li&gt;&#xA;&lt;li&gt;Sistema de recodificación de partidos con dos niveles (&lt;code&gt;partidos_recode&lt;/code&gt; + &lt;code&gt;partidos&lt;/code&gt;).&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h3 id=&#34;formatos-de-descarga&#34;&gt;Formatos de descarga&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Parquet (tablas normalizadas).&lt;/li&gt;&#xA;&lt;li&gt;SQLite (esquema relacional con PKs, FKs, índices).&lt;/li&gt;&#xA;&lt;li&gt;CSV planos pre-joineados.&lt;/li&gt;&#xA;&lt;/ul&gt;</description>
-    </item>
-    <item>
-      <title>Restaurar data-raw/</title>
-      <link>http://localhost:1313/restaurar-data-raw/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/restaurar-data-raw/</guid>
-      <description>&lt;p&gt;Para ejecutar el pipeline ETL necesitas poblar el directorio &lt;code&gt;data-raw/&lt;/code&gt; con los datos originales. Por motivos de tamaño, estos archivos no están en el repositorio.&lt;/p&gt;&#xA;&lt;h2 id=&#34;descarga-automática-de-datos&#34;&gt;Descarga automática de datos&lt;/h2&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;Asegúrate de tener R y los paquetes necesarios (&lt;code&gt;readr&lt;/code&gt;, &lt;code&gt;httr&lt;/code&gt;, &lt;code&gt;fs&lt;/code&gt;, &lt;code&gt;purrr&lt;/code&gt;).&lt;/li&gt;&#xA;&lt;li&gt;Ejecuta el script:&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#58a1dd&#34;&gt;source&lt;/span&gt;(&lt;span style=&#34;color:#a6be9d&#34;&gt;&amp;#34;R/00-setup/download_data_raw.R&amp;#34;&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Esto descargará todos los archivos listados en el índice público y los colocará en su ruta correspondiente bajo &lt;code&gt;data-raw/&lt;/code&gt;.&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;El índice de archivos se encuentra en: &lt;code&gt;docs-site/data_index.csv&lt;/code&gt; (ajusta la URL si lo alojas en otro sitio).&lt;/li&gt;&#xA;&lt;li&gt;El script es idempotente: solo descarga archivos que no existen localmente.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;cómo-se-genera-el-índice&#34;&gt;¿Cómo se genera el índice?&lt;/h2&gt;&#xA;&lt;p&gt;Solo los administradores (con credenciales S3) pueden generar o actualizar el índice:&lt;/p&gt;</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>eleccionesdb — Base de datos electoral de España on eleccionesdb</title><link>https://eleccionesdb.spainelectoralproject.com/</link><description>Recent content in eleccionesdb — Base de datos electoral de España on eleccionesdb</description><generator>Hugo</generator><language>es</language><atom:link href="https://eleccionesdb.spainelectoralproject.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Arquitectura del pipeline</title><link>https://eleccionesdb.spainelectoralproject.com/pipeline/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://eleccionesdb.spainelectoralproject.com/pipeline/</guid><description>&lt;h2 id="visión-general"&gt;Visión general&lt;/h2&gt;
+&lt;p&gt;El proyecto sigue un pipeline ETL en cuatro fases, implementado íntegramente en R. El flujo transforma datos electorales en bruto procedentes de múltiples fuentes heterogéneas (CSV, Excel, &lt;code&gt;.px&lt;/code&gt;, APIs) en una base de datos relacional PostgreSQL normalizada y en formatos descargables (Parquet, SQLite, CSV).&lt;/p&gt;
+&lt;div class="mermaid"&gt;
+flowchart LR
+ A["📁 data-raw/\n(Datos en bruto)"] --&gt; B["⚙️ 01-generate-data/\n(Generación)"]
+ B --&gt; C["📂 data-processed/\n(Intermedios)"]
+ C --&gt; D["🔗 02-clean-and-bind/\n(Limpieza y unión)"]
+ D --&gt; E["📋 tablas-finales/\n(Tablas listas)"]
+ E --&gt; F["🗄️ 03-writedb/\n(Carga a BD)"]
+ F --&gt; G["🐘 PostgreSQL"]
+ E --&gt; H["📦 04-export/\n(Exportación)"]
+ H --&gt; I["💾 descargas/\n(Parquet, SQLite, CSV)"]
+&lt;/div&gt;
+&lt;h2 id="fase-1-datos-en-bruto-data-raw"&gt;Fase 1: Datos en bruto (&lt;code&gt;data-raw/&lt;/code&gt;)&lt;/h2&gt;
+&lt;p&gt;Contiene los ficheros originales tal como se obtienen de cada fuente: CSV, RDS, Excel (&lt;code&gt;.xls&lt;/code&gt;/&lt;code&gt;.xlsx&lt;/code&gt;), ficheros estadísticos PX-WEB (&lt;code&gt;.px&lt;/code&gt;) y datos descargados vía API. Cada comunidad autónoma tiene su propia carpeta en &lt;code&gt;data-raw/hechos/&lt;/code&gt;.&lt;/p&gt;</description></item><item><title>Calidad de los datos</title><link>https://eleccionesdb.spainelectoralproject.com/calidad/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://eleccionesdb.spainelectoralproject.com/calidad/</guid><description>&lt;div class="callout callout-warning"&gt;
+&lt;p&gt;&lt;strong&gt;Aviso:&lt;/strong&gt; Esta página documenta limitaciones y errores conocidos en los datos de &lt;strong&gt;eleccionesdb&lt;/strong&gt;. La presencia de una incidencia no invalida necesariamente el conjunto de datos de esa elección.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h2 id="nota-sobre-la-calidad-de-los-datos"&gt;Nota sobre la calidad de los datos&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;eleccionesdb&lt;/strong&gt; es un proyecto de integración de resultados electorales
+procedentes de múltiples fuentes oficiales, organismos autonómicos y portales
+de datos abiertos. A pesar del esfuerzo sistemático de validación, depuración
+y estandarización, &lt;strong&gt;la base de datos puede contener errores&lt;/strong&gt;.&lt;/p&gt;</description></item><item><title>Cobertura electoral</title><link>https://eleccionesdb.spainelectoralproject.com/cobertura/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://eleccionesdb.spainelectoralproject.com/cobertura/</guid><description>&lt;h2 id="matriz-de-cobertura"&gt;Matriz de cobertura&lt;/h2&gt;
+&lt;p&gt;La siguiente tabla muestra las elecciones cubiertas en la base de datos, organizadas por ámbito y año.&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;Ámbito&lt;/th&gt;
+ &lt;th&gt;Años cubiertos&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Congreso (nacional)&lt;/td&gt;
+ &lt;td&gt;Todas las convocatorias desde 1977&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Andalucía&lt;/td&gt;
+ &lt;td&gt;Todas las convocatorias&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Aragón&lt;/td&gt;
+ &lt;td&gt;2011–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Asturias&lt;/td&gt;
+ &lt;td&gt;Todas las convocatorias&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Baleares&lt;/td&gt;
+ &lt;td&gt;1983–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Canarias&lt;/td&gt;
+ &lt;td&gt;1983–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Castilla y León&lt;/td&gt;
+ &lt;td&gt;1983–2022&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Cataluña&lt;/td&gt;
+ &lt;td&gt;1980–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;C. Valenciana&lt;/td&gt;
+ &lt;td&gt;1983–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;C. de Madrid&lt;/td&gt;
+ &lt;td&gt;1983–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="granularidad-disponible"&gt;Granularidad disponible&lt;/h2&gt;
+&lt;p&gt;La granularidad de los datos varía según el tipo de elección y la fuente de datos:&lt;/p&gt;</description></item><item><title>Formatos de descarga</title><link>https://eleccionesdb.spainelectoralproject.com/descargas/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://eleccionesdb.spainelectoralproject.com/descargas/</guid><description>&lt;p&gt;Los datos de &lt;code&gt;eleccionesdb&lt;/code&gt; están disponibles para descarga en tres formatos, pensados para diferentes perfiles de uso y herramientas de análisis.&lt;/p&gt;
+&lt;div class="callout callout-tip"&gt;
+&lt;strong&gt;¿Prefieres acceso programático?&lt;/strong&gt;
+&lt;p&gt;&lt;a href="https://eleccionesdb-api.spainelectoralproject.com/" target="_blank" rel="noopener"&gt;EleccionesDB API&lt;/a&gt; ofrece una API REST gratuita, abierta y sin autenticación para consultar todos estos datos directamente desde tu código.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="download-options"&gt;
+ &lt;div class="download-option"&gt;
+ &lt;span class="download-option-icon"&gt;🗂️&lt;/span&gt;
+ &lt;h3&gt;Parquet&lt;/h3&gt;
+ &lt;p&gt;Tablas normalizadas en formato columnar. Ideal para R, Python y DuckDB.&lt;/p&gt;
+ &lt;a href="https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb_parquet.zip" class="btn btn-primary"&gt;⬇ Descargar Parquet&lt;/a&gt;
+ &lt;/div&gt;
+ &lt;div class="download-option"&gt;
+ &lt;span class="download-option-icon"&gt;🗄️&lt;/span&gt;
+ &lt;h3&gt;SQLite&lt;/h3&gt;
+ &lt;p&gt;Base de datos relacional en un solo fichero. Ideal para consultas SQL sin servidor.&lt;/p&gt;</description></item><item><title>Fuentes de datos</title><link>https://eleccionesdb.spainelectoralproject.com/fuentes/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://eleccionesdb.spainelectoralproject.com/fuentes/</guid><description>&lt;h2 id="resumen-de-fuentes"&gt;Resumen de fuentes&lt;/h2&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;Elección&lt;/th&gt;
+ &lt;th&gt;Fuente principal&lt;/th&gt;
+ &lt;th&gt;Formato&lt;/th&gt;
+ &lt;th&gt;API/Manual&lt;/th&gt;
+ &lt;th&gt;Cobertura&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Congreso&lt;/td&gt;
+ &lt;td&gt;Infoelectoral (Ministerio del Interior)&lt;/td&gt;
+ &lt;td&gt;R package&lt;/td&gt;
+ &lt;td&gt;API (paquete)&lt;/td&gt;
+ &lt;td&gt;Todas las convocatorias&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Municipales&lt;/td&gt;
+ &lt;td&gt;Infoelectoral (Ministerio del Interior)&lt;/td&gt;
+ &lt;td&gt;R package&lt;/td&gt;
+ &lt;td&gt;API (paquete)&lt;/td&gt;
+ &lt;td&gt;Todas las convocatorias&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Andalucía&lt;/td&gt;
+ &lt;td&gt;Junta de Andalucía (SIEL)&lt;/td&gt;
+ &lt;td&gt;REST JSON&lt;/td&gt;
+ &lt;td&gt;API&lt;/td&gt;
+ &lt;td&gt;Todas&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Aragón&lt;/td&gt;
+ &lt;td&gt;Gobierno de Aragón (datos abiertos)&lt;/td&gt;
+ &lt;td&gt;CSV/XLSX&lt;/td&gt;
+ &lt;td&gt;Manual&lt;/td&gt;
+ &lt;td&gt;2011–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Asturias&lt;/td&gt;
+ &lt;td&gt;SADEI + GIPEYOP&lt;/td&gt;
+ &lt;td&gt;.px + XLSX&lt;/td&gt;
+ &lt;td&gt;Scraping + manual&lt;/td&gt;
+ &lt;td&gt;Todas&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Baleares&lt;/td&gt;
+ &lt;td&gt;IBESTAT + GIPEYOP&lt;/td&gt;
+ &lt;td&gt;.px + XLSX&lt;/td&gt;
+ &lt;td&gt;Manual&lt;/td&gt;
+ &lt;td&gt;1983–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Canarias&lt;/td&gt;
+ &lt;td&gt;PARCAN + ISTAC + GIPEYOP&lt;/td&gt;
+ &lt;td&gt;CSV + XLSX&lt;/td&gt;
+ &lt;td&gt;API + manual&lt;/td&gt;
+ &lt;td&gt;1983–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Cantabria&lt;/td&gt;
+ &lt;td&gt;GIPEYOP&lt;/td&gt;
+ &lt;td&gt;XLSX&lt;/td&gt;
+ &lt;td&gt;Manual&lt;/td&gt;
+ &lt;td&gt;1983–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Castilla-La Mancha&lt;/td&gt;
+ &lt;td&gt;Junta de Castilla-La Mancha (datos abiertos)&lt;/td&gt;
+ &lt;td&gt;CSV/XLSX&lt;/td&gt;
+ &lt;td&gt;Descarga&lt;/td&gt;
+ &lt;td&gt;1983–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Castilla y León&lt;/td&gt;
+ &lt;td&gt;Junta de Castilla y León&lt;/td&gt;
+ &lt;td&gt;CSV (&lt;code&gt;;&lt;/code&gt;, Latin-1)&lt;/td&gt;
+ &lt;td&gt;Manual&lt;/td&gt;
+ &lt;td&gt;1983–2022&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Cataluña&lt;/td&gt;
+ &lt;td&gt;Generalitat de Catalunya&lt;/td&gt;
+ &lt;td&gt;CSV&lt;/td&gt;
+ &lt;td&gt;Manual&lt;/td&gt;
+ &lt;td&gt;1980–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;C. Valenciana&lt;/td&gt;
+ &lt;td&gt;Generalitat Valenciana&lt;/td&gt;
+ &lt;td&gt;CSV + XLSX&lt;/td&gt;
+ &lt;td&gt;Manual&lt;/td&gt;
+ &lt;td&gt;1983–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Extremadura&lt;/td&gt;
+ &lt;td&gt;Junta de Extremadura&lt;/td&gt;
+ &lt;td&gt;XLSX&lt;/td&gt;
+ &lt;td&gt;Manual&lt;/td&gt;
+ &lt;td&gt;1983–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Galicia&lt;/td&gt;
+ &lt;td&gt;Xunta de Galicia&lt;/td&gt;
+ &lt;td&gt;XLS/XLSX&lt;/td&gt;
+ &lt;td&gt;Manual&lt;/td&gt;
+ &lt;td&gt;1981–2024&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;C. de Madrid&lt;/td&gt;
+ &lt;td&gt;Comunidad de Madrid&lt;/td&gt;
+ &lt;td&gt;XLS/XLSX&lt;/td&gt;
+ &lt;td&gt;Manual&lt;/td&gt;
+ &lt;td&gt;1983–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Murcia&lt;/td&gt;
+ &lt;td&gt;Región de Murcia&lt;/td&gt;
+ &lt;td&gt;XLS&lt;/td&gt;
+ &lt;td&gt;Manual&lt;/td&gt;
+ &lt;td&gt;1983–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Navarra&lt;/td&gt;
+ &lt;td&gt;Gobierno de Navarra&lt;/td&gt;
+ &lt;td&gt;CSV + XLS&lt;/td&gt;
+ &lt;td&gt;Manual&lt;/td&gt;
+ &lt;td&gt;1979–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;País Vasco&lt;/td&gt;
+ &lt;td&gt;Gobierno Vasco&lt;/td&gt;
+ &lt;td&gt;XLS/XLSX&lt;/td&gt;
+ &lt;td&gt;Manual&lt;/td&gt;
+ &lt;td&gt;1980–2024&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;La Rioja&lt;/td&gt;
+ &lt;td&gt;Gobierno de La Rioja&lt;/td&gt;
+ &lt;td&gt;XLS&lt;/td&gt;
+ &lt;td&gt;Manual&lt;/td&gt;
+ &lt;td&gt;1983–2023&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="detalle-por-elección--comunidad"&gt;Detalle por elección / comunidad&lt;/h2&gt;
+&lt;h3 id="congreso-00-congreso"&gt;Congreso (&lt;code&gt;00-congreso&lt;/code&gt;)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: Paquete R &lt;a href="https://infoelectoral.spainelectoralproject.com/"&gt;&lt;code&gt;infoelectoral&lt;/code&gt;&lt;/a&gt; (datos del Ministerio del Interior).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: Funciones &lt;code&gt;provincias()&lt;/code&gt;, &lt;code&gt;municipios()&lt;/code&gt;, &lt;code&gt;mesas()&lt;/code&gt; del paquete.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Provincia, municipio y sección censal (mesa).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: No hay CSV en &lt;code&gt;data-raw/&lt;/code&gt;; el paquete descarga directamente desde la fuente oficial.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;sauron_formats.R&lt;/code&gt; (orquestador) → &lt;code&gt;format_provincias.R&lt;/code&gt;, &lt;code&gt;format_municipios.R&lt;/code&gt;, &lt;code&gt;format_secciones.R&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: Separa CER (residentes) de CERA (residentes ausentes).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id="andalucía-01-andalucia"&gt;Andalucía (&lt;code&gt;01-andalucia&lt;/code&gt;)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: API del &lt;a href="https://resultadoseleccionesandalucia.es/"&gt;Sistema de Información Electoral de Andalucía&lt;/a&gt; de la Junta de Andalucía.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;URL base&lt;/strong&gt;: &lt;code&gt;https://ws040.juntadeandalucia.es/siel-api/v1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: REST API (&lt;code&gt;httr::GET&lt;/code&gt;) con endpoints: &lt;code&gt;/opciones/fconvocatoria&lt;/code&gt;, &lt;code&gt;/opciones/provincia&lt;/code&gt;, &lt;code&gt;/opciones/municipio&lt;/code&gt;, &lt;code&gt;/opciones/distrito&lt;/code&gt;, &lt;code&gt;/opciones/seccion&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Provincia, municipio y sección censal.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: &lt;code&gt;resumen_{provincias,municipios,secciones}.csv&lt;/code&gt;, &lt;code&gt;escrutinio_{provincias,municipios,secciones}.csv&lt;/code&gt;, &lt;code&gt;nomenclators/*.rds&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;00_fetch-nomenclators.R&lt;/code&gt; → &lt;code&gt;01-06_fetch-info/votos-*.R&lt;/code&gt; (descarga paralela con &lt;code&gt;future_pmap_dfr&lt;/code&gt;) → &lt;code&gt;07-format-data.R&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: Descarga paralela con rate limiting (5 reintentos, 2s de pausa base). CERA en municipio=901. Agrega a nivel CCAA.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id="aragón-02-aragon"&gt;Aragón (&lt;code&gt;02-aragon&lt;/code&gt;)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: &lt;a href="https://opendata.aragon.es/"&gt;Portal de datos abiertos&lt;/a&gt; del Gobierno de Aragón.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: Ficheros CSV/XLSX descargados manualmente.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Municipal y provincial (histórico); mesa/sección en elecciones recientes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: &lt;code&gt;Resultados electorales agrupados a escala municipal (histórico).csv&lt;/code&gt;, &lt;code&gt;Resultados electorales agrupados a escala provincial (histórico).xlsx&lt;/code&gt;, carpetas por año (&lt;code&gt;2011/&lt;/code&gt;, &lt;code&gt;2015/&lt;/code&gt;, &lt;code&gt;2019/&lt;/code&gt;, &lt;code&gt;2023/&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;01_format-info.R&lt;/code&gt; (resumen/participación), &lt;code&gt;02_format-votos.R&lt;/code&gt; (votos por partido).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: CERA identificado como municipio=&amp;lsquo;000&amp;rsquo;. Formatos de tabla variables por año. Cobertura: 2011–2023.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id="asturias-03-asturias"&gt;Asturias (&lt;code&gt;03-asturias&lt;/code&gt;)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: Doble fuente — &lt;a href="https://www.sadei.es/sadei/resultados-electorales/elecciones-autonomicas_249_1_ap.html"&gt;SADEI&lt;/a&gt; (pre-2015) + &lt;a href="https://gipeyop.uv.es/gipeyop/sea.html"&gt;GIPEYOP&lt;/a&gt; (2015+).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: SADEI: scraping web + lectura de ficheros &lt;code&gt;.px&lt;/code&gt; (paquete &lt;code&gt;pxR&lt;/code&gt;). GIPEYOP: lectura directa de xlsx.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Mesa (2015+), municipal (pre-2015).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: &lt;code&gt;SADEI/*.px&lt;/code&gt;, &lt;code&gt;gipeyop/Asturias{2015,2019,2023}_mesas.xlsx&lt;/code&gt;, &lt;code&gt;censo_ine/&lt;/code&gt;, &lt;code&gt;correspondencia_municipio-circunscripcion.xlsx&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;00_get-nomenclator-sadei.R&lt;/code&gt;, &lt;code&gt;01_format-data.R&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: Asturias tiene circunscripciones sub-provinciales (Occidente/Centro/Oriente, códigos 331/332/333). Transformaciones pivot complejas para el formato &lt;code&gt;.px&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id="baleares-04-baleares"&gt;Baleares (&lt;code&gt;04-baleares&lt;/code&gt;)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: &lt;a href="https://ibestat.es/edatos/apps/statistical-visualizer/visualizer/collection.html?resourceType=collection&amp;amp;agencyId=IBESTAT&amp;amp;resourceId=000199A_000001"&gt;IBESTAT&lt;/a&gt; (Institut d&amp;rsquo;Estadística de les Illes Balears) + &lt;a href="https://gipeyop.uv.es/gipeyop/sea.html"&gt;GIPEYOP&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: Lectura de ficheros &lt;code&gt;.px&lt;/code&gt; (formato PX-WEB estadístico) con &lt;code&gt;pxR::read.px()&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Mesa/sección.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: Carpetas por año (&lt;code&gt;1983/&lt;/code&gt;–&lt;code&gt;2023/&lt;/code&gt;) con ficheros &lt;code&gt;.px&lt;/code&gt;, &lt;code&gt;22codislas.xlsx&lt;/code&gt; (mapeo islas), &lt;code&gt;cera/&lt;/code&gt;, &lt;code&gt;gipeyop/&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;format.R&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: Circunscripciones insulares (Mallorca, Menorca, Ibiza, Formentera). Códigos de 12 caracteres (pre-1995) vs 10 caracteres (1995+). Cobertura: 1983–2023.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id="canarias-05-canarias"&gt;Canarias (&lt;code&gt;05-canarias&lt;/code&gt;)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: &lt;a href="https://www.parcan.es/elecciones/"&gt;PARCAN&lt;/a&gt; (1999+) + &lt;a href="https://www.gobiernodecanarias.org/istac/estadisticas/sociedad/elecciones/Elecciones/C00010A.html"&gt;ISTAC&lt;/a&gt; + &lt;a href="https://gipeyop.uv.es/gipeyop/sea.html"&gt;GIPEYOP&lt;/a&gt; (1983–2015).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: PARCAN: descarga CSV por municipio. ISTAC: lectura de xlsx. GIPEYOP: lectura de xlsx.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Municipal (PARCAN), provincial/sección (GIPEYOP/ISTAC).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: &lt;code&gt;parcan/&lt;/code&gt; (CSV por municipio), &lt;code&gt;istac/&lt;/code&gt; (datasets ISTAC xlsx), &lt;code&gt;gipeyop/Canarias{1983,1987}_provincias.xlsx&lt;/code&gt;, &lt;code&gt;Canarias{1991-2015}_secciones.xlsx&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;00_download-data-parcan.R&lt;/code&gt;, &lt;code&gt;format.R&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: 7 circunscripciones insulares (Fuerteventura, Gran Canaria, La Gomera, El Hierro, La Palma, Tenerife, Lanzarote) + circunscripción autonómica. Cobertura: 1983–2023.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id="castilla-y-león-07-cyl"&gt;Castilla y León (&lt;code&gt;07-cyl&lt;/code&gt;)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: &lt;a href="https://jcyl.opendatasoft.com/explore/dataset/resultados-electorales-1983-actualidad/information/"&gt;Portal de datos abiertos&lt;/a&gt; de la Junta de Castilla y León.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: Ficheros CSV descargados manualmente.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Mesa (código de mesa parseado a sección/distrito/municipio/provincia).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: Un CSV por año (&lt;code&gt;1983.csv&lt;/code&gt;–&lt;code&gt;2022.csv&lt;/code&gt;), delimitados por &lt;code&gt;;&lt;/code&gt;, codificación Latin-1.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;format.R&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: Parsea la estructura del código de mesa para extraer provincia/municipio/distrito/sección. Agrega por niveles. Cobertura: 1983–2022.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id="cataluña-09-catalunya"&gt;Cataluña (&lt;code&gt;09-catalunya&lt;/code&gt;)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: &lt;a href="https://eleccions.gencat.cat/es/resultats-i-eleccions-anteriors/resultats-electorals/#/"&gt;Generalitat de Catalunya&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: Ficheros CSV descargados (datos abiertos electorales).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Mesa.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: Patrón de nombre &lt;code&gt;A{YYYY}{N}-{TIPO}-ME.csv&lt;/code&gt; (ej: &lt;code&gt;A20231-Columnes-ME.csv&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;01_format-data.R&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: Nombres de columna en catalán. Locale con coma decimal y punto de agrupación. CERA en municipio=&amp;lsquo;998&amp;rsquo;. Cobertura: 1980–2023.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id="comunidad-valenciana-10-comunidad-valenciana"&gt;Comunidad Valenciana (&lt;code&gt;10-comunidad-valenciana&lt;/code&gt;)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: &lt;a href="https://portaldadesobertes.gva.es/es"&gt;Portal de Datos Abiertos&lt;/a&gt; de la Generalitat Valenciana.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: Ficheros CSV y xlsx descargados manualmente.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Mesa/sección.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: CSV por año (&lt;code&gt;1987.csv&lt;/code&gt;–&lt;code&gt;2023.csv&lt;/code&gt;) + &lt;code&gt;Comunitat Valenciana1983_municipios.xlsx&lt;/code&gt; (1983 en formato especial).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;format.R&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: Naming de columnas variable entre años. Codificación variable. 1983 es xlsx con resultados municipales precalculados. Cobertura: 1983–2023.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id="comunidad-de-madrid-13-comunidad-madrid"&gt;Comunidad de Madrid (&lt;code&gt;13-comunidad-madrid&lt;/code&gt;)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Fuente&lt;/strong&gt;: &lt;a href="https://www.comunidad.madrid/gobierno/datos-abiertos"&gt;Portal de Datos Abiertos&lt;/a&gt; de la Comunidad de Madrid.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Método&lt;/strong&gt;: Ficheros Excel (.xls/.xlsx) descargados manualmente.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Granularidad&lt;/strong&gt;: Mesa.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ficheros brutos&lt;/strong&gt;: &lt;code&gt;{año}_Mesas.xls&lt;/code&gt; (1995–2021), &lt;code&gt;datos_electorales_elecciones_autonomicas_comunidad_de_madrid_2023.xlsx&lt;/code&gt; (2023, formato diferente), &lt;code&gt;Madrid{1983,1987,1991}_circunscripcion.xlsx&lt;/code&gt; (histórico).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scripts&lt;/strong&gt;: &lt;code&gt;format.R&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Notas&lt;/strong&gt;: 2003 tiene dos elecciones (mayo y octubre). Multi-header parsing en Excel. Circunscripción única (provincial). Cobertura: 1983–2023.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="fuentes-transversales"&gt;Fuentes transversales&lt;/h2&gt;
+&lt;h3 id="fechas-de-elecciones"&gt;Fechas de elecciones&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Fichero&lt;/strong&gt;: &lt;code&gt;data-raw/fechas_elecciones.csv&lt;/code&gt; — contiene &lt;code&gt;tipo_eleccion&lt;/code&gt;, &lt;code&gt;fecha&lt;/code&gt; (en texto español, ej: &amp;ldquo;9 de junio de 2024&amp;rdquo;), &lt;code&gt;ccaa&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fuente alternativa&lt;/strong&gt;: Scraping de la &lt;a href="https://www.juntaelectoralcentral.es"&gt;Junta Electoral Central&lt;/a&gt; (&lt;code&gt;fechas-elecciones-scrap.R&lt;/code&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="códigos-territoriales"&gt;Códigos territoriales&lt;/h3&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;Fichero&lt;/th&gt;
+ &lt;th&gt;Descripción&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;codigos_secciones.rds&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;Códigos de secciones censales canónicos&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;codigos_secciones_infoelectoral.rds&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;Codificación alternativa Infoelectoral&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;codigos_secciones_{01,03,07}.rds&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;Secciones específicas por CCAA (Andalucía, Asturias, CyL)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;circunscripciones.csv&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;Circunscripciones sub-provinciales (Asturias, Canarias, Baleares)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;correspondencia_municipio_circunscripcion.csv&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;Mapeo municipio → circunscripción&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;nombres_municipios.csv&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;Nomenclátor de municipios (INE)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="representantes-y-escaños"&gt;Representantes y escaños&lt;/h3&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;Fichero&lt;/th&gt;
+ &lt;th&gt;Descripción&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;nrepresentantes_prov.xlsx&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;Escaños asignados por provincia/circunscripción y elección&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;nrepresentantes_muni.xlsx&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;Escaños asignados por municipio (locales)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;representantes_prov.xlsx&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;Representantes electos por provincia&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;representantes_muni.xlsx&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;Representantes electos por municipio&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="agradecimientos"&gt;Agradecimientos&lt;/h2&gt;
+&lt;p&gt;Cuando no se ha encontrado una fuente oficial directa se han empleado los datos históricos del &lt;a href="https://gipeyop.uv.es/gipeyop/sea.html"&gt;&lt;strong&gt;Spanish Electoral Archive (SEA)&lt;/strong&gt;&lt;/a&gt;, elaborado por el &lt;a href="https://gipeyop.uv.es/"&gt;&lt;strong&gt;GIPEYOP&lt;/strong&gt; (Grupo de Investigación en Procesos Electorales y Opinión Pública)&lt;/a&gt; de la Universitat de València. Agradecemos enormemente su labor de recopilación y puesta a disposición de estos datos electorales.&lt;/p&gt;</description></item><item><title>Modelo de datos</title><link>https://eleccionesdb.spainelectoralproject.com/modelo-datos/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://eleccionesdb.spainelectoralproject.com/modelo-datos/</guid><description>&lt;h2 id="diagrama-entidad-relación"&gt;Diagrama entidad-relación&lt;/h2&gt;
+&lt;p&gt;El esquema PostgreSQL de &lt;code&gt;eleccionesdb&lt;/code&gt; sigue un modelo estrella con 6 tablas de dimensiones y 4 tablas de hechos (2 principales + 2 CERA).&lt;/p&gt;
+&lt;div class="mermaid"&gt;
+erDiagram
+ tipos_eleccion {
+ VARCHAR codigo PK
+ VARCHAR descripcion
+ }
+
+ elecciones {
+ INT id PK
+ VARCHAR tipo_eleccion FK
+ CHAR year
+ CHAR mes
+ CHAR dia
+ DATE fecha
+ CHAR codigo_ccaa
+ SMALLINT numero_vuelta
+ VARCHAR descripcion
+ VARCHAR ambito
+ VARCHAR slug
+ }
+
+ elecciones_fuentes {
+ INT eleccion_id PK
+ VARCHAR fuente
+ VARCHAR url_fuente
+ TEXT observaciones
+ }
+
+ territorios {
+ INT id PK
+ VARCHAR tipo
+ CHAR codigo_ccaa
+ CHAR codigo_provincia
+ CHAR codigo_municipio
+ CHAR codigo_distrito
+ CHAR codigo_seccion
+ CHAR codigo_circunscripcion
+ VARCHAR nombre
+ VARCHAR codigo_completo
+ INT parent_id FK
+ }
+
+ partidos_recode {
+ INT id PK
+ VARCHAR partido_recode
+ VARCHAR agrupacion
+ VARCHAR color
+ }
+
+ partidos {
+ INT id PK
+ INT partido_recode_id FK
+ VARCHAR siglas
+ VARCHAR denominacion
+ }
+
+ resumen_territorial {
+ INT id PK
+ INT eleccion_id FK
+ INT territorio_id FK
+ INT censo_ine
+ INT participacion_1
+ INT participacion_2
+ INT participacion_3
+ INT votos_validos
+ INT abstenciones
+ INT votos_blancos
+ INT votos_nulos
+ INT nrepresentantes
+ }
+
+ votos_territoriales {
+ INT id PK
+ INT eleccion_id FK
+ INT territorio_id FK
+ INT partido_id FK
+ INT votos
+ INT representantes
+ }
+
+ resumen_cera {
+ INT id PK
+ INT eleccion_id FK
+ INT territorio_id FK
+ INT censo_ine
+ INT votos_validos
+ INT abstenciones
+ INT votos_blancos
+ INT votos_nulos
+ }
+
+ votos_cera {
+ INT id PK
+ INT eleccion_id FK
+ INT territorio_id FK
+ INT partido_id FK
+ INT votos
+ }
+
+ tipos_eleccion ||--o{ elecciones : tipo_eleccion
+ elecciones ||--o| elecciones_fuentes : eleccion_id
+ territorios ||--o{ territorios : parent_id
+ partidos_recode ||--o{ partidos : partido_recode_id
+
+ elecciones ||--o{ resumen_territorial : eleccion_id
+ territorios ||--o{ resumen_territorial : territorio_id
+
+ elecciones ||--o{ votos_territoriales : eleccion_id
+ territorios ||--o{ votos_territoriales : territorio_id
+ partidos ||--o{ votos_territoriales : partido_id
+
+ elecciones ||--o{ resumen_cera : eleccion_id
+ territorios ||--o{ resumen_cera : territorio_id
+
+ elecciones ||--o{ votos_cera : eleccion_id
+ territorios ||--o{ votos_cera : territorio_id
+ partidos ||--o{ votos_cera : partido_id
+&lt;/div&gt;
+
+&lt;h2 id="tablas-de-dimensiones"&gt;Tablas de dimensiones&lt;/h2&gt;
+&lt;h3 id="elecciones_fuentes"&gt;&lt;code&gt;elecciones_fuentes&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;Documenta la fuente oficial de los datos para cada elección. Una fila por &lt;code&gt;eleccion_id&lt;/code&gt;.&lt;/p&gt;</description></item><item><title>Registro de cambios</title><link>https://eleccionesdb.spainelectoralproject.com/changelog/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://eleccionesdb.spainelectoralproject.com/changelog/</guid><description>&lt;div class="callout callout-tip"&gt;
+&lt;strong&gt;Versionado de datasets&lt;/strong&gt;
+&lt;p&gt;Los datasets de &lt;code&gt;eleccionesdb&lt;/code&gt; se versionan con &lt;a href="https://semver.org/lang/es/"&gt;versionado semántico&lt;/a&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Mayor&lt;/strong&gt; (X.0.0): cambios incompatibles en el esquema (renombrado de columnas, cambio de tipos, eliminación de tablas).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Menor&lt;/strong&gt; (0.X.0): nuevos datos o nuevas tablas sin romper compatibilidad.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Parche&lt;/strong&gt; (0.0.X): correcciones de datos, errores en valores, ajustes menores.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2 id="v100--2026-04-20"&gt;v1.0.0 — 2026-04-20&lt;/h2&gt;
+&lt;p&gt;Primera versión pública de la base de datos.&lt;/p&gt;
+&lt;h3 id="nuevos-datos"&gt;Nuevos datos&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Elecciones generales al Congreso: todas las convocatorias.&lt;/li&gt;
+&lt;li&gt;Elecciones municipales: todas las convocatorias.&lt;/li&gt;
+&lt;li&gt;Elecciones autonómicas: Andalucía, Aragón, Asturias, Baleares, Canarias, Castilla y León, Cataluña, Comunidad Valenciana, Comunidad de Madrid.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="modelo-de-datos"&gt;Modelo de datos&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Esquema relacional con 5 dimensiones (&lt;code&gt;tipos_eleccion&lt;/code&gt;, &lt;code&gt;elecciones&lt;/code&gt;, &lt;code&gt;territorios&lt;/code&gt;, &lt;code&gt;partidos_recode&lt;/code&gt;, &lt;code&gt;partidos&lt;/code&gt;) y 4 tablas de hechos (&lt;code&gt;resumen_territorial&lt;/code&gt;, &lt;code&gt;votos_territoriales&lt;/code&gt;, &lt;code&gt;resumen_cera&lt;/code&gt;, &lt;code&gt;votos_cera&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Jerarquía territorial completa: CCAA → provincia → circunscripción → municipio → distrito → sección censal.&lt;/li&gt;
+&lt;li&gt;Sistema de recodificación de partidos con dos niveles (&lt;code&gt;partidos_recode&lt;/code&gt; + &lt;code&gt;partidos&lt;/code&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="formatos-de-descarga"&gt;Formatos de descarga&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Parquet (tablas normalizadas).&lt;/li&gt;
+&lt;li&gt;SQLite (esquema relacional con PKs, FKs, índices).&lt;/li&gt;
+&lt;li&gt;CSV planos pre-joineados.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Restaurar data-raw/</title><link>https://eleccionesdb.spainelectoralproject.com/restaurar-data-raw/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://eleccionesdb.spainelectoralproject.com/restaurar-data-raw/</guid><description>&lt;p&gt;Para ejecutar el pipeline ETL necesitas poblar el directorio &lt;code&gt;data-raw/&lt;/code&gt; con los datos originales. Por motivos de tamaño, estos archivos no están en el repositorio.&lt;/p&gt;
+&lt;h2 id="descarga-automática-de-datos"&gt;Descarga automática de datos&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Asegúrate de tener R y los paquetes necesarios (&lt;code&gt;readr&lt;/code&gt;, &lt;code&gt;httr&lt;/code&gt;, &lt;code&gt;fs&lt;/code&gt;, &lt;code&gt;purrr&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Ejecuta el script:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-r" data-lang="r"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#58a1dd"&gt;source&lt;/span&gt;(&lt;span style="color:#a6be9d"&gt;&amp;#34;R/00-setup/download_data_raw.R&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Esto descargará todos los archivos listados en el índice público y los colocará en su ruta correspondiente bajo &lt;code&gt;data-raw/&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;El índice de archivos se encuentra en: &lt;code&gt;docs-site/data_index.csv&lt;/code&gt; (ajusta la URL si lo alojas en otro sitio).&lt;/li&gt;
+&lt;li&gt;El script es idempotente: solo descarga archivos que no existen localmente.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="cómo-se-genera-el-índice"&gt;¿Cómo se genera el índice?&lt;/h2&gt;
+&lt;p&gt;Solo los administradores (con credenciales S3) pueden generar o actualizar el índice:&lt;/p&gt;</description></item></channel></rss>

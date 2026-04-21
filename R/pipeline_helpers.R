@@ -80,3 +80,22 @@ run_export <- function(bind_hechos, dim_elecciones, dim_elecciones_fuentes,
   source("R/04-export/export-descargas.R", encoding = "UTF-8")
   list.files("descargas", full.names = TRUE, recursive = TRUE)
 }
+
+# =============================================================================
+# DIAGNOSTICOS DE CALIDAD
+# =============================================================================
+
+# Detecta incidencias automáticas, las combina con las manuales y escribe
+# docs-site/data/diagnosticos/incidencias.csv
+run_gen_diagnosticos <- function(bind_hechos) {
+  source("R/tests/generate_diagnosticos.R", encoding = "UTF-8")
+  generate_diagnosticos()
+  "docs-site/data/diagnosticos/incidencias.csv"
+}
+
+# Lee incidencias.csv y genera docs-site/content/calidad.md
+run_export_calidad <- function(gen_diagnosticos) {
+  source("R/04-export/export-calidad.R", encoding = "UTF-8")
+  export_calidad()
+  "docs-site/content/calidad.md"
+}

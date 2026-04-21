@@ -71,3 +71,14 @@ When adding new data flows (e.g., a new region or dimension):
 - Do **not** commit or rely on real DB credentials; `.env` should remain untracked.
 - Before changing schemas or table column sets, inspect and align with `R/db_schema.sql` and all scripts that read/write those tables.
 - All regional format scripts must be named `format.R`.
+
+# Instrucciones para documentación y changelog
+
+- Mantén actualizado `CHANGELOG.md` cuando se hagan cambios funcionales, de API, de dependencias, de esquema de datos o de comportamiento visible.
+- Usa el formato Keep a Changelog.
+- Agrupa los cambios en secciones: Added, Changed, Fixed, Removed, Security.
+- No inventes cambios: usa solo diferencias reales del workspace, git diff, commits recientes o archivos modificados.
+- Si no hay evidencia suficiente, pide revisar el diff antes de escribir.
+- Escribe entradas breves, concretas y orientadas al usuario o desarrollador.
+- Si el cambio es interno y no merece changelog, indícalo claramente.
+- Conserva el orden cronológico y no reescribas versiones antiguas salvo corrección evidente.

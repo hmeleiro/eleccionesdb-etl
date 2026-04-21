@@ -27,7 +27,6 @@ info <-
       "codigo_municipio" = "municipio_clave",
       "codigo_distrito" = "distrito_clave",
       "codigo_seccion" = "seccion_clave",
-      "censo_ine" = "cens",
       "votos_totales" = "votostotales",
       "votos_blancos" = "votosblanco",
       "votos_nulos" = "votosnulos",
@@ -35,7 +34,8 @@ info <-
       "abstenciones" = "abstenciones"
     )
 
-    read_csv(file, show_col_types = F) %>%
+    tmp <-
+      read_csv(file, show_col_types = F) %>%
       janitor::clean_names() %>%
       rename(any_of(rename_cols)) %>%
       mutate(
@@ -48,12 +48,19 @@ info <-
         across(any_of("codigo_seccion"), ~ str_pad(.x, 4, "left", "0")),
         year = substr(year, 1, 4), .before = 1
       )
+
+
+    if(all(!"censo_ine" %in% colnames(tmp) & c("votos_totales", "abstenciones") %in% colnames(tmp))) {
+      tmp <- tmp %>% mutate(censo_ine = votos_totales + abstenciones)
+    }
+
+
   }) %>%
   select(any_of(
     c(
       "year", "codigo_ccaa", "codigo_provincia", "codigo_municipio",
       "codigo_distrito", "codigo_seccion",
-      "censo_ine", "votos_blancos", "votos_nulos", "abstenciones"
+      "censo_ine", "votos_validos", "votos_blancos", "votos_nulos", "abstenciones"
     )
   )) %>%
   mutate(
@@ -62,6 +69,8 @@ info <-
     codigo_distrito = ifelse(is.na(codigo_distrito), "99", codigo_distrito),
     codigo_seccion = ifelse(is.na(codigo_seccion), "9999", codigo_seccion)
   )
+
+
 
 votos <-
   map_df(files_votos, function(file) {
@@ -105,6 +114,8 @@ votos <-
     codigo_distrito = ifelse(is.na(codigo_distrito), "99", codigo_distrito),
     codigo_seccion = ifelse(is.na(codigo_seccion), "9999", codigo_seccion)
   )
+
+
 
 
 info_cer <- info %>% filter(codigo_municipio != "901")

@@ -110,5 +110,11 @@ list(
         dim_territorios, dim_partidos
     ),
     format = "file"
-    )
+    ),
+
+    # ---------------------------------------------------------------------------
+    # Phase 6: Diagnósticos de calidad + página web
+    # ---------------------------------------------------------------------------
+    tar_target(gen_diagnosticos, run_gen_diagnosticos(bind_hechos), format = "file"),
+    tar_target(export_calidad,   run_export_calidad(gen_diagnosticos), format = "file")
 )

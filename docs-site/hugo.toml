@@ -40,6 +40,10 @@ title = "eleccionesdb"
     pageRef = "/cobertura/"
     weight = 60
   [[menus.main]]
+    name = "Calidad de los datos"
+    pageRef = "/calidad/"
+    weight = 65
+  [[menus.main]]
     name = "Changelog"
     pageRef = "/changelog/"
     weight = 70
