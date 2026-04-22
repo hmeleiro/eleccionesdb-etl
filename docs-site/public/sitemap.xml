@@ -1,1 +1,25 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml"><url><loc>https://eleccionesdb.spainelectoralproject.com/pipeline/</loc></url><url><loc>https://eleccionesdb.spainelectoralproject.com/calidad/</loc></url><url><loc>https://eleccionesdb.spainelectoralproject.com/categories/</loc></url><url><loc>https://eleccionesdb.spainelectoralproject.com/cobertura/</loc></url><url><loc>https://eleccionesdb.spainelectoralproject.com/</loc></url><url><loc>https://eleccionesdb.spainelectoralproject.com/descargas/</loc></url><url><loc>https://eleccionesdb.spainelectoralproject.com/fuentes/</loc></url><url><loc>https://eleccionesdb.spainelectoralproject.com/modelo-datos/</loc></url><url><loc>https://eleccionesdb.spainelectoralproject.com/changelog/</loc></url><url><loc>https://eleccionesdb.spainelectoralproject.com/restaurar-data-raw/</loc></url><url><loc>https://eleccionesdb.spainelectoralproject.com/tags/</loc></url></urlset>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://eleccionesdb.spainelectoralproject.com/pipeline/</loc>
+  </url><url>
+    <loc>https://eleccionesdb.spainelectoralproject.com/calidad/</loc>
+  </url><url>
+    <loc>https://eleccionesdb.spainelectoralproject.com/categories/</loc>
+  </url><url>
+    <loc>https://eleccionesdb.spainelectoralproject.com/</loc>
+  </url><url>
+    <loc>https://eleccionesdb.spainelectoralproject.com/descargas/</loc>
+  </url><url>
+    <loc>https://eleccionesdb.spainelectoralproject.com/fuentes/</loc>
+  </url><url>
+    <loc>https://eleccionesdb.spainelectoralproject.com/modelo-datos/</loc>
+  </url><url>
+    <loc>https://eleccionesdb.spainelectoralproject.com/changelog/</loc>
+  </url><url>
+    <loc>https://eleccionesdb.spainelectoralproject.com/restaurar-data-raw/</loc>
+  </url><url>
+    <loc>https://eleccionesdb.spainelectoralproject.com/tags/</loc>
+  </url>
+</urlset>

@@ -312,6 +312,7 @@ votos_cer <-
 validate_info(info_cer, label = "15-navarra/info_cer")
 validate_votos(votos_cer, label = "15-navarra/votos_cer")
 validate_info_votos_consistency(info_cer, votos_cer, label = "15-navarra/cer")
+validate_votos_partido_match(votos_cer, label = "15-navarra/votos_cer")
 
 # ===========================================================================
 # WRITE DATA

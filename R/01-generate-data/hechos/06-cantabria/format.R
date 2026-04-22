@@ -233,6 +233,7 @@ votos_cer <-
 validate_info(info_cer, label = "06-cantabria/info_cer")
 validate_votos(votos_cer, label = "06-cantabria/votos_cer")
 validate_info_votos_consistency(info_cer, votos_cer, label = "06-cantabria/cer")
+validate_votos_partido_match(votos_cer, label = "06-cantabria/votos_cer")
 
 # ===========================================================================
 # WRITE DATA

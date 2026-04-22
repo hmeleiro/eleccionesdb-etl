@@ -300,6 +300,7 @@ merge_with_manual <- function(
   manual_df <- if (file.exists(manual_path)) {
     read_csv(manual_path, show_col_types = FALSE) %>%
       mutate(
+        across(c(eleccion_id, anio, n_casos), as.numeric),
         peor_caso_valor    = as.character(peor_caso_valor),
         peor_caso_esperado = as.character(peor_caso_esperado),
         resoluble          = as.logical(resoluble)

@@ -288,6 +288,8 @@ votos_seccion <- votos_seccion %>% filter(!is.na(codigo_seccion))
 # CHECKS
 # ==========================================================================
 
+info_cer %>% filter(abstenciones + votos_validos > censo_ine)
+
 validate_info(info_cer, label = "10-comunidad-valenciana/info_cer")
 validate_votos(votos_cer, label = "10-comunidad-valenciana/votos_cer")
 validate_info_votos_consistency(info_cer, votos_cer, label = "10-comunidad-valenciana/cer")

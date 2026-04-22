@@ -38,6 +38,10 @@ run_export <- function() {
     tar_make(names = c(starts_with("dim_"), starts_with("hechos_"), "partidos_sin_id", "bind_hechos", "export"))
 }
 
+run_export_calidad <- function() {
+    tar_make(names = c(starts_with("dim_"), starts_with("hechos_"), "partidos_sin_id", "bind_hechos", "gen_diagnosticos", "export_calidad"))
+}
+
 show_pipeline <- function() {
     tar_visnetwork()
 }

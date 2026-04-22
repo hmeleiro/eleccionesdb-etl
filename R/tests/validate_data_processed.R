@@ -418,11 +418,17 @@ validate_info_votos_consistency <- function(info_df, votos_df, label = "") {
 #' dimension (data-processed/partidos). Emits a warning (not a stop) listing
 #' unmatched parties sorted by total votes.
 #'
-#' @param df    Votos dataframe (must contain siglas, denominacion, votos).
-#' @param label Short label for messages.
+#' Appends unmatched parties to a CSV file (csv_output) with electoral context
+#' (label, eleccion_id, year, codigo_ccaa, descripcion, siglas, denominacion,
+#' votos) for batch review after running all processing scripts.
+#'
+#' @param df          Votos dataframe (must contain siglas, denominacion, votos).
+#' @param label       Short label for messages.
 #' @param partidos_path Path to the partidos CSV.
+#' @param csv_output  Path to the output CSV. Set to NULL to skip CSV writing.
 validate_votos_partido_match <- function(df, label = "votos",
-                                         partidos_path = "data-processed/partidos") {
+                                         partidos_path = "data-processed/partidos",
+                                         csv_output = "data-processed/partidos_sin_match.csv") {
     lbl <- label
 
     if (!file.exists(partidos_path)) {
@@ -439,8 +445,10 @@ validate_votos_partido_match <- function(df, label = "votos",
     votos_with_key <- df %>%
         mutate(across(c(denominacion, siglas), norm_lower, .names = "{.col}_lower"))
 
-    sin_match <- votos_with_key %>%
-        anti_join(partidos, by = c("denominacion_lower", "siglas_lower")) %>%
+    sin_match_raw <- votos_with_key %>%
+        anti_join(partidos, by = c("denominacion_lower", "siglas_lower"))
+
+    sin_match <- sin_match_raw %>%
         group_by(denominacion, siglas) %>%
         summarise(votos = sum(votos, na.rm = TRUE), .groups = "drop") %>%
         arrange(desc(votos))
@@ -452,6 +460,35 @@ validate_votos_partido_match <- function(df, label = "votos",
         )
         warning(msg, call. = FALSE)
         print(head(sin_match, 20))
+
+        if (!is.null(csv_output)) {
+            elecciones_path <- "tablas-finales/dimensiones/elecciones"
+            has_eleccion_id <- "eleccion_id" %in% colnames(df)
+
+            if (has_eleccion_id && file.exists(elecciones_path)) {
+                elecciones_dim <- read_csv(elecciones_path, show_col_types = FALSE) %>%
+                    select(eleccion_id = id, year, codigo_ccaa, descripcion)
+
+                sin_match_ctx <- sin_match_raw %>%
+                    group_by(eleccion_id, siglas, denominacion) %>%
+                    summarise(votos = sum(votos, na.rm = TRUE), .groups = "drop") %>%
+                    left_join(elecciones_dim, by = "eleccion_id") %>%
+                    mutate(label = lbl) %>%
+                    select(label, eleccion_id, year, codigo_ccaa, descripcion,
+                           siglas, denominacion, votos) %>%
+                    arrange(desc(votos))
+            } else {
+                sin_match_ctx <- sin_match %>%
+                    mutate(label = lbl, eleccion_id = NA_integer_,
+                           year = NA_integer_, codigo_ccaa = NA_character_,
+                           descripcion = NA_character_) %>%
+                    select(label, eleccion_id, year, codigo_ccaa, descripcion,
+                           siglas, denominacion, votos)
+            }
+
+            append_mode <- file.exists(csv_output)
+            write_csv(sin_match_ctx, csv_output, append = append_mode)
+        }
     } else {
         message(sprintf("  [OK] %s: todos los partidos tienen match en %s", lbl, partidos_path))
     }

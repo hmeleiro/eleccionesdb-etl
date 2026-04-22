@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es">
-  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8" />
+  <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Calidad de los datos · eleccionesdb</title>
 <meta name="description" content="Disclaimer, limitaciones conocidas e incidencias de calidad detectadas en eleccionesdb" />
@@ -13,7 +13,7 @@
   content="Disclaimer, limitaciones conocidas e incidencias de calidad detectadas en eleccionesdb"
 />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://localhost:1313/calidad/" />
+<meta property="og:url" content="https://eleccionesdb.spainelectoralproject.com/calidad/" />
 <meta property="og:site_name" content="eleccionesdb" />
 
 
@@ -35,7 +35,7 @@
 
   <body><header class="site-header">
   <div class="container header-inner">
-    <a href="http://localhost:1313/" class="site-logo">
+    <a href="https://eleccionesdb.spainelectoralproject.com/" class="site-logo">
       <span class="logo-icon">◆</span>
       <span class="logo-text">eleccionesdb</span>
     </a>
@@ -66,20 +66,14 @@
           </li>
         
           <li class="nav-item">
-            <a href="/fuentes/" class="nav-link">
-              Fuentes
-            </a>
-          </li>
-        
-          <li class="nav-item">
             <a href="/descargas/" class="nav-link">
               Descargas
             </a>
           </li>
         
           <li class="nav-item">
-            <a href="/cobertura/" class="nav-link">
-              Cobertura
+            <a href="/fuentes/" class="nav-link">
+              Fuentes
             </a>
           </li>
         
@@ -162,8 +156,8 @@ repositorio:</p>
 </div>
 <hr>
 <h2 id="incidencias-conocidas">Incidencias conocidas</h2>
-<p>A continuación se documentan <strong>30 grupos de incidencias</strong> detectados en <strong>26 elecciones</strong>,
-con un total de <strong>4.445 territorios afectados</strong> en algún grado. Estas incidencias han sido
+<p>A continuación se documentan <strong>28 grupos de incidencias</strong> detectados en <strong>27 elecciones</strong>,
+con un total de <strong>4.214 territorios afectados</strong> en algún grado. Estas incidencias han sido
 identificadas de forma automática a partir de los datos finales, o documentadas manualmente.</p>
 <h3 id="resumen">Resumen</h3>
 <table>
@@ -176,23 +170,23 @@ identificadas de forma automática a partir de los datos finales, o documentadas
   <tbody>
       <tr>
           <td>Tipos de incidencia</td>
-          <td>5</td>
+          <td>2</td>
       </tr>
       <tr>
           <td>Grupos documentados</td>
-          <td>30</td>
+          <td>28</td>
       </tr>
       <tr>
           <td>Elecciones afectadas</td>
-          <td>26</td>
+          <td>27</td>
       </tr>
       <tr>
           <td>Territorios afectados (total)</td>
-          <td>4.445</td>
+          <td>4.214</td>
       </tr>
       <tr>
           <td>Última actualización</td>
-          <td>21 de abril de 2026</td>
+          <td>22 de abril de 2026</td>
       </tr>
   </tbody>
 </table>
@@ -200,9 +194,9 @@ identificadas de forma automática a partir de los datos finales, o documentadas
 <h2 id="detalle-por-tipo-de-incidencia">Detalle por tipo de incidencia</h2>
 <h3 id="votos--censo">Votos &gt; censo</h3>
 <p>La suma de votos válidos y abstenciones supera el censo INE. Puede indicar un error en el censo publicado, en los totales de participación, o en la fuente original.</p>
-<p><strong>11 elecciones afectadas · 3.881 territorios con incidencia en total</strong></p>
+<p><strong>13 elecciones afectadas · 4.123 territorios con incidencia en total</strong></p>
 <details>
-<summary>Ver 11 elecciones afectadas</summary>
+<summary>Ver 13 elecciones afectadas</summary>
 <table>
   <thead>
       <tr>
@@ -217,9 +211,27 @@ identificadas de forma automática a partir de los datos finales, o documentadas
   </thead>
   <tbody>
       <tr>
+          <td>Elecciones Autonómicas Catalunya 1980</td>
+          <td>1980</td>
+          <td>238</td>
+          <td>ccaa / municipio / provincia / seccion</td>
+          <td>Lleida</td>
+          <td><span class="badge badge-no-resoluble">no resoluble</span></td>
+          <td><span class="badge badge-automatico">automático</span></td>
+      </tr>
+      <tr>
           <td>Elecciones Autonómicas Valencia 1987</td>
           <td>1987</td>
           <td>1</td>
+          <td>seccion</td>
+          <td>—</td>
+          <td><span class="badge badge-no-resoluble">no resoluble</span></td>
+          <td><span class="badge badge-automatico">automático</span></td>
+      </tr>
+      <tr>
+          <td>Elecciones Autonómicas Catalunya 1988</td>
+          <td>1988</td>
+          <td>4</td>
           <td>seccion</td>
           <td>—</td>
           <td><span class="badge badge-no-resoluble">no resoluble</span></td>
@@ -321,9 +333,9 @@ identificadas de forma automática a partir de los datos finales, o documentadas
 <hr>
 <h3 id="votos-nulos--votos-válidos">Votos nulos &gt; votos válidos</h3>
 <p>El número de votos nulos supera al total de votos válidos, lo cual es aritméticamente posible, pero probablemente indica un error en la fuente original o en el proceso de integración.</p>
-<p><strong>16 elecciones afectadas · 320 territorios con incidencia en total</strong></p>
+<p><strong>15 elecciones afectadas · 91 territorios con incidencia en total</strong></p>
 <details>
-<summary>Ver 16 elecciones afectadas</summary>
+<summary>Ver 15 elecciones afectadas</summary>
 <table>
   <thead>
       <tr>
@@ -352,15 +364,6 @@ identificadas de forma automática a partir de los datos finales, o documentadas
           <td>28</td>
           <td>municipio</td>
           <td>Fayos, Los</td>
-          <td><span class="badge badge-no-resoluble">no resoluble</span></td>
-          <td><span class="badge badge-automatico">automático</span></td>
-      </tr>
-      <tr>
-          <td>Elecciones Autonómicas Catalunya 1980</td>
-          <td>1980</td>
-          <td>229</td>
-          <td>municipio / provincia / seccion</td>
-          <td>Lleida</td>
           <td><span class="badge badge-no-resoluble">no resoluble</span></td>
           <td><span class="badge badge-automatico">automático</span></td>
       </tr>
@@ -484,90 +487,6 @@ identificadas de forma automática a partir de los datos finales, o documentadas
   </tbody>
 </table>
 </details>
-<hr>
-<h3 id="votos-en-blanco--votos-válidos">Votos en blanco &gt; votos válidos</h3>
-<p>El número de votos en blanco supera al total de votos válidos. Aritméticamente imposible; indica un error en el dato de origen o en la integración.</p>
-<p><strong>1 elecciones afectadas · 229 territorios con incidencia en total</strong></p>
-<table>
-  <thead>
-      <tr>
-          <th>Elección</th>
-          <th>Año</th>
-          <th>N territorios</th>
-          <th>Nivel</th>
-          <th>Ejemplo</th>
-          <th>Resoluble</th>
-          <th>Origen</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Elecciones Autonómicas Catalunya 1980</td>
-          <td>1980</td>
-          <td>229</td>
-          <td>municipio / provincia / seccion</td>
-          <td>Lleida</td>
-          <td><span class="badge badge-no-resoluble">no resoluble</span></td>
-          <td><span class="badge badge-automatico">automático</span></td>
-      </tr>
-  </tbody>
-</table>
-<hr>
-<h3 id="inconsistencia-en-agregaciones-territoriales">Inconsistencia en agregaciones territoriales</h3>
-<p>La suma de votos por municipio no coincide con el total provincial publicado por la misma fuente para esa elección.</p>
-<p><strong>1 elecciones afectadas · 12 territorios con incidencia en total</strong></p>
-<table>
-  <thead>
-      <tr>
-          <th>Elección</th>
-          <th>Año</th>
-          <th>N territorios</th>
-          <th>Nivel</th>
-          <th>Ejemplo</th>
-          <th>Resoluble</th>
-          <th>Origen</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Elecciones Municipales 2019</td>
-          <td>2019</td>
-          <td>12</td>
-          <td>municipio / provincia</td>
-          <td>Barcelona</td>
-          <td><span class="badge badge-no-resoluble">no resoluble</span></td>
-          <td><span class="badge badge-manual">manual</span></td>
-      </tr>
-  </tbody>
-</table>
-<hr>
-<h3 id="discrepancia-entre-publicaciones-oficiales">Discrepancia entre publicaciones oficiales</h3>
-<p>El total de votos publicado en la página del Ministerio difiere del dato publicado en el BOE para la misma elección y circunscripción.</p>
-<p><strong>1 elecciones afectadas · 3 territorios con incidencia en total</strong></p>
-<table>
-  <thead>
-      <tr>
-          <th>Elección</th>
-          <th>Año</th>
-          <th>N territorios</th>
-          <th>Nivel</th>
-          <th>Ejemplo</th>
-          <th>Resoluble</th>
-          <th>Origen</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Elecciones Generales 1977</td>
-          <td>1977</td>
-          <td>3</td>
-          <td>provincia</td>
-          <td>Huelva</td>
-          <td><span class="badge badge-no-resoluble">no resoluble</span></td>
-          <td><span class="badge badge-manual">manual</span></td>
-      </tr>
-  </tbody>
-</table>
 <hr>
 <h2 id="aviso-secciones-censales-con-código-de-4-dígitos">Aviso: secciones censales con código de 4 dígitos</h2>
 <p>En España, el código de sección censal tiene habitualmente <strong>3 dígitos</strong> (p. ej. <code>001</code>, <code>042</code>).

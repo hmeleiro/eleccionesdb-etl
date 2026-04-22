@@ -300,6 +300,7 @@ info_cer <- info_cer %>%
 validate_info(info_cer, label = "02-aragon/info_cer")
 validate_votos(votos_cer, label = "02-aragon/votos_cer")
 validate_info_votos_consistency(info_cer, votos_cer, label = "02-aragon")
+validate_votos_partido_match(votos_cer, label = "02-aragon/votos_cer")
 
 # WRITE DATA
 dir.create(OUTPUT_DIR, showWarnings = F)

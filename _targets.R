@@ -36,7 +36,9 @@ hechos_regions <- c(
     murcia      = "14-murcia",
     navarra     = "15-navarra",
     pais_vasco  = "16-pais-vasco",
-    la_rioja    = "17-la-rioja"
+    la_rioja    = "17-la-rioja",
+    # Escrutinio provisional (Minsait): elecciones más recientes sin datos definitivos
+    minsait     = "minsait"
 )
 
 # Build one target per region

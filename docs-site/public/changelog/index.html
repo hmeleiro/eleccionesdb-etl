@@ -1,5 +1,206 @@
-<!doctype html><html lang=es><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Registro de cambios · eleccionesdb</title><meta name=description content="Historial de versiones de eleccionesdb"><meta name=author content="Héctor Meleiro"><meta property="og:title" content="Registro de cambios"><meta property="og:description" content="Historial de versiones de eleccionesdb"><meta property="og:type" content="article"><meta property="og:url" content="https://eleccionesdb.spainelectoralproject.com/changelog/"><meta property="og:site_name" content="eleccionesdb"><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel=stylesheet><link rel=stylesheet href=/css/main.min.a274442a983c222a5b2608b4a4d0e99af90d69dfcc43825d0a878b987a4326a3.css integrity="sha256-onREKpg8IipbJgi0pNDpmvkNad/MQ4JdCoeLmHpDJqM="><script src=https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js></script><script>mermaid.initialize({startOnLoad:!0,theme:"neutral"})</script></head><body><header class=site-header><div class="container header-inner"><a href=https://eleccionesdb.spainelectoralproject.com/ class=site-logo><span class=logo-icon>◆</span>
-<span class=logo-text>eleccionesdb</span>
-</a><button class=menu-toggle aria-label="Abrir menú" aria-expanded=false>
-<span class=hamburger></span></button><nav class=site-nav id=site-nav><ul class=nav-list><li class=nav-item><a href=/ class=nav-link>Inicio</a></li><li class=nav-item><a href=/pipeline/ class=nav-link>Pipeline</a></li><li class=nav-item><a href=/modelo-datos/ class=nav-link>Modelo de datos</a></li><li class=nav-item><a href=/fuentes/ class=nav-link>Fuentes</a></li><li class=nav-item><a href=/descargas/ class=nav-link>Descargas</a></li><li class=nav-item><a href=/cobertura/ class=nav-link>Cobertura</a></li><li class=nav-item><a href=/calidad/ class=nav-link>Calidad de los datos</a></li><li class=nav-item><a href=/changelog/ class="nav-link is-active">Changelog</a></li><li class=nav-item><a href=https://github.com/hmeleiro/eleccionesdb-etl class=nav-link target=_blank rel=noopener>GitHub</a></li></ul></nav></div></header><script>(function(){const e=document.querySelector(".menu-toggle"),t=document.getElementById("site-nav");e&&t&&e.addEventListener("click",function(){const e=this.getAttribute("aria-expanded")==="true";this.setAttribute("aria-expanded",!e),t.classList.toggle("is-open")})})()</script><main id=content><article class=page-single><div class=container><div class=page-header><h1>Registro de cambios</h1><p class=page-desc>Historial de versiones de eleccionesdb</p></div><div class="page-content prose"><div class="callout callout-tip"><strong>Versionado de datasets</strong><p>Los datasets de <code>eleccionesdb</code> se versionan con <a href=https://semver.org/lang/es/>versionado semántico</a>:</p><ul><li><strong>Mayor</strong> (X.0.0): cambios incompatibles en el esquema (renombrado de columnas, cambio de tipos, eliminación de tablas).</li><li><strong>Menor</strong> (0.X.0): nuevos datos o nuevas tablas sin romper compatibilidad.</li><li><strong>Parche</strong> (0.0.X): correcciones de datos, errores en valores, ajustes menores.</li></ul></div><hr><h2 id=v100--2026-04-20>v1.0.0 — 2026-04-20</h2><p>Primera versión pública de la base de datos.</p><h3 id=nuevos-datos>Nuevos datos</h3><ul><li>Elecciones generales al Congreso: todas las convocatorias.</li><li>Elecciones municipales: todas las convocatorias.</li><li>Elecciones autonómicas: Andalucía, Aragón, Asturias, Baleares, Canarias, Castilla y León, Cataluña, Comunidad Valenciana, Comunidad de Madrid.</li></ul><h3 id=modelo-de-datos>Modelo de datos</h3><ul><li>Esquema relacional con 5 dimensiones (<code>tipos_eleccion</code>, <code>elecciones</code>, <code>territorios</code>, <code>partidos_recode</code>, <code>partidos</code>) y 4 tablas de hechos (<code>resumen_territorial</code>, <code>votos_territoriales</code>, <code>resumen_cera</code>, <code>votos_cera</code>).</li><li>Jerarquía territorial completa: CCAA → provincia → circunscripción → municipio → distrito → sección censal.</li><li>Sistema de recodificación de partidos con dos niveles (<code>partidos_recode</code> + <code>partidos</code>).</li></ul><h3 id=formatos-de-descarga>Formatos de descarga</h3><ul><li>Parquet (tablas normalizadas).</li><li>SQLite (esquema relacional con PKs, FKs, índices).</li><li>CSV planos pre-joineados.</li></ul></div></div></article></main><footer class=site-footer><div class=container><div class=footer-inner><div class=footer-brand><span class=logo-icon>◆</span>
-<span class=footer-title>eleccionesdb</span><p class=footer-desc>Base de datos relacional abierta con resultados electorales de España.</p></div><div class=footer-links><div class=footer-col><h4>Documentación</h4><ul><li><a href=/pipeline/>Pipeline</a></li><li><a href=/modelo-datos/>Modelo de datos</a></li><li><a href=/fuentes/>Fuentes</a></li><li><a href=/descargas/>Descargas</a></li><li><a href=/cobertura/>Cobertura</a></li></ul></div><div class=footer-col><h4>Proyecto</h4><ul><li><a href=https://spainelectoralproject.com/ target=_blank rel=noopener>Spain Electoral Project</a></li><li><a href=https://eleccionesdb-api.spainelectoralproject.com/ target=_blank rel=noopener>EleccionesDB API</a></li><li><a href=https://github.com/hmeleiro/eleccionesdb-etl target=_blank rel=noopener>GitHub</a></li></ul></div></div></div><div class=footer-bottom><p>© 2026 <a href=https://spainelectoralproject.com/ target=_blank rel=noopener>Spain Electoral Project</a>. Contenido disponible bajo licencia abierta.</p></div></div></footer></body></html>
+<!doctype html>
+<html lang="es">
+  <head><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Registro de cambios · eleccionesdb</title>
+<meta name="description" content="Historial de versiones de eleccionesdb" />
+<meta name="author" content="Héctor Meleiro" />
+
+
+<meta property="og:title" content="Registro de cambios" />
+<meta
+  property="og:description"
+  content="Historial de versiones de eleccionesdb"
+/>
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://eleccionesdb.spainelectoralproject.com/changelog/" />
+<meta property="og:site_name" content="eleccionesdb" />
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+
+
+
+<link rel="stylesheet" href="/css/main.min.a274442a983c222a5b2608b4a4d0e99af90d69dfcc43825d0a878b987a4326a3.css" integrity="sha256-onREKpg8IipbJgi0pNDpmvkNad/MQ4JdCoeLmHpDJqM=" />
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: "neutral" });</script>
+</head>
+
+  <body><header class="site-header">
+  <div class="container header-inner">
+    <a href="https://eleccionesdb.spainelectoralproject.com/" class="site-logo">
+      <span class="logo-icon">◆</span>
+      <span class="logo-text">eleccionesdb</span>
+    </a>
+
+    <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
+      <span class="hamburger"></span>
+    </button>
+
+    <nav class="site-nav" id="site-nav">
+      <ul class="nav-list">
+        
+          <li class="nav-item">
+            <a href="/" class="nav-link">
+              Inicio
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/pipeline/" class="nav-link">
+              Pipeline
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/modelo-datos/" class="nav-link">
+              Modelo de datos
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/descargas/" class="nav-link">
+              Descargas
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/fuentes/" class="nav-link">
+              Fuentes
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/calidad/" class="nav-link">
+              Calidad de los datos
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a href="/changelog/" class="nav-link is-active">
+              Changelog
+            </a>
+          </li>
+        
+        <li class="nav-item">
+          <a href="https://github.com/hmeleiro/eleccionesdb-etl" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  (function () {
+    const toggle = document.querySelector(".menu-toggle");
+    const nav = document.getElementById("site-nav");
+    if (toggle && nav) {
+      toggle.addEventListener("click", function () {
+        const expanded = this.getAttribute("aria-expanded") === "true";
+        this.setAttribute("aria-expanded", !expanded);
+        nav.classList.toggle("is-open");
+      });
+    }
+  })();
+</script>
+<main id="content">
+  <article class="page-single">
+    <div class="container">
+      <div class="page-header">
+        <h1>Registro de cambios</h1>
+        
+          <p class="page-desc">Historial de versiones de eleccionesdb</p>
+        
+      </div>
+      <div class="page-content prose">
+        <div class="callout callout-tip">
+<strong>Versionado de datasets</strong>
+<p>Los datasets de <code>eleccionesdb</code> se versionan con <a href="https://semver.org/lang/es/">versionado semántico</a>:</p>
+<ul>
+<li><strong>Mayor</strong> (X.0.0): cambios incompatibles en el esquema (renombrado de columnas, cambio de tipos, eliminación de tablas).</li>
+<li><strong>Menor</strong> (0.X.0): nuevos datos o nuevas tablas sin romper compatibilidad.</li>
+<li><strong>Parche</strong> (0.0.X): correcciones de datos, errores en valores, ajustes menores.</li>
+</ul>
+</div>
+<hr>
+<h2 id="v110--2026-04-22">v1.1.0 — 2026-04-22</h2>
+<h3 id="added">Added</h3>
+<ul>
+<li><strong>Escrutinio provisional (Minsait):</strong> se incorporan los datos de la noche electoral para tres convocatorias autonómicas recientes sin datos definitivos publicados: Extremadura 2025 (21 dic 2025), Aragón 2026 (8 feb 2026) y Castilla y León 2026 (15 mar 2026).
+<ul>
+<li>Nuevo script unificado <code>R/01-generate-data/hechos/minsait/format.R</code> que procesa los tres ficheros CSV conjuntamente.</li>
+<li>Granularidad hasta nivel de sección censal (fuente: mesa electoral).</li>
+<li><strong>Nota:</strong> el voto exterior (CERA) no está incluido en el escrutinio provisional.</li>
+</ul>
+</li>
+<li>Nuevo apartado <em>Datos provisionales</em> en la página de calidad de datos con advertencias explícitas sobre la naturaleza de esta fuente.</li>
+<li>Documentación de la fuente Minsait en la página de fuentes de datos.</li>
+</ul>
+<hr>
+<h2 id="v100--2026-04-20">v1.0.0 — 2026-04-20</h2>
+<p>Primera versión pública de la base de datos.</p>
+<h3 id="nuevos-datos">Nuevos datos</h3>
+<ul>
+<li>Elecciones generales al Congreso: todas las convocatorias.</li>
+<li>Elecciones municipales: todas las convocatorias.</li>
+<li>Elecciones autonómicas: Andalucía, Aragón, Asturias, Baleares, Canarias, Castilla y León, Cataluña, Comunidad Valenciana, Comunidad de Madrid.</li>
+</ul>
+<h3 id="modelo-de-datos">Modelo de datos</h3>
+<ul>
+<li>Esquema relacional con 5 dimensiones (<code>tipos_eleccion</code>, <code>elecciones</code>, <code>territorios</code>, <code>partidos_recode</code>, <code>partidos</code>) y 4 tablas de hechos (<code>resumen_territorial</code>, <code>votos_territoriales</code>, <code>resumen_cera</code>, <code>votos_cera</code>).</li>
+<li>Jerarquía territorial completa: CCAA → provincia → circunscripción → municipio → distrito → sección censal.</li>
+<li>Sistema de recodificación de partidos con dos niveles (<code>partidos_recode</code> + <code>partidos</code>).</li>
+</ul>
+<h3 id="formatos-de-descarga">Formatos de descarga</h3>
+<ul>
+<li>Parquet (tablas normalizadas).</li>
+<li>SQLite (esquema relacional con PKs, FKs, índices).</li>
+<li>CSV planos pre-joineados.</li>
+</ul>
+
+      </div>
+    </div>
+  </article>
+</main><footer class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon">◆</span>
+        <span class="footer-title">eleccionesdb</span>
+        <p class="footer-desc">Base de datos relacional abierta con resultados electorales de España.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Documentación</h4>
+          <ul>
+            <li><a href="/pipeline/">Pipeline</a></li>
+            <li><a href="/modelo-datos/">Modelo de datos</a></li>
+            <li><a href="/fuentes/">Fuentes</a></li>
+            <li><a href="/descargas/">Descargas</a></li>
+            <li><a href="/cobertura/">Cobertura</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Proyecto</h4>
+          <ul>
+            <li><a href="https://spainelectoralproject.com/" target="_blank" rel="noopener">Spain Electoral Project</a></li>
+            <li><a href="https://eleccionesdb-api.spainelectoralproject.com/" target="_blank" rel="noopener">EleccionesDB API</a></li>
+            <li><a href="https://github.com/hmeleiro/eleccionesdb-etl" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <a href="https://spainelectoralproject.com/" target="_blank" rel="noopener">Spain Electoral Project</a>. Contenido disponible bajo licencia abierta.</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

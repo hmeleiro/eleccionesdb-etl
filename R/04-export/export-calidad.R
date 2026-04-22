@@ -104,7 +104,7 @@ render_tipo_section <- function(df_tipo) {
     mutate(
       Resoluble = badge_resoluble(resoluble),
       Origen    = badge_origen(origen),
-      `N territorios` = format(n_casos, big.mark = ".")
+      `N territorios` = format(n_casos, big.mark = ".", decimal.mark = ",")
     ) %>%
     select(
       Elección       = eleccion,

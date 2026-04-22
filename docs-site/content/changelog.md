@@ -15,6 +15,19 @@ description: "Historial de versiones de eleccionesdb"
 
 ---
 
+## v1.1.0 — 2026-04-22
+
+### Added
+
+- **Escrutinio provisional (Minsait):** se incorporan los datos de la noche electoral para tres convocatorias autonómicas recientes sin datos definitivos publicados: Extremadura 2025 (21 dic 2025), Aragón 2026 (8 feb 2026) y Castilla y León 2026 (15 mar 2026).
+  - Nuevo script unificado `R/01-generate-data/hechos/minsait/format.R` que procesa los tres ficheros CSV conjuntamente.
+  - Granularidad hasta nivel de sección censal (fuente: mesa electoral).
+  - **Nota:** el voto exterior (CERA) no está incluido en el escrutinio provisional.
+- Nuevo apartado *Datos provisionales* en la página de calidad de datos con advertencias explícitas sobre la naturaleza de esta fuente.
+- Documentación de la fuente Minsait en la página de fuentes de datos.
+
+---
+
 ## v1.0.0 — 2026-04-20
 
 Primera versión pública de la base de datos.

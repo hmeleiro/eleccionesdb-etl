@@ -227,6 +227,7 @@ votos_cer <-
 validate_info(info_cer, label = "16-pais-vasco/info_cer")
 validate_votos(votos_cer, label = "16-pais-vasco/votos_cer")
 validate_info_votos_consistency(info_cer, votos_cer, label = "16-pais-vasco/cer")
+validate_votos_partido_match(votos_cer, label = "16-pais-vasco/votos_cer")
 
 # ===========================================================================
 # WRITE DATA

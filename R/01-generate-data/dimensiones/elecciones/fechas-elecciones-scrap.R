@@ -87,5 +87,16 @@ if(resp$status_code == 200) {
   }
 }
 
+cyl2026 <- fechas_elecciones %>% filter(tipo_eleccion == "autonomicas" & fecha == "2026-03-15")
+if(nrow(cyl2026) == 0) {
+  fechas_elecciones <-
+    fechas_elecciones %>%
+    add_row(
+      tipo_eleccion = "autonomicas",
+      ccaa = "Castillayleon",
+      fecha = "15 de marzo de 2026"
+    )
+}
+
 
 write_csv(fechas_elecciones, "data-raw/fechas_elecciones.csv")

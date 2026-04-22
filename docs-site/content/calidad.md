@@ -46,19 +46,19 @@ repositorio:
 
 ## Incidencias conocidas
 
-A continuación se documentan **30 grupos de incidencias** detectados en **26 elecciones**,
-con un total de **4.445 territorios afectados** en algún grado. Estas incidencias han sido
+A continuación se documentan **28 grupos de incidencias** detectados en **27 elecciones**,
+con un total de **4.214 territorios afectados** en algún grado. Estas incidencias han sido
 identificadas de forma automática a partir de los datos finales, o documentadas manualmente.
 
 ### Resumen
 
 | Indicador | Valor |
 |---|---|
-| Tipos de incidencia | 5 |
-| Grupos documentados | 30 |
-| Elecciones afectadas | 26 |
-| Territorios afectados (total) | 4.445 |
-| Última actualización | 21 de abril de 2026 |
+| Tipos de incidencia | 2 |
+| Grupos documentados | 28 |
+| Elecciones afectadas | 27 |
+| Territorios afectados (total) | 4.214 |
+| Última actualización | 22 de abril de 2026 |
 
 ---
 
@@ -68,14 +68,16 @@ identificadas de forma automática a partir de los datos finales, o documentadas
 
 La suma de votos válidos y abstenciones supera el censo INE. Puede indicar un error en el censo publicado, en los totales de participación, o en la fuente original.
 
-**11 elecciones afectadas · 3.881 territorios con incidencia en total**
+**13 elecciones afectadas · 4.123 territorios con incidencia en total**
 
 <details>
-<summary>Ver 11 elecciones afectadas</summary>
+<summary>Ver 13 elecciones afectadas</summary>
 
 | Elección | Año | N territorios | Nivel | Ejemplo | Resoluble | Origen |
 | --- | --- | --- | --- | --- | --- | --- |
+| Elecciones Autonómicas Catalunya 1980 | 1980 |   238 | ccaa / municipio / provincia / seccion | Lleida | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Autonómicas Valencia 1987 | 1987 |     1 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Autonómicas Catalunya 1988 | 1988 |     4 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Autonómicas Valencia 1995 | 1995 |     4 | municipio / seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Autonómicas Canarias 1999 | 1999 |     3 | municipio / seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Autonómicas Galicia 2001 | 2001 |     2 | municipio | Mesía | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
@@ -95,67 +97,30 @@ La suma de votos válidos y abstenciones supera el censo INE. Puede indicar un e
 
 El número de votos nulos supera al total de votos válidos, lo cual es aritméticamente posible, pero probablemente indica un error en la fuente original o en el proceso de integración.
 
-**16 elecciones afectadas · 320 territorios con incidencia en total**
+**15 elecciones afectadas · 91 territorios con incidencia en total**
 
 <details>
-<summary>Ver 16 elecciones afectadas</summary>
+<summary>Ver 15 elecciones afectadas</summary>
 
 | Elección | Año | N territorios | Nivel | Ejemplo | Resoluble | Origen |
 | --- | --- | --- | --- | --- | --- | --- |
-| Elecciones Generales 1977 | 1977 |   1 | municipio | Sant Esteve de la Sarga | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Locales 1979 | 1979 |  28 | municipio | Fayos, Los | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Autonómicas Catalunya 1980 | 1980 | 229 | municipio / provincia / seccion | Lleida | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Generales 1982 | 1982 |   2 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Locales 1983 | 1983 |   2 | municipio | Población de Cerrato | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Autonómicas Castillayleon 1987 | 1987 |   4 | municipio / seccion | Zarza de Pumareda, La | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Autonómicas Valencia 1987 | 1987 |   1 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Locales 1987 | 1987 |   3 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Locales 1995 | 1995 |   1 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Locales 2003 | 2003 |  18 | municipio / seccion | Aizarnazabal | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Generales 2004 | 2004 |   8 | municipio / seccion | Lizartza | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Autonómicas Castillayleon 2007 | 2007 |   2 | municipio / seccion | Barcones | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Locales 2007 | 2007 |   9 | municipio / seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Autonómicas Paisvasco 2009 | 2009 |   8 | municipio / seccion | Lizartza | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Autonómicas Castillayleon 2019 | 2019 |   2 | municipio / seccion | Fuenteguinaldo | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-| Elecciones Generales 2023 | 2023 |   2 | municipio / seccion | Jaramillo Quemado | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Generales 1977 | 1977 |  1 | municipio | Sant Esteve de la Sarga | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Locales 1979 | 1979 | 28 | municipio | Fayos, Los | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Generales 1982 | 1982 |  2 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Locales 1983 | 1983 |  2 | municipio | Población de Cerrato | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Autonómicas Castillayleon 1987 | 1987 |  4 | municipio / seccion | Zarza de Pumareda, La | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Autonómicas Valencia 1987 | 1987 |  1 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Locales 1987 | 1987 |  3 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Locales 1995 | 1995 |  1 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Locales 2003 | 2003 | 18 | municipio / seccion | Aizarnazabal | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Generales 2004 | 2004 |  8 | municipio / seccion | Lizartza | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Autonómicas Castillayleon 2007 | 2007 |  2 | municipio / seccion | Barcones | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Locales 2007 | 2007 |  9 | municipio / seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Autonómicas Paisvasco 2009 | 2009 |  8 | municipio / seccion | Lizartza | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Autonómicas Castillayleon 2019 | 2019 |  2 | municipio / seccion | Fuenteguinaldo | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Generales 2023 | 2023 |  2 | municipio / seccion | Jaramillo Quemado | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 
 </details>
-
----
-
-### Votos en blanco > votos válidos
-
-El número de votos en blanco supera al total de votos válidos. Aritméticamente imposible; indica un error en el dato de origen o en la integración.
-
-**1 elecciones afectadas · 229 territorios con incidencia en total**
-
-| Elección | Año | N territorios | Nivel | Ejemplo | Resoluble | Origen |
-| --- | --- | --- | --- | --- | --- | --- |
-| Elecciones Autonómicas Catalunya 1980 | 1980 | 229 | municipio / provincia / seccion | Lleida | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
-
----
-
-### Inconsistencia en agregaciones territoriales
-
-La suma de votos por municipio no coincide con el total provincial publicado por la misma fuente para esa elección.
-
-**1 elecciones afectadas · 12 territorios con incidencia en total**
-
-| Elección | Año | N territorios | Nivel | Ejemplo | Resoluble | Origen |
-| --- | --- | --- | --- | --- | --- | --- |
-| Elecciones Municipales 2019 | 2019 | 12 | municipio / provincia | Barcelona | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-manual">manual</span> |
-
----
-
-### Discrepancia entre publicaciones oficiales
-
-El total de votos publicado en la página del Ministerio difiere del dato publicado en el BOE para la misma elección y circunscripción.
-
-**1 elecciones afectadas · 3 territorios con incidencia en total**
-
-| Elección | Año | N territorios | Nivel | Ejemplo | Resoluble | Origen |
-| --- | --- | --- | --- | --- | --- | --- |
-| Elecciones Generales 1977 | 1977 | 3 | provincia | Huelva | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-manual">manual</span> |
 
 
 ---

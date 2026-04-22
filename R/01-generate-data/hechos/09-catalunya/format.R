@@ -61,6 +61,7 @@ info <-
     codigo_seccion,
     codigo_mesa,
     censo_ine,
+    votos_validos,
     votos_blancos,
     votos_nulos,
     abstenciones,
@@ -265,6 +266,7 @@ validate_votos(votos_cer, label = "09-catalunya/votos_cer")
 
 # optional: cross-check that both cover the same territory/election keys
 validate_info_votos_consistency(info_cer, votos_cer, label = "01-andalucia/cer")
+validate_votos_partido_match(votos_cer, label = "09-catalunya/votos_cer")
 
 # WRITE DATA
 dir.create(OUTPUT_DIR, showWarnings = F)

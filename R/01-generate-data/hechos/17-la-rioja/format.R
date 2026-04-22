@@ -229,6 +229,7 @@ votos_cer <-
 validate_info(info_cer, label = "17-la-rioja/info_cer")
 validate_votos(votos_cer, label = "17-la-rioja/votos_cer")
 validate_info_votos_consistency(info_cer, votos_cer, label = "17-la-rioja/cer")
+validate_votos_partido_match(votos_cer, label = "17-la-rioja/votos_cer")
 
 # ===========================================================================
 # WRITE DATA
