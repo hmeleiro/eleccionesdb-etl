@@ -15,55 +15,39 @@ Actualmente la base incluye:
 <p><strong>Datos provisionales:</strong> Para las convocatorias más recientes en las que todavía no se han publicado datos oficiales definitivos (Extremadura 2025, Aragón 2026, Castilla y León 2026), la base incluye datos del <strong>escrutinio provisional</strong> de la noche electoral facilitados por <strong>Minsait</strong>. Estos datos pueden diferir de los resultados definitivos. Véase la sección <a href="#minsait-escrutinio-provisional">Minsait (escrutinio provisional)</a>.</p>
 </div>
 
-### Matriz de cobertura
-
-| Ámbito | Años cubiertos |
-|--------|---------------|
-| Congreso (nacional) | Todas las convocatorias desde 1977 |
-| Municipales | Todas las convocatorias |
-| Andalucía | Todas las convocatorias |
-| Aragón | 2011–2026 (2026: provisional) |
-| Asturias | Todas las convocatorias |
-| Baleares | 1983–2023 |
-| Canarias | 1983–2023 |
-| Cantabria | 1983–2023 |
-| Castilla-La Mancha | 1983–2023 |
-| Castilla y León | 1983–2026 (2026: provisional) |
-| Cataluña | 1980–2023 |
-| C. Valenciana | 1983–2023 |
-| Extremadura | 1983–2025 (2025: provisional) |
-| Galicia | 1981–2024 |
-| C. de Madrid | 1983–2023 |
-| Murcia | 1983–2023 |
-| Navarra | 1979–2023 |
-| País Vasco | 1980–2024 |
-| La Rioja | 1983–2023 |
-
-### Granularidad disponible
+### Cobertura y granularidad
 
 La granularidad varía según elección y fuente original; en todos los casos se publican agregados territoriales consistentes (CCAA, provincia, circunscripción, municipio y sección censal cuando está disponible).
 
-| Ámbito | Granularidad máxima | Notas |
-|--------|---------------------|-------|
-| Congreso | Sección censal | Todas las convocatorias, datos vía paquete `infoelectoral` |
-| Municipales | Municipal | Todas las convocatorias, datos vía paquete `infoelectoral` |
-| Andalucía | Sección censal | API del Sistema de Información Electoral de Andalucía |
-| Aragón | Sección censal (recientes) / Municipal (histórico) | Datos abiertos Gobierno de Aragón (2011–2023); escrutinio provisional Minsait (2026) |
-| Asturias | Mesa (2015+) / Municipal (pre-2015) | SADEI (histórico) + GIPEYOP (reciente) |
-| Baleares | Sección censal | IBESTAT + GIPEYOP. 1983–2023 |
-| Canarias | Municipal (PARCAN) / Sección (GIPEYOP) | Múltiples fuentes. 1983–2023 |
-| Castilla y León | Mesa | Datos abiertos Junta de CyL (1983–2022); escrutinio provisional Minsait (2026) |
-| Cataluña | Mesa | Datos abiertos Generalitat. 1980–2023 |
-| C. Valenciana | Sección censal | Datos abiertos GVA. 1983–2023 |
-| C. de Madrid | Mesa | Datos abiertos Comunidad de Madrid. 1983–2023 |
+| Ámbito | Años cubiertos | Granularidad máxima | Notas |
+|--------|----------------|---------------------|-------|
+| Congreso | Todas las convocatorias desde 1977 | Sección censal | Datos vía paquete `infoelectoral` |
+| Municipales | Todas las convocatorias | Municipal | Datos vía paquete `infoelectoral` |
+| Andalucía | Todas las convocatorias | Sección censal | API del Sistema de Información Electoral de Andalucía |
+| Aragón | 2011–2026 (2026: provisional) | Sección censal (recientes) / Municipal (histórico) | Datos abiertos Gobierno de Aragón (2011–2023); escrutinio provisional Minsait (2026) |
+| Asturias | Todas las convocatorias | Mesa (2015+) / Municipal (pre-2015) | SADEI (histórico) + GIPEYOP (reciente) |
+| Baleares | 1983–2023 | Sección censal | IBESTAT + GIPEYOP |
+| Canarias | 1983–2023 | Municipal (PARCAN) / Sección (GIPEYOP) | Múltiples fuentes |
+| Cantabria | 1983–2023 | Mesa | GIPEYOP |
+| Castilla-La Mancha | 1983–2023 | Mesa (2019+) / Municipal (histórico) | Junta de Castilla-La Mancha (datos abiertos) |
+| Castilla y León | 1983–2026 (2026: provisional) | Mesa | Datos abiertos Junta de CyL (1983–2022); escrutinio provisional Minsait (2026) |
+| Cataluña | 1980–2023 | Mesa | Datos abiertos Generalitat |
+| C. Valenciana | 1983–2023 | Sección censal | Datos abiertos GVA (1987-2023); GIPEYOP (1983) |
+| Extremadura | 1983–2025 (2025: provisional) | Mesa (2015+) / Municipal (histórico) | Junta de Extremadura (datos abiertos) |
+| Galicia | 1981–2024 | Mesa (reciente) / Municipal-provincial (histórico) | Xunta de Galicia |
+| C. de Madrid | 1983–2023 | Mesa | Datos abiertos Comunidad de Madrid |
+| Murcia | 1983–2023 | Mesa | Región de Murcia (datos abiertos) |
+| Navarra | 1979–2023 | Mesa | Gobierno de Navarra |
+| País Vasco | 1980–2024 | Mesa | Gobierno Vasco |
+| La Rioja | 1983–2023 | Mesa | Gobierno de La Rioja |
 
 ## Resumen de fuentes
 
-| Elección | Fuente principal | Formato | API/Manual | Cobertura |
+| Elección | Fuente principal | Formato | Descarga | Cobertura |
 |----------|------------------|---------|------------|-----------|
-| Congreso | Infoelectoral (Ministerio del Interior) | R package | API (paquete) | Todas las convocatorias |
-| Municipales | Infoelectoral (Ministerio del Interior) | R package | API (paquete) | Todas las convocatorias |
-| Andalucía | Junta de Andalucía (SIEL) | REST JSON | API | Todas las convocatorias |
+| Congreso | Ministerio del Interior | Texto sin delimitar | [infoelectoral](https://infoelectoral.spainelectoralproject.com/) (R package) | Todas las convocatorias |
+| Municipales | Ministerio del Interior | Texto sin delimitar | [infoelectoral](https://infoelectoral.spainelectoralproject.com/) (R package) | Todas las convocatorias |
+| Andalucía | Junta de Andalucía (SIEL) | JSON | API | Todas las convocatorias |
 | Aragón | Gobierno de Aragón (datos abiertos) + Minsait (provisional) | CSV/XLSX | Manual | 2011–2026 |
 | Asturias | SADEI + GIPEYOP | .px + XLSX | Scraping + manual | Todas las convocatorias |
 | Baleares | IBESTAT + GIPEYOP | .px + XLSX | Manual | 1983–2023 |
@@ -309,10 +293,6 @@ La granularidad varía según elección y fuente original; en todos los casos se
   - Castilla y León — Elecciones Autonómicas 2026 (15 de marzo de 2026)
   - Extremadura — Elecciones Autonómicas 2025 (21 de diciembre de 2025)
 - **Estructura del CSV**: `n_envio`, `timestamp`, `codigo_ccaa`\*, `codigo_provincia`, `codigo_municipio`, `codigo_distrito`, `codigo_seccion`, `codigo_mesa`, `censo`, `total_votantes`, `abstencion`, `votos_blanco`, `votos_nulos`, `partido`, `votos`, `recode`.
-- **Notas**:
-  - \* El campo `codigo_ccaa` en los CSV puede no coincidir con el código INE; se ignora y se deriva del nombre del fichero.
-  - El campo `recode` contiene la sigla canónica del partido usada para identificarlo en la dimensión de partidos.
-  - Filas con `recode = NA` se excluyen del procesamiento.
 
 ---
 

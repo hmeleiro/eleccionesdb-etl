@@ -40,7 +40,7 @@ remap_ccaa <- function(df) {
 
 read_minsait_file <- function(file) {
   read_csv(file, show_col_types = FALSE) %>%
-    filter(!is.na(recode)) %>%
+    filter(!(is.na(siglas) & is.na(denominacion))) %>%
     transmute(
       codigo_ccaa      = str_pad(as.character(codigo_ccaa), 2, "left", "0"),
       codigo_provincia = str_pad(as.character(codigo_provincia), 2, "left", "0"),
@@ -129,9 +129,6 @@ VOTOS_COLS <- c(
   "siglas", "denominacion", "votos"
 )
 
-
-data_raw %>%
-  count(siglas, denominacion)
 
 votos_mesas <- data_raw %>%
   select(all_of(VOTOS_COLS)) %>%

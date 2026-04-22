@@ -130,99 +130,13 @@
 <div class="callout callout-warning">
 <p><strong>Datos provisionales:</strong> Para las convocatorias más recientes en las que todavía no se han publicado datos oficiales definitivos (Extremadura 2025, Aragón 2026, Castilla y León 2026), la base incluye datos del <strong>escrutinio provisional</strong> de la noche electoral facilitados por <strong>Minsait</strong>. Estos datos pueden diferir de los resultados definitivos. Véase la sección <a href="#minsait-escrutinio-provisional">Minsait (escrutinio provisional)</a>.</p>
 </div>
-<h3 id="matriz-de-cobertura">Matriz de cobertura</h3>
-<table>
-  <thead>
-      <tr>
-          <th>Ámbito</th>
-          <th>Años cubiertos</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Congreso (nacional)</td>
-          <td>Todas las convocatorias desde 1977</td>
-      </tr>
-      <tr>
-          <td>Municipales</td>
-          <td>Todas las convocatorias</td>
-      </tr>
-      <tr>
-          <td>Andalucía</td>
-          <td>Todas las convocatorias</td>
-      </tr>
-      <tr>
-          <td>Aragón</td>
-          <td>2011–2026 (2026: provisional)</td>
-      </tr>
-      <tr>
-          <td>Asturias</td>
-          <td>Todas las convocatorias</td>
-      </tr>
-      <tr>
-          <td>Baleares</td>
-          <td>1983–2023</td>
-      </tr>
-      <tr>
-          <td>Canarias</td>
-          <td>1983–2023</td>
-      </tr>
-      <tr>
-          <td>Cantabria</td>
-          <td>1983–2023</td>
-      </tr>
-      <tr>
-          <td>Castilla-La Mancha</td>
-          <td>1983–2023</td>
-      </tr>
-      <tr>
-          <td>Castilla y León</td>
-          <td>1983–2026 (2026: provisional)</td>
-      </tr>
-      <tr>
-          <td>Cataluña</td>
-          <td>1980–2023</td>
-      </tr>
-      <tr>
-          <td>C. Valenciana</td>
-          <td>1983–2023</td>
-      </tr>
-      <tr>
-          <td>Extremadura</td>
-          <td>1983–2025 (2025: provisional)</td>
-      </tr>
-      <tr>
-          <td>Galicia</td>
-          <td>1981–2024</td>
-      </tr>
-      <tr>
-          <td>C. de Madrid</td>
-          <td>1983–2023</td>
-      </tr>
-      <tr>
-          <td>Murcia</td>
-          <td>1983–2023</td>
-      </tr>
-      <tr>
-          <td>Navarra</td>
-          <td>1979–2023</td>
-      </tr>
-      <tr>
-          <td>País Vasco</td>
-          <td>1980–2024</td>
-      </tr>
-      <tr>
-          <td>La Rioja</td>
-          <td>1983–2023</td>
-      </tr>
-  </tbody>
-</table>
-<h3 id="granularidad-disponible">Granularidad disponible</h3>
+<h3 id="cobertura-y-granularidad">Cobertura y granularidad</h3>
 <p>La granularidad varía según elección y fuente original; en todos los casos se publican agregados territoriales consistentes (CCAA, provincia, circunscripción, municipio y sección censal cuando está disponible).</p>
 <table>
   <thead>
       <tr>
           <th>Ámbito</th>
+          <th>Años cubiertos</th>
           <th>Granularidad máxima</th>
           <th>Notas</th>
       </tr>
@@ -230,58 +144,117 @@
   <tbody>
       <tr>
           <td>Congreso</td>
+          <td>Todas las convocatorias desde 1977</td>
           <td>Sección censal</td>
-          <td>Todas las convocatorias, datos vía paquete <code>infoelectoral</code></td>
+          <td>Datos vía paquete <code>infoelectoral</code></td>
       </tr>
       <tr>
           <td>Municipales</td>
+          <td>Todas las convocatorias</td>
           <td>Municipal</td>
-          <td>Todas las convocatorias, datos vía paquete <code>infoelectoral</code></td>
+          <td>Datos vía paquete <code>infoelectoral</code></td>
       </tr>
       <tr>
           <td>Andalucía</td>
+          <td>Todas las convocatorias</td>
           <td>Sección censal</td>
           <td>API del Sistema de Información Electoral de Andalucía</td>
       </tr>
       <tr>
           <td>Aragón</td>
+          <td>2011–2026 (2026: provisional)</td>
           <td>Sección censal (recientes) / Municipal (histórico)</td>
           <td>Datos abiertos Gobierno de Aragón (2011–2023); escrutinio provisional Minsait (2026)</td>
       </tr>
       <tr>
           <td>Asturias</td>
+          <td>Todas las convocatorias</td>
           <td>Mesa (2015+) / Municipal (pre-2015)</td>
           <td>SADEI (histórico) + GIPEYOP (reciente)</td>
       </tr>
       <tr>
           <td>Baleares</td>
+          <td>1983–2023</td>
           <td>Sección censal</td>
-          <td>IBESTAT + GIPEYOP. 1983–2023</td>
+          <td>IBESTAT + GIPEYOP</td>
       </tr>
       <tr>
           <td>Canarias</td>
+          <td>1983–2023</td>
           <td>Municipal (PARCAN) / Sección (GIPEYOP)</td>
-          <td>Múltiples fuentes. 1983–2023</td>
+          <td>Múltiples fuentes</td>
+      </tr>
+      <tr>
+          <td>Cantabria</td>
+          <td>1983–2023</td>
+          <td>Mesa</td>
+          <td>GIPEYOP</td>
+      </tr>
+      <tr>
+          <td>Castilla-La Mancha</td>
+          <td>1983–2023</td>
+          <td>Mesa (2019+) / Municipal (histórico)</td>
+          <td>Junta de Castilla-La Mancha (datos abiertos)</td>
       </tr>
       <tr>
           <td>Castilla y León</td>
+          <td>1983–2026 (2026: provisional)</td>
           <td>Mesa</td>
           <td>Datos abiertos Junta de CyL (1983–2022); escrutinio provisional Minsait (2026)</td>
       </tr>
       <tr>
           <td>Cataluña</td>
+          <td>1980–2023</td>
           <td>Mesa</td>
-          <td>Datos abiertos Generalitat. 1980–2023</td>
+          <td>Datos abiertos Generalitat</td>
       </tr>
       <tr>
           <td>C. Valenciana</td>
+          <td>1983–2023</td>
           <td>Sección censal</td>
-          <td>Datos abiertos GVA. 1983–2023</td>
+          <td>Datos abiertos GVA (1987-2023); GIPEYOP (1983)</td>
+      </tr>
+      <tr>
+          <td>Extremadura</td>
+          <td>1983–2025 (2025: provisional)</td>
+          <td>Mesa (2015+) / Municipal (histórico)</td>
+          <td>Junta de Extremadura (datos abiertos)</td>
+      </tr>
+      <tr>
+          <td>Galicia</td>
+          <td>1981–2024</td>
+          <td>Mesa (reciente) / Municipal-provincial (histórico)</td>
+          <td>Xunta de Galicia</td>
       </tr>
       <tr>
           <td>C. de Madrid</td>
+          <td>1983–2023</td>
           <td>Mesa</td>
-          <td>Datos abiertos Comunidad de Madrid. 1983–2023</td>
+          <td>Datos abiertos Comunidad de Madrid</td>
+      </tr>
+      <tr>
+          <td>Murcia</td>
+          <td>1983–2023</td>
+          <td>Mesa</td>
+          <td>Región de Murcia (datos abiertos)</td>
+      </tr>
+      <tr>
+          <td>Navarra</td>
+          <td>1979–2023</td>
+          <td>Mesa</td>
+          <td>Gobierno de Navarra</td>
+      </tr>
+      <tr>
+          <td>País Vasco</td>
+          <td>1980–2024</td>
+          <td>Mesa</td>
+          <td>Gobierno Vasco</td>
+      </tr>
+      <tr>
+          <td>La Rioja</td>
+          <td>1983–2023</td>
+          <td>Mesa</td>
+          <td>Gobierno de La Rioja</td>
       </tr>
   </tbody>
 </table>
@@ -292,29 +265,29 @@
           <th>Elección</th>
           <th>Fuente principal</th>
           <th>Formato</th>
-          <th>API/Manual</th>
+          <th>Descarga</th>
           <th>Cobertura</th>
       </tr>
   </thead>
   <tbody>
       <tr>
           <td>Congreso</td>
-          <td>Infoelectoral (Ministerio del Interior)</td>
-          <td>R package</td>
-          <td>API (paquete)</td>
+          <td>Ministerio del Interior</td>
+          <td>Texto sin delimitar</td>
+          <td><a href="https://infoelectoral.spainelectoralproject.com/">infoelectoral</a> (R package)</td>
           <td>Todas las convocatorias</td>
       </tr>
       <tr>
           <td>Municipales</td>
-          <td>Infoelectoral (Ministerio del Interior)</td>
-          <td>R package</td>
-          <td>API (paquete)</td>
+          <td>Ministerio del Interior</td>
+          <td>Texto sin delimitar</td>
+          <td><a href="https://infoelectoral.spainelectoralproject.com/">infoelectoral</a> (R package)</td>
           <td>Todas las convocatorias</td>
       </tr>
       <tr>
           <td>Andalucía</td>
           <td>Junta de Andalucía (SIEL)</td>
-          <td>REST JSON</td>
+          <td>JSON</td>
           <td>API</td>
           <td>Todas las convocatorias</td>
       </tr>
@@ -642,13 +615,6 @@
 </ul>
 </li>
 <li><strong>Estructura del CSV</strong>: <code>n_envio</code>, <code>timestamp</code>, <code>codigo_ccaa</code>*, <code>codigo_provincia</code>, <code>codigo_municipio</code>, <code>codigo_distrito</code>, <code>codigo_seccion</code>, <code>codigo_mesa</code>, <code>censo</code>, <code>total_votantes</code>, <code>abstencion</code>, <code>votos_blanco</code>, <code>votos_nulos</code>, <code>partido</code>, <code>votos</code>, <code>recode</code>.</li>
-<li><strong>Notas</strong>:
-<ul>
-<li>* El campo <code>codigo_ccaa</code> en los CSV puede no coincidir con el código INE; se ignora y se deriva del nombre del fichero.</li>
-<li>El campo <code>recode</code> contiene la sigla canónica del partido usada para identificarlo en la dimensión de partidos.</li>
-<li>Filas con <code>recode = NA</code> se excluyen del procesamiento.</li>
-</ul>
-</li>
 </ul>
 <hr>
 <h2 id="fuentes-transversales">Fuentes transversales</h2>
