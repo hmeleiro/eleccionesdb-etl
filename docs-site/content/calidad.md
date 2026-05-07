@@ -46,8 +46,8 @@ repositorio:
 
 ## Incidencias conocidas
 
-A continuación se documentan **28 grupos de incidencias** detectados en **27 elecciones**,
-con un total de **4.214 territorios afectados** en algún grado. Estas incidencias han sido
+A continuación se documentan **33 grupos de incidencias** detectados en **32 elecciones**,
+con un total de **4.253 territorios afectados** en algún grado. Estas incidencias han sido
 identificadas de forma automática a partir de los datos finales, o documentadas manualmente.
 
 ### Resumen
@@ -55,10 +55,10 @@ identificadas de forma automática a partir de los datos finales, o documentadas
 | Indicador | Valor |
 |---|---|
 | Tipos de incidencia | 2 |
-| Grupos documentados | 28 |
-| Elecciones afectadas | 27 |
-| Territorios afectados (total) | 4.214 |
-| Última actualización | 22 de abril de 2026 |
+| Grupos documentados | 33 |
+| Elecciones afectadas | 32 |
+| Territorios afectados (total) | 4.253 |
+| Última actualización | 28 de abril de 2026 |
 
 ---
 
@@ -97,10 +97,10 @@ La suma de votos válidos y abstenciones supera el censo INE. Puede indicar un e
 
 El número de votos nulos supera al total de votos válidos, lo cual es aritméticamente posible, pero probablemente indica un error en la fuente original o en el proceso de integración.
 
-**15 elecciones afectadas · 91 territorios con incidencia en total**
+**20 elecciones afectadas · 130 territorios con incidencia en total**
 
 <details>
-<summary>Ver 15 elecciones afectadas</summary>
+<summary>Ver 20 elecciones afectadas</summary>
 
 | Elección | Año | N territorios | Nivel | Ejemplo | Resoluble | Origen |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -108,17 +108,22 @@ El número de votos nulos supera al total de votos válidos, lo cual es aritmét
 | Elecciones Locales 1979 | 1979 | 28 | municipio | Fayos, Los | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Generales 1982 | 1982 |  2 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Locales 1983 | 1983 |  2 | municipio | Población de Cerrato | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Europeas 1987 | 1987 |  4 | municipio / seccion | Zarza de Pumareda, La | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Autonómicas Castillayleon 1987 | 1987 |  4 | municipio / seccion | Zarza de Pumareda, La | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Autonómicas Valencia 1987 | 1987 |  1 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Locales 1987 | 1987 |  3 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Europeas 1989 | 1989 |  5 | municipio / seccion | Tona | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Locales 1995 | 1995 |  1 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Locales 2003 | 2003 | 18 | municipio / seccion | Aizarnazabal | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Generales 2004 | 2004 |  8 | municipio / seccion | Lizartza | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Europeas 2004 | 2004 | 26 | municipio / seccion | Lizartza | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Autonómicas Castillayleon 2007 | 2007 |  2 | municipio / seccion | Barcones | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Locales 2007 | 2007 |  9 | municipio / seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Autonómicas Paisvasco 2009 | 2009 |  8 | municipio / seccion | Lizartza | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Europeas 2019 | 2019 |  3 | municipio / seccion | Fuenteguinaldo | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Autonómicas Castillayleon 2019 | 2019 |  2 | municipio / seccion | Fuenteguinaldo | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 | Elecciones Generales 2023 | 2023 |  2 | municipio / seccion | Jaramillo Quemado | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
+| Elecciones Europeas 2024 | 2024 |  1 | seccion | — | <span class="badge badge-no-resoluble">no resoluble</span> | <span class="badge badge-automatico">automático</span> |
 
 </details>
 

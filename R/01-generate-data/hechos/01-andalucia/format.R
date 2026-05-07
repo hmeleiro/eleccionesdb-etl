@@ -2,6 +2,7 @@ library(readr)
 library(dplyr)
 library(purrr)
 library(stringr)
+library(tibble)
 
 source("R/tests/validate_data_processed.R")
 
@@ -16,11 +17,25 @@ fechas <-
 territorios <- read_csv("tablas-finales/dimensiones/territorios", show_col_types = F) %>%
   select(territorio_id = id, codigo_ccaa, codigo_provincia, codigo_municipio, codigo_distrito, codigo_seccion)
 
-files_info <- list.files(INPUT_DIR, pattern = "resumen", full.names = T)
-files_votos <- list.files(INPUT_DIR, pattern = "escrutinio", full.names = T)
+files_info <- list.files(INPUT_DIR, pattern = "^resumen_(provincias|municipios|secciones)\\.csv$", full.names = T)
+files_info_cera <- list.files(INPUT_DIR, pattern = "^resumen_provincias_cera\\.csv$", full.names = T)
+files_votos <- list.files(INPUT_DIR, pattern = "^escrutinio_(provincias|municipios|secciones)\\.csv$", full.names = T)
+files_votos_cera <- list.files(INPUT_DIR, pattern = "^escrutinio_provincias_cera\\.csv$", full.names = T)
 
-info <-
-  map_df(files_info, function(file) {
+ensure_territory_columns <- function(data) {
+  territory_cols <- c("codigo_municipio", "codigo_distrito", "codigo_seccion")
+  missing_cols <- setdiff(territory_cols, colnames(data))
+
+  data[missing_cols] <- NA_character_
+  data
+}
+
+format_info_files <- function(files) {
+  if (length(files) == 0) {
+    return(tibble())
+  }
+
+  map_df(files, function(file) {
     rename_cols <- c(
       "year" = "fconvocatoria_valor",
       "codigo_provincia" = "provincia_clave",
@@ -49,31 +64,34 @@ info <-
         year = substr(year, 1, 4), .before = 1
       )
 
-
-    if(all(!"censo_ine" %in% colnames(tmp) & c("votos_totales", "abstenciones") %in% colnames(tmp))) {
+    if (!"censo_ine" %in% colnames(tmp) && all(c("votos_totales", "abstenciones") %in% colnames(tmp))) {
       tmp <- tmp %>% mutate(censo_ine = votos_totales + abstenciones)
     }
 
-
+    tmp
   }) %>%
-  select(any_of(
-    c(
-      "year", "codigo_ccaa", "codigo_provincia", "codigo_municipio",
-      "codigo_distrito", "codigo_seccion",
-      "censo_ine", "votos_validos", "votos_blancos", "votos_nulos", "abstenciones"
+    select(any_of(
+      c(
+        "year", "codigo_ccaa", "codigo_provincia", "codigo_municipio",
+        "codigo_distrito", "codigo_seccion",
+        "censo_ine", "votos_validos", "votos_blancos", "votos_nulos", "abstenciones"
+      )
+    )) %>%
+    ensure_territory_columns() %>%
+    mutate(
+      codigo_circunscripcion = codigo_provincia,
+      codigo_municipio = ifelse(is.na(codigo_municipio), "999", codigo_municipio),
+      codigo_distrito = ifelse(is.na(codigo_distrito), "99", codigo_distrito),
+      codigo_seccion = ifelse(is.na(codigo_seccion), "9999", codigo_seccion)
     )
-  )) %>%
-  mutate(
-    codigo_circunscripcion = codigo_provincia,
-    codigo_municipio = ifelse(is.na(codigo_municipio), "999", codigo_municipio),
-    codigo_distrito = ifelse(is.na(codigo_distrito), "99", codigo_distrito),
-    codigo_seccion = ifelse(is.na(codigo_seccion), "9999", codigo_seccion)
-  )
+}
 
+format_votos_files <- function(files) {
+  if (length(files) == 0) {
+    return(tibble())
+  }
 
-
-votos <-
-  map_df(files_votos, function(file) {
+  map_df(files, function(file) {
     rename_cols <- c(
       "year" = "fconvocatoria_valor",
       "codigo_provincia" = "provincia_clave",
@@ -100,28 +118,95 @@ votos <-
         year = substr(year, 1, 4), .before = 1
       )
   }) %>%
-  select(any_of(
-    c(
-      "year", "codigo_ccaa", "codigo_provincia",
-      "codigo_municipio", "codigo_distrito", "codigo_seccion",
-      "censo_ine", "votos_blancos", "votos_nulos",
-      "siglas", "denominacion", "votos"
+    select(any_of(
+      c(
+        "year", "codigo_ccaa", "codigo_provincia",
+        "codigo_municipio", "codigo_distrito", "codigo_seccion",
+        "censo_ine", "votos_blancos", "votos_nulos",
+        "siglas", "denominacion", "votos"
+      )
+    )) %>%
+    ensure_territory_columns() %>%
+    mutate(
+      codigo_circunscripcion = codigo_provincia,
+      codigo_municipio = ifelse(is.na(codigo_municipio), "999", codigo_municipio),
+      codigo_distrito = ifelse(is.na(codigo_distrito), "99", codigo_distrito),
+      codigo_seccion = ifelse(is.na(codigo_seccion), "9999", codigo_seccion)
     )
-  )) %>%
-  mutate(
-    codigo_circunscripcion = codigo_provincia,
-    codigo_municipio = ifelse(is.na(codigo_municipio), "999", codigo_municipio),
-    codigo_distrito = ifelse(is.na(codigo_distrito), "99", codigo_distrito),
-    codigo_seccion = ifelse(is.na(codigo_seccion), "9999", codigo_seccion)
+}
+
+subtract_cera_from_info <- function(info_total, info_cera) {
+  if (nrow(info_cera) == 0) {
+    return(info_total)
+  }
+
+  keys <- c(
+    "year", "codigo_ccaa", "codigo_provincia", "codigo_municipio",
+    "codigo_distrito", "codigo_seccion", "codigo_circunscripcion"
+  )
+  value_cols <- intersect(
+    c("censo_ine", "votos_validos", "votos_blancos", "votos_nulos", "abstenciones"),
+    colnames(info_total)
   )
 
+  cera <- info_cera %>%
+    filter(
+      codigo_municipio == "999",
+      codigo_distrito == "99",
+      codigo_seccion == "9999"
+    ) %>%
+    group_by(across(all_of(keys))) %>%
+    summarise(across(all_of(value_cols), ~ sum(.x, na.rm = T)), .groups = "drop") %>%
+    rename_with(~ paste0(.x, "_cera"), all_of(value_cols))
 
+  out <- info_total %>%
+    left_join(cera, by = keys)
+
+  for (col in value_cols) {
+    cera_col <- paste0(col, "_cera")
+    out[[col]] <- out[[col]] - coalesce(out[[cera_col]], 0)
+  }
+
+  out %>%
+    select(-all_of(paste0(value_cols, "_cera")))
+}
+
+subtract_cera_from_votos <- function(votos_total, votos_cera) {
+  if (nrow(votos_cera) == 0) {
+    return(votos_total)
+  }
+
+  keys <- c(
+    "year", "codigo_ccaa", "codigo_provincia", "codigo_municipio",
+    "codigo_distrito", "codigo_seccion", "codigo_circunscripcion", "siglas"
+  )
+
+  cera <- votos_cera %>%
+    filter(
+      codigo_municipio == "999",
+      codigo_distrito == "99",
+      codigo_seccion == "9999"
+    ) %>%
+    group_by(across(all_of(keys))) %>%
+    summarise(votos_cera = sum(votos, na.rm = T), .groups = "drop")
+
+  votos_total %>%
+    left_join(cera, by = keys) %>%
+    mutate(votos = votos - coalesce(votos_cera, 0)) %>%
+    select(-votos_cera)
+}
+
+info <- format_info_files(files_info)
+info_cera <- format_info_files(files_info_cera)
+votos <- format_votos_files(files_votos)
+votos_cera <- format_votos_files(files_votos_cera)
+
+info <- subtract_cera_from_info(info, info_cera)
+votos <- subtract_cera_from_votos(votos, votos_cera)
 
 
 info_cer <- info %>% filter(codigo_municipio != "901")
-info_cera <- info %>% filter(codigo_municipio == "901")
 votos_cer <- votos %>% filter(codigo_municipio != "901")
-votos_cera <- votos %>% filter(codigo_municipio == "901")
 
 # INFO
 # CCAA
@@ -130,7 +215,7 @@ info_ccaa <-
   filter(codigo_municipio == "999") %>%
   select(-c(codigo_provincia, codigo_circunscripcion)) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(.x, na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(.x, na.rm = T)), .groups = "drop") %>%
   ungroup() %>%
   arrange(year) %>%
   mutate(
@@ -157,17 +242,16 @@ info_cer <-
     abstenciones = ifelse(abstenciones < 0, NA_integer_, abstenciones)
   )
 
-# INFO CERA
+# VOTOS
 # CCAA
 votos_ccaa <-
   votos_cer %>%
   filter(codigo_municipio == "999") %>%
   select(-c(codigo_provincia, codigo_circunscripcion)) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(.x, na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(.x, na.rm = T)), .groups = "drop") %>%
   ungroup() %>%
   arrange(year, -votos)
-
 
 votos_cer <-
   bind_rows(votos_ccaa, votos_cer) %>%
@@ -187,11 +271,6 @@ votos_cer <-
   arrange(eleccion_id, territorio_id) %>%
   select(-c(year, starts_with("codigo_"))) %>%
   relocate(eleccion_id, territorio_id)
-
-# CERA
-# votos_cera <-
-#   votos_cera %>%
-#   arrange(year, codigo_circunscripcion, -votos)
 
 # Descartar filas de info sin votos asociados (secciones recodificadas/sin escrutinio)
 info_cer <- info_cer %>%

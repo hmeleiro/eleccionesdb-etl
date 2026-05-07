@@ -9,6 +9,7 @@ Actualmente la base incluye:
 
 - Elecciones al Congreso: todas las convocatorias.
 - Elecciones municipales: todas las convocatorias.
+- Elecciones europeas: todas las convocatorias desde 1987.
 - Elecciones autonómicas: las 17 comunidades autónomas.
 
 <div class="callout callout-warning">
@@ -22,7 +23,8 @@ La granularidad varía según elección y fuente original; en todos los casos se
 | Ámbito | Años cubiertos | Granularidad máxima | Notas |
 |--------|----------------|---------------------|-------|
 | Congreso | Todas las convocatorias desde 1977 | Sección censal | Datos vía paquete `infoelectoral` |
-| Municipales | Todas las convocatorias | Municipal | Datos vía paquete `infoelectoral` |
+| Municipales | Todas las convocatorias | Sección censal (cuando hay mesa/sección disponible) / Municipal (histórico sin mesa) | Datos vía paquete `infoelectoral` |
+| Europeas | Todas las convocatorias desde 1987 | Sección censal (cuando hay mesa/sección disponible) / Municipal (histórico sin mesa) | Datos vía paquete `infoelectoral` |
 | Andalucía | Todas las convocatorias | Sección censal | API del Sistema de Información Electoral de Andalucía |
 | Aragón | 2011–2026 (2026: provisional) | Sección censal (recientes) / Municipal (histórico) | Datos abiertos Gobierno de Aragón (2011–2023); escrutinio provisional Minsait (2026) |
 | Asturias | Todas las convocatorias | Mesa (2015+) / Municipal (pre-2015) | SADEI (histórico) + GIPEYOP (reciente) |
@@ -47,6 +49,7 @@ La granularidad varía según elección y fuente original; en todos los casos se
 |----------|------------------|---------|------------|-----------|
 | Congreso | Ministerio del Interior | Texto sin delimitar | [infoelectoral](https://infoelectoral.spainelectoralproject.com/) (R package) | Todas las convocatorias |
 | Municipales | Ministerio del Interior | Texto sin delimitar | [infoelectoral](https://infoelectoral.spainelectoralproject.com/) (R package) | Todas las convocatorias |
+| Europeas | Ministerio del Interior | Texto sin delimitar | [infoelectoral](https://infoelectoral.spainelectoralproject.com/) (R package) | 1987–2024 |
 | Andalucía | Junta de Andalucía (SIEL) | JSON | API | Todas las convocatorias |
 | Aragón | Gobierno de Aragón (datos abiertos) + Minsait (provisional) | CSV/XLSX | Manual | 2011–2026 |
 | Asturias | SADEI + GIPEYOP | .px + XLSX | Scraping + manual | Todas las convocatorias |
@@ -86,6 +89,17 @@ La granularidad varía según elección y fuente original; en todos los casos se
 - **Ficheros brutos**: No hay CSV en `data-raw/`; el paquete descarga directamente desde la fuente oficial.
 - **Scripts**: `format.R`.
 - **Notas**: Separa CER/CERA y homogeneiza estructura territorial para todas las convocatorias.
+
+---
+
+### Europeas (`00c-europeas`)
+
+- **Fuente**: Paquete R [`infoelectoral`](https://infoelectoral.spainelectoralproject.com/) (datos del Ministerio del Interior).
+- **Método**: Funciones `provincias()`, `municipios()` y `mesas()`; para convocatorias históricas sin datos de mesa/sección se integra el fallback municipal.
+- **Granularidad**: Sección censal cuando está disponible y municipal en los años históricos sin mesa.
+- **Ficheros brutos**: `data-raw/hechos/00c-europeas/{mesas,municipios,provincias,codigos_ccaa}.rds`, generados con `fetch-data.R`.
+- **Scripts**: `fetch-data.R` (descarga/preparación de RDS) y `format.R`.
+- **Notas**: Separa CER/CERA, remapea códigos de CCAA de `infoelectoral` a INE y agrega resultados a CCAA, provincia, municipio y sección.
 
 ---
 

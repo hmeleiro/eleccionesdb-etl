@@ -20,6 +20,7 @@ source("R/pipeline_helpers.R")
 hechos_regions <- c(
     congreso    = "00-congreso",
     municipales = "00b-municipales",
+    europeas    = "00c-europeas",
     andalucia   = "01-andalucia",
     aragon      = "02-aragon",
     asturias    = "03-asturias",

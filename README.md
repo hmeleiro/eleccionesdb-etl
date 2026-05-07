@@ -1,15 +1,17 @@
 # eleccionesdb-etl
 
-Proyecto R para construir y cargar una base de datos PostgreSQL (`eleccionesdb`) con resultados electorales de España: elecciones generales (Congreso), autonómicas y municipales.
+Proyecto R para construir y cargar una base de datos PostgreSQL (`eleccionesdb`) con resultados electorales de España: elecciones generales (Congreso), europeas, autonómicas y municipales.
 
 ## Cobertura electoral
 
 | Tipo | Ámbito | Años aprox. |
 |------------------|---------------------|---------------------------------|
 | Congreso (G) | Nacional | Todas las convocatorias |
+| Europeas (E) | Nacional | Todas las convocatorias desde 1987 |
+| Municipales (L) | Nacional | Todas las convocatorias |
 | Autonómicas (A) | Andalucía, Aragón, Asturias, Baleares, Canarias, Cantabria, Castilla y León, Castilla-La Mancha, Cataluña, Comunidad Valenciana, Extremadura, Galicia, Comunidad de Madrid, Región de Murcia, Navarra, País Vasco, La Rioja | Todas las convocatorias |
 
-Otros tipos definidos en el esquema (`L` = Locales, `E` = Europeas, `S` = Senado) aún no tienen datos cargados.
+El tipo definido en el esquema `S` (Senado) aún no tiene datos cargados.
 
 > Para el detalle completo de fuentes de datos por comunidad autónoma, ver [docs/fuentes-datos.md](docs/fuentes-datos.md).
 
@@ -178,7 +180,7 @@ El pipeline completo se orquesta con el paquete [{targets}](https://docs.ropensc
 
 ### Estructura del pipeline
 
-El pipeline se define en `_targets.R` y consta de 23 targets organizados en 5 fases:
+El pipeline se define en `_targets.R` y consta de 31 targets organizados en 6 fases:
 
 ```         
 Phase 1: Dimensiones (independientes entre sí)
@@ -188,13 +190,16 @@ Phase 1: Dimensiones (independientes entre sí)
   dim_partidos
 
 Phase 2: Hechos regionales (dependen de dims)
-  hechos_congreso, hechos_municipales, hechos_andalucia, hechos_aragon,
-  hechos_asturias, hechos_baleares, hechos_canarias, hechos_cantabria,
+  hechos_congreso, hechos_municipales, hechos_europeas,
+  hechos_andalucia, hechos_aragon, hechos_asturias, hechos_baleares, hechos_canarias, hechos_cantabria,
   hechos_cyl, hechos_clm, hechos_catalunya, hechos_valencia,
   hechos_extremadura, hechos_galicia, hechos_madrid, hechos_murcia,
-  hechos_navarra, hechos_pais_vasco, hechos_la_rioja
+  hechos_navarra, hechos_pais_vasco, hechos_la_rioja, hechos_minsait
 
-Phase 3: Bind (← todos los hechos + partidos)
+Phase 3a: Completar partidos (← todos los hechos + partidos)
+  partidos_sin_id
+
+Phase 3b: Bind (← todos los hechos + partidos)
   bind_hechos
 
 Phase 4: Write DB (← bind + dims)
@@ -202,6 +207,9 @@ Phase 4: Write DB (← bind + dims)
 
 Phase 5: Export (← bind + dims)
   export
+
+Phase 6: Diagnósticos de calidad
+  gen_diagnosticos, export_calidad
 ```
 
 ### Uso básico

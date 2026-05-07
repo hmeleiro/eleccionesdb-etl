@@ -58,16 +58,27 @@ Cada subcarpeta de `R/01-generate-data/hechos/` contiene scripts específicos qu
 
 | Carpeta | Ámbito | Scripts principales |
 |---------|--------|---------------------|
-| `00-congreso/` | Congreso (nacional) | `sauron_formats.R` → `format_provincias.R`, `format_municipios.R`, `format_secciones.R` |
-| `01-andalucia/` | Andalucía | `00_fetch-nomenclators.R` → `01-06_fetch-*.R` → `07-format-data.R` |
-| `02-aragon/` | Aragón | `01_format-info.R`, `02_format-votos.R` |
-| `03-asturias/` | Asturias | `00_get-nomenclator-sadei.R`, `01_format-data.R` |
+| `00-congreso/` | Congreso (nacional) | `fetch-data.R`, `format.R` |
+| `00b-municipales/` | Municipales (nacional) | `fetch-data.R`, `format.R` |
+| `00c-europeas/` | Europeas (nacional) | `fetch-data.R`, `format.R` |
+| `01-andalucia/` | Andalucía | `fetch-data/`, `format.R` |
+| `02-aragon/` | Aragón | `fetch-data.R`, `format.R` |
+| `03-asturias/` | Asturias | `get-nomenclator-sadei.R`, `format.R` |
 | `04-baleares/` | Baleares | `format.R` |
-| `05-canarias/` | Canarias | `00_download-data-parcan.R`, `format.R` |
+| `05-canarias/` | Canarias | `download-data-parcan.R`, `format.R` |
+| `06-cantabria/` | Cantabria | `format.R` |
 | `07-cyl/` | Castilla y León | `format.R` |
-| `09-catalunya/` | Cataluña | `01_format-data.R` |
+| `08-clm/` | Castilla-La Mancha | `fetch-data.R`, `format.R` |
+| `09-catalunya/` | Cataluña | `format.R` |
 | `10-comunidad-valenciana/` | C. Valenciana | `format.R` |
+| `11-extremadura/` | Extremadura | `format.R` |
+| `12-galicia/` | Galicia | `00_functions.R`, `format.R` |
 | `13-comunidad-madrid/` | C. de Madrid | `format.R` |
+| `14-murcia/` | Murcia | `format.R` |
+| `15-navarra/` | Navarra | `format.R` |
+| `16-pais-vasco/` | País Vasco | `format.R` |
+| `17-la-rioja/` | La Rioja | `format.R` |
+| `minsait/` | Escrutinio provisional | `format.R` |
 
 ## Fase 3: Limpieza y unión (`R/02-clean-and-bind/`)
 

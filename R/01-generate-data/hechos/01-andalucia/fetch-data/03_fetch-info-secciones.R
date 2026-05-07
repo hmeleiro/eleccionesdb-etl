@@ -9,7 +9,7 @@ OUTPUT_FILE <- "data-raw/hechos/01-andalucia/resumen_secciones.csv"
 NOMENCLATOR <- "data-raw/hechos/01-andalucia/nomenclators/nomenclator_secciones.rds"
 
 # Cargo las funciones y los datos necesarios
-source("R/01-generate-data/hechos/01-andalucia/functions.R", encoding = "UTF-8")
+source("R/01-generate-data/hechos/01-andalucia/fetch-data/functions.R", encoding = "UTF-8")
 
 nomenclator_secciones <- readRDS(NOMENCLATOR)
 

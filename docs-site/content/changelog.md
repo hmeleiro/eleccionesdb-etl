@@ -15,6 +15,17 @@ description: "Historial de versiones de eleccionesdb"
 
 ---
 
+## v1.2.0 — 2026-04-28
+
+### Added
+
+- **Elecciones europeas:** se incorporan las convocatorias 1987–2024 a partir del Ministerio del Interior vía paquete `infoelectoral`.
+  - Nuevo procesamiento `R/01-generate-data/hechos/00c-europeas/` con descarga en `fetch-data.R` y normalización en `format.R`.
+  - Integración en el pipeline de `{targets}` mediante el target `hechos_europeas`.
+  - Granularidad hasta sección censal cuando está disponible, con fallback municipal para convocatorias históricas sin mesas.
+
+---
+
 ## v1.1.0 — 2026-04-22
 
 ### Added

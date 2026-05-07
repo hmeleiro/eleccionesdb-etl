@@ -20,6 +20,18 @@ get <- function(endpoint, ...) {
 
 }
 
+get_once <- function(endpoint, ...) {
+  require(httr)
+  BASEURL <- "https://ws040.juntadeandalucia.es/siel-api/v1"
+  url <- sprintf("%s/%s?", BASEURL, endpoint)
+
+  GET(
+    url,
+    config = config(connecttimeout = 100, timeout = 300),
+    ...
+  )
+}
+
 parse_idescrutinio <- function(x) {
   require(purrr)
   require(tibble)
