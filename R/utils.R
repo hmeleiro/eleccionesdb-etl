@@ -28,20 +28,20 @@ get_nrepresentantes <- function() {
   territorios_prov <- territorios %>%
     filter(tipo == "provincia") %>%
     select(codigo_provincia, codigo_municipio, codigo_distrito, codigo_seccion,
-      territorio_id = id
+           territorio_id = id
     )
 
   territorios_circ <- territorios %>%
     filter(tipo == "circunscripcion") %>%
     select(codigo_circunscripcion, codigo_municipio, codigo_distrito,
-      codigo_seccion,
-      territorio_id = id
+           codigo_seccion,
+           territorio_id = id
     )
 
   territorios_muni <- territorios %>%
     filter(tipo == "municipio") %>%
     select(codigo_provincia, codigo_municipio, codigo_distrito, codigo_seccion,
-      territorio_id = id
+           territorio_id = id
     )
 
   nrepresentantes_raw <- read_xlsx("data-raw/representantes/nrepresentantes_prov.xlsx") %>%
@@ -53,7 +53,7 @@ get_nrepresentantes <- function() {
     mutate(codigo_ccaa = ifelse(tipo_eleccion %in% c("G", "L"), "99", codigo_ccaa)) %>%
     left_join(elecciones_id, by = join_by(year, mes, codigo_ccaa, tipo_eleccion)) %>%
     left_join(territorios_circ,
-      by = join_by(codigo_circunscripcion, codigo_municipio, codigo_distrito, codigo_seccion)
+              by = join_by(codigo_circunscripcion, codigo_municipio, codigo_distrito, codigo_seccion)
     ) %>%
     select(eleccion_id, territorio_id, nrepresentantes)
 
@@ -62,7 +62,7 @@ get_nrepresentantes <- function() {
     mutate(codigo_ccaa = ifelse(tipo_eleccion %in% c("G", "L"), "99", codigo_ccaa)) %>%
     left_join(elecciones_id, by = join_by(year, mes, codigo_ccaa, tipo_eleccion)) %>%
     left_join(territorios_prov,
-      by = join_by(codigo_provincia, codigo_municipio, codigo_distrito, codigo_seccion)
+              by = join_by(codigo_provincia, codigo_municipio, codigo_distrito, codigo_seccion)
     ) %>%
     select(eleccion_id, territorio_id, nrepresentantes)
 
@@ -71,7 +71,7 @@ get_nrepresentantes <- function() {
     mutate(codigo_ccaa = ifelse(tipo_eleccion %in% c("G", "L"), "99", codigo_ccaa)) %>%
     left_join(elecciones_id, by = join_by(year, mes, codigo_ccaa, tipo_eleccion)) %>%
     left_join(territorios_muni,
-      by = join_by(codigo_provincia, codigo_municipio, codigo_distrito, codigo_seccion)
+              by = join_by(codigo_provincia, codigo_municipio, codigo_distrito, codigo_seccion)
     ) %>%
     select(eleccion_id, territorio_id, nrepresentantes)
 
@@ -95,8 +95,8 @@ get_representantes <- function() {
       tipo %in% c("provincia", "municipio")
     ) %>%
     select(codigo_provincia, codigo_municipio, codigo_distrito,
-      codigo_seccion,
-      territorio_id = id
+           codigo_seccion,
+           territorio_id = id
     )
 
   partidos_id <-
@@ -125,19 +125,19 @@ get_representantes <- function() {
       across(c(siglas, denominacion), tolower)
     ) %>%
     left_join(elecciones_id,
-      by = join_by(year, mes, codigo_ccaa, tipo_eleccion)
+              by = join_by(year, mes, codigo_ccaa, tipo_eleccion)
     ) %>%
     left_join(territorios_id,
-      by = join_by(
-        codigo_provincia, codigo_municipio,
-        codigo_distrito, codigo_seccion
-      )
+              by = join_by(
+                codigo_provincia, codigo_municipio,
+                codigo_distrito, codigo_seccion
+              )
     ) %>%
     left_join(partidos_id,
-      by = join_by(
-        siglas,
-        denominacion
-      )
+              by = join_by(
+                siglas,
+                denominacion
+              )
     ) %>%
     select(eleccion_id, territorio_id, partido_id, representantes) %>%
     filter(!is.na(eleccion_id), !is.na(territorio_id), !is.na(partido_id))

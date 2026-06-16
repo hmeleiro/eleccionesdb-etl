@@ -1,6 +1,27 @@
 library(dplyr)
 library(readr)
 
+provisional_data <- function(data, ids) {
+  data %>%
+    mutate(
+      fuente = case_when(
+        eleccion_id %in% ids ~ "Datos provisionales (Minsait)",
+        T ~ fuente
+      ),
+      url_fuente = case_when(
+        eleccion_id %in% ids ~ "-",
+        T ~ url_fuente
+      ),
+      observaciones = case_when(
+        eleccion_id %in% ids ~ "Los datos corresponden a los provisionales recogidos el mismo día de las elecciones puestos a disposición a través de la API de prensa.",
+        T ~ observaciones
+      )
+    )
+
+}
+
+
+
 # Leer tabla de elecciones generada previamente
 elecciones <- read_csv("tablas-finales/dimensiones/elecciones", show_col_types = FALSE)
 
@@ -28,6 +49,8 @@ if (nrow(faltan_fuente) > 0) {
         paste(faltan_fuente$eleccion_id, collapse = ", ")
     ))
 }
+
+elecciones_fuentes <- provisional_data(elecciones_fuentes, 253:256)
 
 write_csv(elecciones_fuentes, "tablas-finales/dimensiones/elecciones_fuentes")
 message(sprintf("[OK] elecciones_fuentes generada (%d filas)", nrow(elecciones_fuentes)))

@@ -10,6 +10,7 @@ codigos_secciones <-
   list_rbind() %>%
   distinct()
 
+
 # Circunscripciones y correspondencia municipio-circunscripción (genérico)
 circunscripciones_def <- read_csv(
   file.path(INPUT_DIR, "circunscripciones.csv"),
@@ -268,3 +269,4 @@ territorios <-
   )
 
 write_csv(territorios, "tablas-finales/dimensiones/territorios")
+

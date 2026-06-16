@@ -58,7 +58,7 @@ identificadas de forma automática a partir de los datos finales, o documentadas
 | Grupos documentados | 33 |
 | Elecciones afectadas | 32 |
 | Territorios afectados (total) | 4.253 |
-| Última actualización | 28 de abril de 2026 |
+| Última actualización | 16 de junio de 2026 |
 
 ---
 

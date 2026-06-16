@@ -285,6 +285,10 @@ message(
 # 4. Compresión ZIP
 # ---------------------------------------------------------------------------
 
+parquet_size <- sum(file.info(list.files("descargas/parquet", recursive = TRUE, full.names = TRUE))$size)
+sqlite_size <- file.info(sqlite_path)$size
+csv_size <- sum(file.info(list.files("descargas/csv", full.names = TRUE))$size)
+
 parquet_zip <- "descargas/eleccionesdb_parquet.zip"
 if (file.exists(parquet_zip)) invisible(file.remove(parquet_zip))
 parquet_files <- list.files("descargas/parquet", recursive = TRUE, full.names = TRUE)
@@ -308,9 +312,7 @@ message("[EXPORT] ZIP SQLite generado en ", sqlite_zip)
 # Resumen final
 # ---------------------------------------------------------------------------
 
-parquet_size <- sum(file.info(list.files("descargas/parquet", recursive = TRUE, full.names = TRUE))$size)
-sqlite_size <- file.info(sqlite_path)$size
-csv_size <- sum(file.info(list.files("descargas/csv", full.names = TRUE))$size)
+
 parquet_zip_size <- file.info(parquet_zip)$size
 sqlite_zip_size <- file.info(sqlite_zip)$size
 csv_zip_size <- file.info(csv_zip)$size
