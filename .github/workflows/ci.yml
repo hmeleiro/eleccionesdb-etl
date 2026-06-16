@@ -10,6 +10,8 @@ permissions:
 
 env:
   R_VERSION: "4.5.3"
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  RENV_CONFIG_SYNCHRONIZED_CHECK: false
 
 jobs:
   checks:
@@ -29,6 +31,7 @@ jobs:
             libfreetype6-dev \
             libfribidi-dev \
             libgit2-dev \
+            libglpk-dev \
             libharfbuzz-dev \
             libjpeg-dev \
             libpng-dev \
