@@ -2,6 +2,20 @@
 # Wrapper functions for {targets} pipeline.
 # Each function source()s the original script and returns output file paths.
 
+ensure_pipeline_dirs <- function() {
+  dirs <- c(
+    "data-processed",
+    "data-processed/hechos",
+    "tablas-finales",
+    "tablas-finales/dimensiones",
+    "tablas-finales/hechos",
+    "descargas",
+    "docs-site/data/diagnosticos"
+  )
+
+  invisible(lapply(dirs, dir.create, recursive = TRUE, showWarnings = FALSE))
+}
+
 # =============================================================================
 # DIMENSIONES
 # =============================================================================

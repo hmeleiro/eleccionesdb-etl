@@ -8,12 +8,13 @@ library(targets)
 options(dplyr.summarise.inform = FALSE, readr.show_col_types = FALSE)
 
 tar_option_set(
-    error = "continue",
+    error = Sys.getenv("TARGETS_ERROR", unset = "continue"),
     # Silenciar messages de todos los targets:
     deployment = "main"
 )
 
 source("R/pipeline_helpers.R")
+ensure_pipeline_dirs()
 
 # Region directories under code/01-generate-data/hechos/
 # All use format.R as the main script
