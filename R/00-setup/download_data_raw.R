@@ -18,11 +18,18 @@ is_remote <- function(path) {
     grepl("^https?://", path, ignore.case = TRUE)
 }
 
+encode_remote_url <- function(url) {
+    utils::URLencode(url)
+}
+
 read_data_index <- function(source) {
     if (is_remote(source)) {
         temp_idx <- tempfile(fileext = ".csv")
         on.exit(unlink(temp_idx), add = TRUE)
-        resp <- httr::GET(source, httr::write_disk(temp_idx, overwrite = TRUE))
+        resp <- httr::GET(
+            encode_remote_url(source),
+            httr::write_disk(temp_idx, overwrite = TRUE)
+        )
         if (httr::status_code(resp) != 200) {
             stop(
                 "No se pudo descargar el indice: ", source,
@@ -70,7 +77,21 @@ download_one <- function(key, url) {
     dir_create(dirname(dest))
 
     if (!file_exists(dest)) {
-        resp <- httr::GET(url, httr::write_disk(dest, overwrite = TRUE))
+        resp <- tryCatch(
+            httr::GET(
+                encode_remote_url(url),
+                httr::write_disk(dest, overwrite = TRUE)
+            ),
+            error = function(e) {
+                message("Fallo: ", key, " (", conditionMessage(e), ")")
+                NULL
+            }
+        )
+        if (is.null(resp)) {
+            if (file_exists(dest)) file_delete(dest)
+            return(FALSE)
+        }
+
         if (httr::status_code(resp) == 200) {
             message("Descargado: ", key)
             return(TRUE)
