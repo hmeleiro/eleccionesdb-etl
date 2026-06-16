@@ -24,6 +24,10 @@ title = "eleccionesdb"
     pageRef = "/pipeline/"
     weight = 20
   [[menus.main]]
+    name = "CI/CD"
+    pageRef = "/ci-cd/"
+    weight = 25
+  [[menus.main]]
     name = "Modelo de datos"
     pageRef = "/modelo-datos/"
     weight = 30

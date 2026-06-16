@@ -303,6 +303,7 @@ La granularidad varía según elección y fuente original; en todos los casos se
 - **Ficheros brutos**: `data-raw/hechos/minsait/` — un CSV por CCAA (`02-aragon.csv`, `07-cyl.csv`, `11-extremadura.csv`).
 - **Scripts**: `R/01-generate-data/hechos/minsait/format.R` (script unificado para todas las CCAA de esta fuente).
 - **Elecciones cubiertas**:
+  - Andalucía — Elecciones Autonómicas 2026 (17 de mayo de 2026)
   - Aragón — Elecciones Autonómicas 2026 (8 de febrero de 2026)
   - Castilla y León — Elecciones Autonómicas 2026 (15 de marzo de 2026)
   - Extremadura — Elecciones Autonómicas 2025 (21 de diciembre de 2025)

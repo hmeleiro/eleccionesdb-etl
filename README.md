@@ -1,5 +1,50 @@
 # eleccionesdb-etl
 
+[![CI](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/ci.yml/badge.svg)](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/ci.yml)
+[![ETL Export](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/etl-export.yml/badge.svg)](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/etl-export.yml)
+[![Deploy Docs](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/deploy-docs.yml)
+
+## CI/CD
+
+El proyecto usa GitHub Actions para validar el ETL, construir la documentacion y publicar artefactos de forma controlada:
+
+- `CI`: se ejecuta en pull requests y pushes a `main`. Restaura `renv`, comprueba la sintaxis de los scripts R, carga el manifiesto de `{targets}`, ejecuta `lintr` en modo no bloqueante y construye el sitio Hugo.
+- `ETL Export`: se ejecuta manualmente, semanalmente y en cambios relevantes de `main`. Descarga `data-raw/`, ejecuta `run_export()` y `run_export_calidad()`, valida los ZIP de Parquet/SQLite/CSV y sube los resultados como artifacts.
+- `Deploy Docs`: publica el sitio Hugo en GitHub Pages.
+- `Deploy DB`: solo manual, asociado al environment protegido `production-db`. Requiere escribir `TRUNCATE_AND_LOAD_ELECCIONESDB` y usa secretos de PostgreSQL antes de ejecutar `run_writedb()`.
+
+La carga a PostgreSQL no forma parte del CI ordinario. Los pull requests y pushes validan y exportan datos, pero no ejecutan `TRUNCATE` ni escriben en la base de datos real.
+
+### Reproducibilidad local
+
+La via recomendada para reproducir el entorno es `renv`:
+
+``` r
+renv::restore(prompt = FALSE)
+```
+
+Comandos equivalentes a los workflows principales:
+
+``` r
+source("R/00-setup/download_data_raw.R")
+source("run.R")
+run_export()
+run_export_calidad()
+```
+
+``` sh
+Rscript R/ci/check_project.R
+Rscript R/ci/check_exports.R
+Rscript R/ci/write_summary.R
+hugo --source docs-site --destination public
+```
+
+### Secretos usados por CI/CD
+
+- PostgreSQL (`Deploy DB`): `DB_NAME`, `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`.
+- Cloudflare R2 (`ETL Export` con publicacion manual): `CF_S3_ACCESS_KEY`, `CF_S3_SECRET_KEY`, `CF_S3_ENDPOINT`, `CF_S3_BUCKET`, `CF_S3_PUBLIC_BASE_URL`.
+- `DATA_INDEX_URL` puede definirse como input manual de los workflows para usar un indice de datos alternativo; si no se define, se usa `docs-site/data_index.csv`.
+
 Proyecto R para construir y cargar una base de datos PostgreSQL (`eleccionesdb`) con resultados electorales de España: elecciones generales (Congreso), europeas, autonómicas y municipales.
 
 ## Cobertura electoral
