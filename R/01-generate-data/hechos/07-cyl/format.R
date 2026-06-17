@@ -21,6 +21,8 @@ fechas <-
 territorios <- read_csv("tablas-finales/dimensiones/territorios", show_col_types = F) %>%
   select(territorio_id = id, codigo_ccaa, codigo_provincia, codigo_municipio, codigo_distrito, codigo_seccion)
 
+print(territorios)
+
 files <- list.files(INPUT_DIR, full.names = T)
 data <-
   map_df(files, function(file) {
@@ -111,7 +113,7 @@ info_ccaa <-
   info_prov %>%
   select(-c(codigo_provincia)) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(.x, na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(.x, na.rm = T)), .groups = "drop_last") %>%
   ungroup() %>%
   arrange(year)
 
@@ -135,6 +137,9 @@ info_cer <-
   mutate(
     abstenciones = ifelse(abstenciones < 0, NA_integer_, abstenciones)
   )
+
+print(territorios)
+print(filter(info_cer, is.na(territorio_id)))
 
 # VOTOS
 # MESAS
@@ -175,7 +180,7 @@ votos_ccaa <-
   votos_prov %>%
   select(-c(codigo_provincia)) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(.x, na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(.x, na.rm = T)),.groups = "drop_last") %>%
   ungroup() %>%
   arrange(year, -votos)
 
