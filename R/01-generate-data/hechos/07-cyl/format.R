@@ -21,8 +21,6 @@ fechas <-
 territorios <- read_csv("tablas-finales/dimensiones/territorios", show_col_types = F) %>%
   select(territorio_id = id, codigo_ccaa, codigo_provincia, codigo_municipio, codigo_distrito, codigo_seccion)
 
-print(territorios)
-
 files <- list.files(INPUT_DIR, full.names = T)
 data <-
   map_df(files, function(file) {
@@ -138,8 +136,11 @@ info_cer <-
     abstenciones = ifelse(abstenciones < 0, NA_integer_, abstenciones)
   )
 
-print(territorios)
-print(filter(info_cer, is.na(territorio_id)))
+print(fechas)
+print(filter(info_cer, is.na(eleccion_id)))
+print(
+  bind_rows(info_ccaa, info_prov, info_muni, info_seccion)
+)
 
 # VOTOS
 # MESAS

@@ -18,7 +18,7 @@ show_pipeline()
 
 targets::tar_meta(fields = warnings, complete_only = TRUE)
 
-tar_invalidate(names = c("hechos_murcia"))
+tar_invalidate(names = c("hechos_cyl"))
 # tar_invalidate(names = everything())
 # tar_destroy()
 

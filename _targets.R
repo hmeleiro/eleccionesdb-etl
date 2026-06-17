@@ -19,6 +19,7 @@ ensure_pipeline_dirs()
 # Region directories under code/01-generate-data/hechos/
 # All use format.R as the main script
 hechos_regions <- c(
+    cyl         = "07-cyl",
     congreso    = "00-congreso",
     municipales = "00b-municipales",
     europeas    = "00c-europeas",
@@ -28,7 +29,6 @@ hechos_regions <- c(
     baleares    = "04-baleares",
     canarias    = "05-canarias",
     cantabria   = "06-cantabria",
-    cyl         = "07-cyl",
     clm         = "08-clm",
     catalunya   = "09-catalunya",
     valencia    = "10-comunidad-valenciana",
