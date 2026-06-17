@@ -1,17 +1,16 @@
 # Script: download_data_raw.R
-# Descarga todos los archivos listados en el indice publico a data-raw/.
-# Por defecto usa docs-site/data_index.csv; DATA_INDEX_URL permite usar otro
-# indice local o remoto en CI/CD.
+# Restores data-raw/ from the versioned manifest or a DATA_INDEX_URL override.
 
 library(readr)
-library(purrr)
 library(fs)
 library(httr)
 
-default_index_path <- "docs-site/data_index.csv"
+default_manifest_path <- "data-manifest.csv"
+data_dir <- "data-raw"
+
 index_source <- Sys.getenv("DATA_INDEX_URL", unset = "")
 if (!nzchar(index_source)) {
-    index_source <- default_index_path
+    index_source <- default_manifest_path
 }
 
 is_remote <- function(path) {
@@ -22,18 +21,30 @@ encode_remote_url <- function(url) {
     utils::URLencode(url)
 }
 
+format_bytes <- function(bytes) {
+    bytes <- as.numeric(bytes)
+    units <- c("B", "KB", "MB", "GB", "TB")
+    unit <- 1
+    while (bytes >= 1024 && unit < length(units)) {
+        bytes <- bytes / 1024
+        unit <- unit + 1
+    }
+    sprintf("%.2f %s", bytes, units[[unit]])
+}
+
 read_data_index <- function(source) {
     if (is_remote(source)) {
         temp_idx <- tempfile(fileext = ".csv")
         on.exit(unlink(temp_idx), add = TRUE)
         resp <- httr::GET(
             encode_remote_url(source),
-            httr::write_disk(temp_idx, overwrite = TRUE)
+            httr::write_disk(temp_idx, overwrite = TRUE),
+            httr::timeout(120)
         )
         if (httr::status_code(resp) != 200) {
             stop(
-                "No se pudo descargar el indice: ", source,
-                " (status ", httr::status_code(resp), ")",
+                "No se pudo descargar el indice de datos (status ",
+                httr::status_code(resp), ").",
                 call. = FALSE
             )
         }
@@ -55,61 +66,174 @@ normalise_data_raw_key <- function(key) {
         key <- sub("^.*data-raw/", "", key)
     }
 
+    key <- sub("^/+", "", key)
+    if (!nzchar(key) || grepl("(^|/)\\.\\.(/|$)", key)) {
+        stop("Clave insegura o vacia en el manifiesto: ", key, call. = FALSE)
+    }
+
     key
 }
 
-index <- read_data_index(index_source)
+prepare_data_index <- function(index) {
+    required_cols <- c("key", "url")
+    missing_cols <- setdiff(required_cols, names(index))
+    if (length(missing_cols) > 0) {
+        stop(
+            "El indice de datos no contiene columnas requeridas: ",
+            paste(missing_cols, collapse = ", "),
+            call. = FALSE
+        )
+    }
 
-required_cols <- c("key", "url")
-missing_cols <- setdiff(required_cols, names(index))
-if (length(missing_cols) > 0) {
-    stop(
-        "El indice de datos no contiene columnas requeridas: ",
-        paste(missing_cols, collapse = ", "),
-        call. = FALSE
+    index$key <- as.character(index$key)
+    index$url <- as.character(index$url)
+    index <- index[
+        !is.na(index$key) & nzchar(index$key) &
+            !is.na(index$url) & nzchar(index$url),
+        ,
+        drop = FALSE
+    ]
+
+    has_data_raw_prefix <- grepl("data-raw/", index$key, fixed = TRUE)
+    if (any(has_data_raw_prefix)) {
+        index <- index[has_data_raw_prefix, , drop = FALSE]
+    }
+
+    index$relative_key <- vapply(index$key, normalise_data_raw_key, character(1))
+
+    duplicate_keys <- unique(index$relative_key[duplicated(index$relative_key)])
+    if (length(duplicate_keys) > 0) {
+        stop(
+            "El manifiesto contiene claves duplicadas: ",
+            paste(utils::head(duplicate_keys, 10), collapse = ", "),
+            call. = FALSE
+        )
+    }
+
+    if (!nrow(index)) {
+        stop("El manifiesto no contiene ficheros para data-raw/.", call. = FALSE)
+    }
+
+    if ("size" %in% names(index)) {
+        index$expected_size <- suppressWarnings(as.numeric(index$size))
+    } else {
+        index$expected_size <- NA_real_
+    }
+
+    index
+}
+
+file_matches_manifest <- function(path, expected_size) {
+    if (!file_exists(path)) {
+        return(FALSE)
+    }
+
+    if (!is.na(expected_size)) {
+        return(as.numeric(file_info(path)$size) == expected_size)
+    }
+
+    TRUE
+}
+
+download_one <- function(row) {
+    dest <- file.path(data_dir, row$relative_key)
+    dir_create(dirname(dest))
+
+    if (file_matches_manifest(dest, row$expected_size)) {
+        message("Ya existe: ", row$relative_key)
+        return("present")
+    }
+
+    if (file_exists(dest)) {
+        file_delete(dest)
+    }
+
+    resp <- tryCatch(
+        httr::GET(
+            encode_remote_url(row$url),
+            httr::write_disk(dest, overwrite = TRUE),
+            httr::timeout(600)
+        ),
+        error = function(e) {
+            message("Fallo: ", row$relative_key, " (", conditionMessage(e), ")")
+            NULL
+        }
+    )
+
+    if (is.null(resp) || httr::status_code(resp) != 200) {
+        if (file_exists(dest)) file_delete(dest)
+        status <- if (is.null(resp)) "sin respuesta" else paste("status", httr::status_code(resp))
+        message("Fallo: ", row$relative_key, " (", status, ")")
+        return("failed")
+    }
+
+    if (!file_matches_manifest(dest, row$expected_size)) {
+        if (file_exists(dest)) file_delete(dest)
+        message("Fallo: ", row$relative_key, " (tamano inesperado)")
+        return("failed")
+    }
+
+    message("Descargado: ", row$relative_key)
+    "downloaded"
+}
+
+validate_data_raw <- function(index) {
+    expected_paths <- file.path(data_dir, index$relative_key)
+    missing <- !file_exists(expected_paths)
+
+    size_mismatch <- rep(FALSE, length(expected_paths))
+    expected_sizes <- index$expected_size
+    check_size <- !missing & !is.na(expected_sizes)
+    if (any(check_size)) {
+        actual_sizes <- as.numeric(file_info(expected_paths[check_size])$size)
+        size_mismatch[check_size] <- actual_sizes != expected_sizes[check_size]
+    }
+
+    if (any(missing) || any(size_mismatch)) {
+        bad_keys <- index$relative_key[missing | size_mismatch]
+        stop(
+            "data-raw/ esta incompleto o no coincide con el manifiesto. ",
+            "Primeros ficheros afectados: ",
+            paste(utils::head(bad_keys, 10), collapse = ", "),
+            call. = FALSE
+        )
+    }
+
+    files <- dir_ls(data_dir, recurse = TRUE, all = TRUE, type = "file")
+    total_size <- sum(as.numeric(file_info(files)$size), na.rm = TRUE)
+
+    if (!length(files) || total_size <= 0) {
+        stop("data-raw/ esta vacio tras la restauracion.", call. = FALSE)
+    }
+
+    message(
+        "data-raw/ verificado: ", length(files), " ficheros, ",
+        format_bytes(total_size), "."
     )
 }
 
 message("Indice de datos: ", index_source)
+dir_create(data_dir)
+index <- prepare_data_index(read_data_index(index_source))
 
-download_one <- function(key, url) {
-    dest <- file.path("data-raw", normalise_data_raw_key(key))
-    dir_create(dirname(dest))
+statuses <- vapply(
+    seq_len(nrow(index)),
+    function(i) download_one(index[i, , drop = FALSE]),
+    character(1)
+)
 
-    if (!file_exists(dest)) {
-        resp <- tryCatch(
-            httr::GET(
-                encode_remote_url(url),
-                httr::write_disk(dest, overwrite = TRUE)
-            ),
-            error = function(e) {
-                message("Fallo: ", key, " (", conditionMessage(e), ")")
-                NULL
-            }
-        )
-        if (is.null(resp)) {
-            if (file_exists(dest)) file_delete(dest)
-            return(FALSE)
-        }
-
-        if (httr::status_code(resp) == 200) {
-            message("Descargado: ", key)
-            return(TRUE)
-        }
-
-        if (file_exists(dest)) file_delete(dest)
-        message("Fallo: ", key, " (status ", httr::status_code(resp), ")")
-        return(FALSE)
-    }
-
-    message("Ya existe: ", key)
-    NA
+if (any(statuses == "failed")) {
+    stop(
+        "Fallaron ", sum(statuses == "failed"),
+        " descargas de data-raw/.",
+        call. = FALSE
+    )
 }
 
-res <- purrr::map2_lgl(index$key, index$url, download_one)
+validate_data_raw(index)
 
 cat(
-    sum(res, na.rm = TRUE), "descargados,",
-    sum(is.na(res)), "ya existian,",
-    sum(!res, na.rm = TRUE), "fallos\n"
+    sum(statuses == "downloaded"), "descargados,",
+    sum(statuses == "present"), "ya existian,",
+    sum(statuses == "failed"), "fallos\n"
 )

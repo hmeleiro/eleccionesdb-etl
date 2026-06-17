@@ -10,9 +10,9 @@ El proyecto usa GitHub Actions para separar validacion, exportacion, documentaci
 | Workflow | Disparador | Proposito |
 |---|---|---|
 | `CI` | Pull requests y pushes a `main` | Restaura `renv`, comprueba scripts R, carga el manifiesto de `{targets}`, ejecuta lint no bloqueante y construye Hugo. |
-| `ETL Export` | Manual, semanal y cambios relevantes en `main` | Descarga `data-raw/`, ejecuta `run_export()` y `run_export_calidad()`, valida ZIPs y sube artefactos. |
+| `ETL Export` | Manual, semanal y cambios relevantes en `main` | Restaura `data-raw/` desde cache exacta o lo descarga desde R2, ejecuta `run_export()` y `run_export_calidad()`, valida ZIPs y sube artefactos. |
 | `Deploy Docs` | Manual y cambios en `docs-site/` en `main` | Construye el sitio Hugo y lo publica en GitHub Pages. |
-| `Deploy DB` | Manual | Descarga datos, ejecuta el pipeline hasta `run_writedb()` y carga PostgreSQL con secretos. |
+| `Deploy DB` | Manual | Restaura o descarga datos, ejecuta el pipeline hasta `run_writedb()` y carga PostgreSQL con secretos. |
 
 ## Reproducibilidad
 
@@ -23,6 +23,18 @@ renv::restore(prompt = FALSE)
 ```
 
 El script `install_deps.R` se mantiene como bootstrap secundario para entornos sin `renv`, pero no sustituye al lockfile.
+
+## Cache de data-raw/
+
+Los datos maestros viven en Cloudflare R2 bajo `eleccionesdb-etl/data-raw/` y no se versionan en Git. El archivo `data-manifest.csv` es la fuente de verdad para descarga, validacion e invalidacion de cache.
+
+`ETL Export` y `Deploy DB` usan `actions/cache@v4` con una clave exacta:
+
+```text
+data-raw-${{ runner.os }}-${{ hashFiles('data-manifest.csv') }}
+```
+
+No se usan `restore-keys` para evitar recuperar datos obsoletos. Si cambian objetos en R2, hay que regenerar y commitear `data-manifest.csv`; ese cambio fuerza una nueva cache.
 
 ## Artefactos de exportacion
 

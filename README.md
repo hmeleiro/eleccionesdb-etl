@@ -9,7 +9,7 @@
 El proyecto usa GitHub Actions para validar el ETL, construir la documentacion y publicar artefactos de forma controlada:
 
 - `CI`: se ejecuta en pull requests y pushes a `main`. Restaura `renv`, comprueba la sintaxis de los scripts R, carga el manifiesto de `{targets}`, ejecuta `lintr` en modo no bloqueante y construye el sitio Hugo.
-- `ETL Export`: se ejecuta manualmente, semanalmente y en cambios relevantes de `main`. Descarga `data-raw/`, ejecuta `run_export()` y `run_export_calidad()`, valida los ZIP de Parquet/SQLite/CSV y sube los resultados como artifacts.
+- `ETL Export`: se ejecuta manualmente, semanalmente y en cambios relevantes de `main`. Restaura `data-raw/` desde cache exacta o lo descarga desde Cloudflare R2, ejecuta `run_export()` y `run_export_calidad()`, valida los ZIP de Parquet/SQLite/CSV y sube los resultados como artifacts.
 - `Deploy Docs`: publica el sitio Hugo en GitHub Pages.
 - `Deploy DB`: solo manual, asociado al environment protegido `production-db`. Requiere escribir `TRUNCATE_AND_LOAD_ELECCIONESDB` y usa secretos de PostgreSQL antes de ejecutar `run_writedb()`.
 
@@ -43,7 +43,7 @@ hugo --source docs-site --destination public
 
 - PostgreSQL (`Deploy DB`): `DB_NAME`, `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`.
 - Cloudflare R2 (`ETL Export` con publicacion manual): `CF_S3_ACCESS_KEY`, `CF_S3_SECRET_KEY`, `CF_S3_ENDPOINT`, `CF_S3_BUCKET`, `CF_S3_PUBLIC_BASE_URL`.
-- `DATA_INDEX_URL` puede definirse como input manual de los workflows para usar un indice de datos alternativo; si no se define, se usa `docs-site/data_index.csv`.
+- `DATA_INDEX_URL` puede definirse como input manual de los workflows para usar un manifiesto de datos alternativo; si no se define, se usa `data-manifest.csv`.
 
 Proyecto R para construir y cargar una base de datos PostgreSQL (`eleccionesdb`) con resultados electorales de España: elecciones generales (Congreso), europeas, autonómicas y municipales.
 
@@ -343,23 +343,40 @@ run_all()  # solo re-ejecutará lo que haya cambiado (caché de {targets})
 
 ## Restaurar data-raw/ para reproducir el ETL
 
-Los archivos originales de datos (`data-raw/`) no se incluyen en el repositorio por cuestiones de tamaño. Están alojados en un bucket de Cloudflare. Para poblar este directorio y poder ejecutar el pipeline ETL:
+Los archivos originales de datos (`data-raw/`) no se incluyen en el repositorio por cuestiones de tamaño. Los maestros viven en Cloudflare R2 bajo el prefijo `eleccionesdb-etl/data-raw/`.
 
 ### Descarga automática de datos (sin credenciales)
 
-1.  Asegúrate de tener R y los paquetes necesarios (`readr`, `httr`, `fs`, `purrr`).
+1.  Asegúrate de tener R y los paquetes necesarios (`readr`, `httr`, `fs`).
 2.  Ejecuta:
 
 ``` r
 source("R/00-setup/download_data_raw.R")
 ```
 
-Esto descargará todos los archivos listados en el índice público y los colocará en su ruta correspondiente bajo `data-raw/`.
+Esto descarga todos los archivos listados en `data-manifest.csv` y los coloca bajo `data-raw/`, conservando la estructura de directorios. El script es idempotente: solo descarga archivos que faltan o que no coinciden con el tamaño esperado.
 
--   El índice de archivos se encuentra en: `docs-site/data_index.csv` (ajusta la URL en el script si lo alojas en otro sitio).
--   El script es idempotente: solo descarga archivos que no existen localmente.
+Puedes validar una restauración local con:
 
-### ¿Cómo se genera el índice? (solo admins)
+``` sh
+Rscript R/00-setup/check_data_raw.R
+```
+
+### Caché en GitHub Actions
+
+`ETL Export` y `Deploy DB` cachean la carpeta completa `data-raw/` con `actions/cache@v4`. La clave exacta es:
+
+``` text
+data-raw-${{ runner.os }}-${{ hashFiles('data-manifest.csv') }}
+```
+
+No se usan `restore-keys` para `data-raw/`, así que GitHub Actions solo reutiliza una caché cuyo manifiesto coincide exactamente. Si se usa el input manual `DATA_INDEX_URL`, el workflow descarga desde ese manifiesto alternativo.
+
+### Cómo invalidar la caché
+
+Cuando cambien los datos en R2, modifica o regenera `data-manifest.csv` y commitea ese cambio. Al cambiar el hash del manifiesto, GitHub Actions creará una clave nueva y volverá a descargar `data-raw/` antes de ejecutar el pipeline.
+
+### Cómo se genera el manifiesto (solo admins)
 
 1.  Configura las variables en `.env` (`CF_S3_ACCESS_KEY`, `CF_S3_SECRET_KEY`, `CF_S3_ENDPOINT`, `CF_S3_BUCKET`, `CF_S3_PUBLIC_BASE_URL`).
 2.  Ejecuta:
@@ -368,6 +385,4 @@ Esto descargará todos los archivos listados en el índice público y los coloca
 source("R/00-setup/generate_data_index.R")
 ```
 
-Esto crea/actualiza el archivo `docs-site/data_index.csv` con la lista de archivos y URLs públicas.
-
-> Si los datos del bucket cambian, recuerda regenerar y volver a publicar el índice.
+Esto crea o actualiza `data-manifest.csv` con los objetos públicos de `eleccionesdb-etl/data-raw/`.

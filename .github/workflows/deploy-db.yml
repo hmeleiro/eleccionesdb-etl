@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       data_index_url:
-        description: Optional local/remote data index override for DATA_INDEX_URL.
+        description: Optional local/remote data manifest override for DATA_INDEX_URL.
         required: false
         type: string
 
@@ -74,8 +74,20 @@ jobs:
         with:
           cache-version: 1
 
+      - name: Restore data-raw cache
+        id: cache-data
+        if: ${{ env.DATA_INDEX_URL == '' }}
+        uses: actions/cache@v4
+        with:
+          path: data-raw
+          key: data-raw-${{ runner.os }}-${{ hashFiles('data-manifest.csv') }}
+
       - name: Download data-raw
+        if: ${{ env.DATA_INDEX_URL != '' || steps.cache-data.outputs.cache-hit != 'true' }}
         run: Rscript -e "source('R/00-setup/download_data_raw.R')"
+
+      - name: Check data-raw
+        run: Rscript R/00-setup/check_data_raw.R
 
       - name: Write database environment
         env:
