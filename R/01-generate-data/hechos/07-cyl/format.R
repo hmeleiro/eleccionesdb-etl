@@ -12,6 +12,9 @@ OUTPUT_DIR <- "data-processed/hechos/07-cyl/"
 
 fechas <-
   read_csv("tablas-finales/dimensiones/elecciones", show_col_types = F) %>%
+  mutate(
+    codigo_ccaa = str_pad(str_trim(as.character(codigo_ccaa)), width = 2, pad = "0")
+  ) %>%
   filter(tipo_eleccion == "A" & codigo_ccaa == "07") %>%
   transmute(eleccion_id = id, year = as.character(year))
 
