@@ -268,7 +268,7 @@ votos_seccion <-
   votos_mesas %>%
   select(-codigo_mesa) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(., na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = T)), .groups = "drop_last") %>%
   ungroup()
 
 # MUNICIPIOS (2015+ desde secciones + pre-2015 desde SADEI)
@@ -276,7 +276,7 @@ votos_muni <-
   votos_seccion %>%
   select(-c(codigo_distrito, codigo_seccion)) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(., na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = T)), .groups = "drop_last") %>%
   ungroup() %>%
   bind_rows(votos_mun_pre15)
 
@@ -285,7 +285,7 @@ votos_circ <-
   votos_muni %>%
   select(-codigo_municipio) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(., na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = T)), .groups = "drop_last") %>%
   ungroup()
 
 # PROVINCIA
@@ -293,7 +293,7 @@ votos_prov <-
   votos_circ %>%
   select(-codigo_circunscripcion) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(., na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = T)), .groups = "drop_last") %>%
   ungroup()
 
 # CCAA
@@ -301,7 +301,7 @@ votos_ccaa <-
   votos_prov %>%
   select(-codigo_provincia) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(.x, na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(.x, na.rm = T)), .groups = "drop_last") %>%
   ungroup() %>%
   arrange(year, -votos)
 

@@ -2,6 +2,8 @@ source("run.R")
 
 targets::tar_manifest() |> print(n = 30)
 
+run_hechos()
+
 # run_writedb()   # todo hasta escritura a BD
 run_export_calidad() # todo hasta export de csv de calidad de datos
 run_export()    # todo hasta exportación
@@ -16,7 +18,7 @@ show_pipeline()
 
 targets::tar_meta(fields = warnings, complete_only = TRUE)
 
-tar_invalidate(names = c("dim_elecciones"))
+tar_invalidate(names = c("hechos_murcia"))
 # tar_invalidate(names = everything())
 # tar_destroy()
 

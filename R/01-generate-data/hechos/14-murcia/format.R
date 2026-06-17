@@ -7,6 +7,7 @@ library(readr)
 
 source("R/tests/validate_data_processed.R")
 
+CODIGOS_DIR <- "data-raw/codigos_territorios"
 INPUT_DIR <- "data-raw/hechos/14-murcia/"
 OUTPUT_DIR <- "data-processed/hechos/14-murcia/"
 
@@ -20,15 +21,21 @@ territorios <-
   select(
     territorio_id = id,
     codigo_ccaa, codigo_provincia, codigo_municipio,
-    codigo_distrito, codigo_seccion
+    codigo_distrito, codigo_seccion, codigo_circunscripcion
   )
+
+correspondencia <- read_csv(
+  file.path(CODIGOS_DIR, "correspondencia_municipio_circunscripcion.csv"),
+  col_types = cols(.default = "c")
+) %>%
+  filter(codigo_provincia == "30")
 
 # ===========================================================================
 # Función de lectura para los xls (post-2003 y pre-2003)
 # ===========================================================================
 
 leer_murcia <- function(x) {
-  pr <- read_xls(x)
+  pr <- read_xls(x, .name_repair = "minimal")
   fecha <- as.Date(pr[3, 1] %>% pull(), format = "%d de %B de %Y")
   names <- paste0(pr[4, ], "_", pr[5, ])
   temp <- pr[6:nrow(pr), ]
@@ -146,7 +153,9 @@ data_2003 <-
   )
 
 # Combinar post-2003 y 2003
-data_mesas_all <- bind_rows(data_post03, data_2003)
+data_mesas_all <-
+  bind_rows(data_post03, data_2003) %>%
+  left_join(correspondencia, by = c("codigo_provincia", "codigo_municipio"))
 
 # ===========================================================================
 # PRE-2003: datos a nivel municipio (1983-1999)
@@ -205,7 +214,8 @@ data_pre03 <-
     siglas = as.character(partido),
     denominacion = siglas,
     votos = as.integer(votos)
-  )
+  ) %>%
+  left_join(correspondencia, by = c("codigo_provincia", "codigo_municipio"))
 
 # ===========================================================================
 # Separar info / votos
@@ -245,9 +255,16 @@ info_muni <-
   summarise(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)), .groups = "drop") %>%
   arrange(year, codigo_municipio)
 
-info_prov <-
+info_circ <-
   info_muni %>%
   select(-codigo_municipio) %>%
+  group_by(across(where(is.character))) %>%
+  summarise(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)), .groups = "drop") %>%
+  arrange(year, codigo_circunscripcion)
+
+info_prov <-
+  info_circ %>%
+  select(-codigo_circunscripcion) %>%
   group_by(across(where(is.character))) %>%
   summarise(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)), .groups = "drop") %>%
   arrange(year)
@@ -279,9 +296,16 @@ votos_muni <-
   summarise(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)), .groups = "drop") %>%
   arrange(year, codigo_municipio, -votos)
 
-votos_prov <-
+votos_circ <-
   votos_muni %>%
   select(-codigo_municipio) %>%
+  group_by(across(where(is.character))) %>%
+  summarise(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)), .groups = "drop") %>%
+  arrange(year, codigo_circunscripcion, -votos)
+
+votos_prov <-
+  votos_circ %>%
+  select(-codigo_circunscripcion) %>%
   group_by(across(where(is.character))) %>%
   summarise(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)), .groups = "drop") %>%
   arrange(year, -votos)
@@ -298,7 +322,7 @@ votos_ccaa <-
 # ===========================================================================
 
 info_cer <-
-  bind_rows(info_ccaa, info_prov, info_muni, info_seccion) %>%
+  bind_rows(info_ccaa, info_prov, info_circ, info_muni, info_seccion) %>%
   mutate(
     across(c(codigo_provincia, codigo_distrito), ~ ifelse(is.na(.), "99", .)),
     codigo_municipio = ifelse(is.na(codigo_municipio), "999", codigo_municipio),
@@ -309,7 +333,7 @@ info_cer <-
     territorios,
     by = c(
       "codigo_ccaa", "codigo_provincia", "codigo_municipio",
-      "codigo_distrito", "codigo_seccion"
+      "codigo_distrito", "codigo_seccion", "codigo_circunscripcion"
     )
   ) %>%
   arrange(eleccion_id, territorio_id) %>%
@@ -325,7 +349,7 @@ info_cer <-
   )
 
 votos_cer <-
-  bind_rows(votos_ccaa, votos_prov, votos_muni, votos_seccion) %>%
+  bind_rows(votos_ccaa, votos_prov, votos_circ, votos_muni, votos_seccion) %>%
   mutate(
     across(c(codigo_provincia, codigo_distrito), ~ ifelse(is.na(.), "99", .)),
     codigo_municipio = ifelse(is.na(codigo_municipio), "999", codigo_municipio),
@@ -336,7 +360,7 @@ votos_cer <-
     territorios,
     by = c(
       "codigo_ccaa", "codigo_provincia", "codigo_municipio",
-      "codigo_distrito", "codigo_seccion"
+      "codigo_distrito", "codigo_seccion", "codigo_circunscripcion"
     )
   ) %>%
   arrange(eleccion_id, territorio_id) %>%
