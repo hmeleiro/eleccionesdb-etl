@@ -55,7 +55,7 @@ data_15 <- map_df(files_gipeyop, function(file) {
     "votos_totales" = "votos"
   )
 
-  tmp <- read_xlsx(file, sheet = "MESAS", .name_repair = "minimal")
+  tmp <- read_xlsx(file, sheet = "MESAS", .name_repair = "unique_quiet")
   c <- max(which(str_detect(colnames(tmp), "VOTOS|BLANCOS|NULOS")))
   colnames(tmp)[1:c] <- janitor::make_clean_names(colnames(tmp)[1:c])
 
@@ -136,10 +136,12 @@ votos_mun_pre15 <-
   map_df(files_sadei, function(file) {
     year <- str_remove_all(file, ".+data_|\\.xlsx")
 
-    x <- read_xlsx(file, .name_repair = "minimal")[, 3] %>% pull()
+    x <- read_xlsx(file, .name_repair = "unique_quiet")[,3]
+    colnames(x) <- "x"
+    x <- pull(x, 1)
     sk <- which(x == "Votos") + 1
 
-    tmp <- read_xlsx(file, skip = sk, .name_repair = "minimal")
+    tmp <- read_xlsx(file, skip = sk, .name_repair = "unique_quiet")
     c <- which(colnames(tmp) == "TOTAL")
 
     tmp %>%
@@ -175,7 +177,7 @@ info_seccion <-
   info_mesas %>%
   select(-codigo_mesa) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(., na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = T)), .groups = "drop_last") %>%
   ungroup()
 
 # MUNICIPIOS (2015+ desde secciones + pre-2015 desde SADEI)
@@ -183,7 +185,7 @@ info_muni <-
   info_seccion %>%
   select(-c(codigo_distrito, codigo_seccion)) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(., na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = T)), .groups = "drop_last") %>%
   ungroup() %>%
   bind_rows(info_mun_pre15)
 
@@ -192,7 +194,7 @@ info_circ <-
   info_muni %>%
   select(-codigo_municipio) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(., na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = T)), .groups = "drop_last") %>%
   ungroup()
 
 # PROVINCIA
@@ -200,7 +202,7 @@ info_prov <-
   info_circ %>%
   select(-codigo_circunscripcion) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(., na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = T)), .groups = "drop_last") %>%
   ungroup()
 
 # CCAA
@@ -208,7 +210,7 @@ info_ccaa <-
   info_prov %>%
   select(-codigo_provincia) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(.x, na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(.x, na.rm = T)), .groups = "drop_last") %>%
   ungroup() %>%
   arrange(year)
 
