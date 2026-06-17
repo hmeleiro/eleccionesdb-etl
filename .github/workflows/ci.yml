@@ -38,7 +38,11 @@ jobs:
             libpq-dev \
             libssl-dev \
             libtiff-dev \
-            libxml2-dev
+            libxml2-dev \
+            chromium \
+            cmake \
+            libx11-dev \
+            pandoc
 
       - name: Setup R
         uses: r-lib/actions/setup-r@v2
