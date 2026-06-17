@@ -16,27 +16,43 @@ ensure_pipeline_dirs <- function() {
   invisible(lapply(dirs, dir.create, recursive = TRUE, showWarnings = FALSE))
 }
 
+source_pipeline_env <- function(path) {
+  env <- new.env(parent = parent.frame())
+  env$source <- function(file, local = parent.frame(), ..., encoding = "UTF-8") {
+    base::source(file, local = local, ..., encoding = encoding)
+  }
+
+  base::source(path, local = env, encoding = "UTF-8")
+  env
+}
+
+run_pipeline_script <- function(path) {
+  env <- source_pipeline_env(path)
+  rm(env)
+  invisible(gc())
+}
+
 # =============================================================================
 # DIMENSIONES
 # =============================================================================
 
 run_dim_territorios <- function() {
-  source("R/01-generate-data/dimensiones/territorios/territorios.R", encoding = "UTF-8")
+  run_pipeline_script("R/01-generate-data/dimensiones/territorios/territorios.R")
   list.files("tablas-finales/dimensiones/territorios", full.names = TRUE)
 }
 
 run_dim_elecciones <- function() {
-  source("R/01-generate-data/dimensiones/elecciones/fechas-elecciones-format.R", encoding = "UTF-8")
+  run_pipeline_script("R/01-generate-data/dimensiones/elecciones/fechas-elecciones-format.R")
   list.files("tablas-finales/dimensiones/elecciones", full.names = TRUE)
 }
 
 run_dim_elecciones_fuentes <- function(dim_elecciones) {
-  source("R/01-generate-data/dimensiones/elecciones/elecciones-fuentes-format.R", encoding = "UTF-8")
+  run_pipeline_script("R/01-generate-data/dimensiones/elecciones/elecciones-fuentes-format.R")
   list.files("tablas-finales/dimensiones/elecciones_fuentes", full.names = TRUE)
 }
 
 run_dim_partidos <- function() {
-  source("R/01-generate-data/dimensiones/partidos/sync-partidos.R", encoding = "UTF-8")
+  run_pipeline_script("R/01-generate-data/dimensiones/partidos/sync-partidos.R")
   list.files("data-processed/partidos", full.names = TRUE, recursive = TRUE)
 }
 
@@ -47,7 +63,7 @@ run_dim_partidos <- function() {
 # Generic wrapper: source format.R and return info.rds + votos.rds paths
 run_hechos <- function(region_dir, dim_elecciones, dim_territorios) {
   script_path <- file.path("R/01-generate-data/hechos", region_dir, "format.R")
-  source(script_path, encoding = "UTF-8")
+  run_pipeline_script(script_path)
   c(
     file.path("data-processed/hechos", region_dir, "info.rds"),
     file.path("data-processed/hechos", region_dir, "votos.rds")
@@ -59,7 +75,7 @@ run_hechos <- function(region_dir, dim_elecciones, dim_territorios) {
 # =============================================================================
 
 run_partidos_sin_id <- function(all_hechos, dim_partidos) {
-  source("R/02-clean-and-bind/01-partidos-sin-id.R", encoding = "UTF-8")
+  run_pipeline_script("R/02-clean-and-bind/01-partidos-sin-id.R")
   "tablas-finales/dimensiones/partidos"
 }
 
@@ -68,7 +84,7 @@ run_partidos_sin_id <- function(all_hechos, dim_partidos) {
 # =============================================================================
 
 run_bind_hechos <- function(all_hechos, partidos_sin_id) {
-  source("R/02-clean-and-bind/02-bind-hechos.R", encoding = "UTF-8")
+  run_pipeline_script("R/02-clean-and-bind/02-bind-hechos.R")
   c(
     "tablas-finales/hechos/info.rds",
     "tablas-finales/hechos/votos.rds"
@@ -81,7 +97,7 @@ run_bind_hechos <- function(all_hechos, partidos_sin_id) {
 
 run_writedb <- function(bind_hechos, dim_elecciones, dim_elecciones_fuentes,
                         dim_territorios, dim_partidos) {
-  source("R/03-writedb/write-db.R", encoding = "UTF-8")
+  run_pipeline_script("R/03-writedb/write-db.R")
   invisible(NULL)
 }
 
@@ -91,7 +107,7 @@ run_writedb <- function(bind_hechos, dim_elecciones, dim_elecciones_fuentes,
 
 run_export <- function(bind_hechos, dim_elecciones, dim_elecciones_fuentes,
                        dim_territorios, dim_partidos) {
-  source("R/04-export/export-descargas.R", encoding = "UTF-8")
+  run_pipeline_script("R/04-export/export-descargas.R")
   list.files("descargas", full.names = TRUE, recursive = TRUE)
 }
 
@@ -102,14 +118,18 @@ run_export <- function(bind_hechos, dim_elecciones, dim_elecciones_fuentes,
 # Detecta incidencias automáticas, las combina con las manuales y escribe
 # docs-site/data/diagnosticos/incidencias.csv
 run_gen_diagnosticos <- function(bind_hechos) {
-  source("R/tests/generate_diagnosticos.R", encoding = "UTF-8")
-  generate_diagnosticos()
+  env <- source_pipeline_env("R/tests/generate_diagnosticos.R")
+  env$generate_diagnosticos()
+  rm(env)
+  invisible(gc())
   "docs-site/data/diagnosticos/incidencias.csv"
 }
 
 # Lee incidencias.csv y genera docs-site/content/calidad.md
 run_export_calidad <- function(gen_diagnosticos) {
-  source("R/04-export/export-calidad.R", encoding = "UTF-8")
-  export_calidad()
+  env <- source_pipeline_env("R/04-export/export-calidad.R")
+  env$export_calidad()
+  rm(env)
+  invisible(gc())
   "docs-site/content/calidad.md"
 }
