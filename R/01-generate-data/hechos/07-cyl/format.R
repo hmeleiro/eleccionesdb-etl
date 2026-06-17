@@ -22,6 +22,7 @@ territorios <- read_csv("tablas-finales/dimensiones/territorios", show_col_types
   select(territorio_id = id, codigo_ccaa, codigo_provincia, codigo_municipio, codigo_distrito, codigo_seccion)
 
 files <- list.files(INPUT_DIR, full.names = T)
+
 data <-
   map_df(files, function(file) {
     rename_cols <- c(
@@ -42,6 +43,7 @@ data <-
 
     year <- str_remove(file, INPUT_DIR)
     year <- str_remove(year, "\\.csv$")
+    year <- str_remove(year, "/")
 
     tmp <-
       read_delim(file, delim = ";", locale = locale(encoding = "latin1"), show_col_types = F) %>%

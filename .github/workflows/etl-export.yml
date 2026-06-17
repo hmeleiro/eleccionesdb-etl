@@ -107,7 +107,7 @@ jobs:
         run: Rscript R/00-setup/check_data_raw.R
 
       - name: Run export pipeline
-        run: Rscript -e "source('run.R'); run_export(); run_export_calidad()"
+        run: Rscript -e "source('run.R'); run_export_pipeline_ordered()"
 
       - name: Validate export artifacts
         run: Rscript R/ci/check_exports.R
