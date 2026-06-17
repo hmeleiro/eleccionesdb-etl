@@ -1,7 +1,41 @@
 library(dplyr)
 library(readr)
 
-Sys.setlocale(category = "LC_TIME", "es_ES.UTF-8")
+parse_spanish_date <- function(x) {
+  month_map <- c(
+    enero = "01",
+    febrero = "02",
+    marzo = "03",
+    abril = "04",
+    mayo = "05",
+    junio = "06",
+    julio = "07",
+    agosto = "08",
+    septiembre = "09",
+    setiembre = "09",
+    octubre = "10",
+    noviembre = "11",
+    diciembre = "12"
+  )
+
+  x <- trimws(tolower(x))
+  x <- ifelse(x == "10 y 16 de diciembre de 1985", "10 de diciembre de 1985", x)
+  x <- ifelse(x == "12 marzo de 2000", "12 de marzo de 2000", x)
+
+  matches <- regexec("^([0-9]{1,2}) de ([[:alpha:]]+) de ([0-9]{4})$", x)
+  parts <- regmatches(x, matches)
+
+  parsed <- vapply(parts, function(part) {
+    month <- if (length(part) == 4) unname(month_map[part[3]]) else NA_character_
+    if (length(part) != 4 || is.na(month)) {
+      return(NA_character_)
+    }
+
+    sprintf("%s-%s-%02d", part[4], month, as.integer(part[2]))
+  }, character(1))
+
+  as.Date(parsed)
+}
 
 fechas_elecciones <- read_csv("data-raw/fechas_elecciones.csv", show_col_types = F) %>%
   mutate(
@@ -11,7 +45,7 @@ fechas_elecciones <- read_csv("data-raw/fechas_elecciones.csv", show_col_types =
       fecha == "12 marzo de 2000" ~ "12 de marzo de 2000",
       T ~ fecha
     ),
-    fecha = as.Date(fecha, format = "%d de %B de %Y"),
+    fecha = parse_spanish_date(fecha),
     codigo_ccaa = case_when(
       ccaa == "Andalucia" ~ "01",
       ccaa == "Aragon" ~ "02",
@@ -35,6 +69,13 @@ fechas_elecciones <- read_csv("data-raw/fechas_elecciones.csv", show_col_types =
       T ~ "99"
     )
   )
+
+if (any(is.na(fechas_elecciones$fecha))) {
+  stop(
+    "No se pudieron parsear algunas fechas de data-raw/fechas_elecciones.csv.",
+    call. = FALSE
+  )
+}
 
 elecciones <-
   fechas_elecciones %>%
