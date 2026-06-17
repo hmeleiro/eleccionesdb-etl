@@ -30,13 +30,57 @@ correspondencia <- read_csv(
 ) %>%
   filter(codigo_provincia == "30")
 
+parse_spanish_date <- function(x) {
+  month_map <- c(
+    enero = "01",
+    febrero = "02",
+    marzo = "03",
+    abril = "04",
+    mayo = "05",
+    junio = "06",
+    julio = "07",
+    agosto = "08",
+    septiembre = "09",
+    setiembre = "09",
+    octubre = "10",
+    noviembre = "11",
+    diciembre = "12"
+  )
+
+  x <- str_squish(str_to_lower(as.character(x)))
+  matches <- regexec("^([0-9]{1,2}) de ([[:alpha:]]+) de ([0-9]{4})$", x)
+  parts <- regmatches(x, matches)
+
+  parsed <- vapply(parts, function(part) {
+    month <- if (length(part) == 4) unname(month_map[part[3]]) else NA_character_
+    if (length(part) != 4 || is.na(month)) {
+      return(NA_character_)
+    }
+
+    sprintf("%s-%s-%02d", part[4], month, as.integer(part[2]))
+  }, character(1))
+
+  as.Date(parsed)
+}
+
 # ===========================================================================
 # Función de lectura para los xls (post-2003 y pre-2003)
 # ===========================================================================
 
 leer_murcia <- function(x) {
   pr <- read_xls(x, .name_repair = "minimal")
-  fecha <- as.Date(pr[3, 1] %>% pull(), format = "%d de %B de %Y")
+  fecha_raw <- pr[3, 1] %>% pull()
+  fecha <- parse_spanish_date(fecha_raw)
+  if (is.na(fecha)) {
+    stop(
+      sprintf(
+        "No se pudo parsear la fecha electoral de %s: %s",
+        basename(x),
+        fecha_raw
+      ),
+      call. = FALSE
+    )
+  }
   names <- paste0(pr[4, ], "_", pr[5, ])
   temp <- pr[6:nrow(pr), ]
   colnames(temp) <- names
