@@ -55,7 +55,7 @@ data_15 <- map_df(files_gipeyop, function(file) {
     "votos_totales" = "votos"
   )
 
-  tmp <- read_xlsx(file, sheet = "MESAS")
+  tmp <- read_xlsx(file, sheet = "MESAS", .name_repair = "minimal")
   c <- max(which(str_detect(colnames(tmp), "VOTOS|BLANCOS|NULOS")))
   colnames(tmp)[1:c] <- janitor::make_clean_names(colnames(tmp)[1:c])
 
@@ -136,10 +136,10 @@ votos_mun_pre15 <-
   map_df(files_sadei, function(file) {
     year <- str_remove_all(file, ".+data_|\\.xlsx")
 
-    x <- read_xlsx(file)[, 3] %>% pull()
+    x <- read_xlsx(file, .name_repair = "minimal")[, 3] %>% pull()
     sk <- which(x == "Votos") + 1
 
-    tmp <- read_xlsx(file, skip = sk)
+    tmp <- read_xlsx(file, skip = sk, .name_repair = "minimal")
     c <- which(colnames(tmp) == "TOTAL")
 
     tmp %>%

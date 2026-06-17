@@ -84,7 +84,7 @@ info_seccion <-
   info_mesas %>%
   select(-c(codigo_mesa)) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(., na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = T)), .groups = "drop_last") %>%
   ungroup()
 
 # MUNICIPIOS
@@ -92,7 +92,7 @@ info_muni <-
   info_seccion %>%
   select(-c(codigo_distrito, codigo_seccion)) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(., na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = T)), .groups = "drop_last") %>%
   ungroup()
 
 # PROVINCIA
@@ -100,7 +100,7 @@ info_prov <-
   info_muni %>%
   select(-c(codigo_municipio)) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(., na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = T)), .groups = "drop_last") %>%
   ungroup()
 
 # CCAA
@@ -145,7 +145,7 @@ votos_seccion <-
   votos_mesas %>%
   select(-c(codigo_mesa, participacion_1, participacion_2)) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(., na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = T)), .groups = "drop_last") %>%
   ungroup() %>%
   arrange(year, codigo_provincia, codigo_municipio, codigo_seccion, -votos)
 
@@ -154,7 +154,7 @@ votos_muni <-
   votos_seccion %>%
   select(-c(codigo_distrito, codigo_seccion)) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(., na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = T)), .groups = "drop_last") %>%
   ungroup() %>%
   arrange(year, codigo_provincia, codigo_municipio, -votos)
 
@@ -163,7 +163,7 @@ votos_prov <-
   votos_muni %>%
   select(-c(codigo_municipio)) %>%
   group_by(across(where(is.character))) %>%
-  summarise(across(where(is.numeric), ~ sum(., na.rm = T))) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = T)), .groups = "drop_last") %>%
   ungroup() %>%
   arrange(year, codigo_provincia, -votos)
 
