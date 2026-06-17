@@ -41,7 +41,7 @@ run_dim_territorios <- function() {
   list.files("tablas-finales/dimensiones/territorios", full.names = TRUE)
 }
 
-run_dim_elecciones <- function() {
+run_dim_elecciones <- function(fechas_elecciones_raw) {
   run_pipeline_script("R/01-generate-data/dimensiones/elecciones/fechas-elecciones-format.R")
   list.files("tablas-finales/dimensiones/elecciones", full.names = TRUE)
 }

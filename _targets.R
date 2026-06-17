@@ -64,8 +64,9 @@ list(
     # ---------------------------------------------------------------------------
     # Phase 1: Dimensiones
     # ---------------------------------------------------------------------------
+    tar_target(raw_fechas_elecciones, "data-raw/fechas_elecciones.csv", format = "file"),
     tar_target(dim_territorios, run_dim_territorios(), format = "file"),
-    tar_target(dim_elecciones, run_dim_elecciones(), format = "file"),
+    tar_target(dim_elecciones, run_dim_elecciones(raw_fechas_elecciones), format = "file"),
     tar_target(dim_elecciones_fuentes, run_dim_elecciones_fuentes(dim_elecciones), format = "file"),
     tar_target(dim_partidos, run_dim_partidos(), format = "file"),
 
