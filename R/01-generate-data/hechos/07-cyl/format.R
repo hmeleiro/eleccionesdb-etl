@@ -41,7 +41,7 @@ data <-
     )
 
     year <- str_remove(file, INPUT_DIR)
-    year <- str_remove(year, ".csv")
+    year <- str_remove(year, "\\.csv$")
 
     tmp <-
       read_delim(file, delim = ";", locale = locale(encoding = "latin1"), show_col_types = F) %>%
