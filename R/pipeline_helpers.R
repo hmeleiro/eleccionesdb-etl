@@ -38,22 +38,25 @@ run_pipeline_script <- function(path) {
 
 run_dim_territorios <- function() {
   run_pipeline_script("R/01-generate-data/dimensiones/territorios/territorios.R")
-  list.files("tablas-finales/dimensiones/territorios", full.names = TRUE)
+  "tablas-finales/dimensiones/territorios"
 }
 
 run_dim_elecciones <- function(fechas_elecciones_raw) {
   run_pipeline_script("R/01-generate-data/dimensiones/elecciones/fechas-elecciones-format.R")
-  list.files("tablas-finales/dimensiones/elecciones", full.names = TRUE)
+  "tablas-finales/dimensiones/elecciones"
 }
 
 run_dim_elecciones_fuentes <- function(dim_elecciones) {
   run_pipeline_script("R/01-generate-data/dimensiones/elecciones/elecciones-fuentes-format.R")
-  list.files("tablas-finales/dimensiones/elecciones_fuentes", full.names = TRUE)
+  "tablas-finales/dimensiones/elecciones_fuentes"
 }
 
 run_dim_partidos <- function() {
-  run_pipeline_script("R/01-generate-data/dimensiones/partidos/sync-partidos.R")
-  list.files("data-processed/partidos", full.names = TRUE, recursive = TRUE)
+  env <- source_pipeline_env("R/01-generate-data/dimensiones/partidos/sync-partidos.R")
+  env$sync_partidos()
+  rm(env)
+  invisible(gc())
+  "data-processed/partidos"
 }
 
 # =============================================================================
