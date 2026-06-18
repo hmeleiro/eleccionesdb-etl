@@ -56,7 +56,11 @@ run_dim_partidos <- function() {
   env$sync_partidos()
   rm(env)
   invisible(gc())
-  "data-processed/partidos"
+  c(
+    "data-processed/partidos",
+    "tablas-finales/dimensiones/partidos_recode",
+    "tablas-finales/dimensiones/partidos"
+  )
 }
 
 # =============================================================================
@@ -78,6 +82,13 @@ run_hechos <- function(region_dir, dim_elecciones, dim_territorios) {
 # =============================================================================
 
 run_partidos_sin_id <- function(all_hechos, dim_partidos) {
+  skip_partidos_sin_id <- tolower(Sys.getenv("SKIP_PARTIDOS_SIN_ID", unset = "false"))
+
+  if (skip_partidos_sin_id %in% c("true", "1", "yes", "y", "si", "sí")) {
+    message("[PARTIDOS] Saltando partidos_sin_id por configuracion de entorno.")
+    return("tablas-finales/dimensiones/partidos")
+  }
+
   run_pipeline_script("R/02-clean-and-bind/01-partidos-sin-id.R")
   "tablas-finales/dimensiones/partidos"
 }
