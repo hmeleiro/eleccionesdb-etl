@@ -75,7 +75,8 @@ jobs:
           export DATA_INDEX_URL="${DATA_INDEX_URL}"
 
           # Ensure system dependencies required by source R packages are present.
-          # fs 2.0.1 needs libuv1-dev, or cmake/make to build vendored libuv.
+          # fs 2.0.1 needs cmake to build vendored libuv; igraph needs
+          # libglpk-dev when the renv cache is incomplete.
           if command -v apt-get >/dev/null 2>&1; then
             SUDO=""
             if [ "\$(id -u)" -ne 0 ]; then
@@ -83,13 +84,13 @@ jobs:
                 SUDO="sudo"
               else
                 echo "Skipping system dependency install: apt-get requires root or passwordless sudo."
-                echo "Assuming libuv1-dev, cmake, build-essential, and pkg-config were installed manually."
+                echo "Assuming cmake, libglpk-dev, libuv1-dev, build-essential, and pkg-config were installed manually."
               fi
             fi
 
             if [ -n "\$SUDO" ] || [ "\$(id -u)" -eq 0 ]; then
               \$SUDO apt-get update
-              \$SUDO apt-get install -y libuv1-dev cmake build-essential pkg-config
+              \$SUDO apt-get install -y cmake libglpk-dev libuv1-dev build-essential pkg-config
             fi
           else
             echo "apt-get not found; assuming remote system dependencies are already installed."
