@@ -58,6 +58,9 @@ jobs:
         run: |
           ssh -o ConnectTimeout=10 \
               -o StrictHostKeyChecking=accept-new \
+              -o ServerAliveInterval=30 \
+              -o ServerAliveCountMax=240 \
+              -o TCPKeepAlive=yes \
              "${REMOTE_USER}@${REMOTE_HOST}" bash -s << EOF
           set -e
           
