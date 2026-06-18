@@ -20,14 +20,12 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  R_VERSION: "4.5.3"
   RENV_CONFIG_SYNCHRONIZED_CHECK: false
   TARGETS_ERROR: stop
-  DATA_INDEX_URL: ${{ inputs.data_index_url }}
 
 jobs:
   deploy-db:
-    name: Load PostgreSQL
+    name: Load PostgreSQL via SSH
     runs-on: ubuntu-latest
     timeout-minutes: 360
     environment: production-db
@@ -40,69 +38,60 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Install system dependencies
+      - name: Setup SSH key
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libcurl4-openssl-dev \
-            libfontconfig1-dev \
-            libfreetype6-dev \
-            libfribidi-dev \
-            libgit2-dev \
-            libglpk-dev \
-            libharfbuzz-dev \
-            libjpeg-dev \
-            libpng-dev \
-            libpq-dev \
-            libssl-dev \
-            libtiff-dev \
-            libxml2-dev \
-            chromium \
-            cmake \
-            libx11-dev \
-            pandoc
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -t ed25519 ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
 
-      - name: Setup R
-        uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: ${{ env.R_VERSION }}
-          use-public-rspm: true
-
-      - name: Restore renv
-        uses: r-lib/actions/setup-renv@v2
-        with:
-          cache-version: 1
-
-      - name: Restore data-raw cache
-        id: cache-data
-        if: ${{ env.DATA_INDEX_URL == '' }}
-        uses: actions/cache@v5
-        with:
-          path: data-raw
-          key: data-raw-${{ runner.os }}-${{ hashFiles('data-manifest.csv') }}
-
-      - name: Download data-raw
-        if: ${{ env.DATA_INDEX_URL != '' || steps.cache-data.outputs.cache-hit != 'true' }}
-        run: Rscript -e "source('R/00-setup/download_data_raw.R')"
-
-      - name: Check data-raw
-        run: Rscript R/00-setup/check_data_raw.R
-
-      - name: Write database environment
+      - name: Deploy via SSH
         env:
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_REPO_PATH: ${{ secrets.REMOTE_REPO_PATH }}
+          DATA_INDEX_URL: ${{ inputs.data_index_url }}
           DB_NAME: ${{ secrets.DB_NAME }}
-          DB_HOST: ${{ secrets.DB_HOST }}
           DB_PORT: ${{ secrets.DB_PORT }}
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
+          ssh -o ConnectTimeout=10 \
+              -o StrictHostKeyChecking=accept-new \
+              "${REMOTE_USER}@${REMOTE_HOST}" bash -s << 'EOF'
+          set -e
+          
+          # Navigate to repo
+          cd "${REMOTE_REPO_PATH}"
+          
+          # Update repo
+          git fetch origin
+          git checkout ${{ github.ref_name }}
+          git pull origin ${{ github.ref_name }}
+          
+          # Setup environment variables
+          export RENV_CONFIG_SYNCHRONIZED_CHECK=false
+          export TARGETS_ERROR=stop
+          export DATA_INDEX_URL="${DATA_INDEX_URL}"
+          
+          # Download data-raw if needed
+          if [ -z "${DATA_INDEX_URL}" ]; then
+            Rscript -e "source('R/00-setup/download_data_raw.R')"
+          fi
+          
+          # Restore renv and check data
+          Rscript -e "renv::restore()"
+          Rscript R/00-setup/check_data_raw.R
+          
+          # Write database environment
           {
             echo "DB_NAME=${DB_NAME}"
-            echo "DB_HOST=${DB_HOST}"
+            echo "DB_HOST=localhost"
             echo "DB_PORT=${DB_PORT}"
             echo "DB_USER=${DB_USER}"
             echo "DB_PASSWORD=${DB_PASSWORD}"
           } > .env
-
-      - name: Load PostgreSQL
-        run: Rscript -e "source('run.R'); run_writedb()"
+          
+          # Load PostgreSQL
+          Rscript -e "source('run.R'); run_writedb()"
+          EOF
