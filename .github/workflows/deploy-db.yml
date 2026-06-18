@@ -82,14 +82,15 @@ jobs:
               if command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
                 SUDO="sudo"
               else
-                echo "Cannot install system dependencies: apt-get requires root or passwordless sudo."
-                echo "Install libuv1-dev, cmake, build-essential, and pkg-config on the remote host, then rerun deploy-db."
-                exit 1
+                echo "Skipping system dependency install: apt-get requires root or passwordless sudo."
+                echo "Assuming libuv1-dev, cmake, build-essential, and pkg-config were installed manually."
               fi
             fi
 
-            \$SUDO apt-get update
-            \$SUDO apt-get install -y libuv1-dev cmake build-essential pkg-config
+            if [ -n "\$SUDO" ] || [ "\$(id -u)" -eq 0 ]; then
+              \$SUDO apt-get update
+              \$SUDO apt-get install -y libuv1-dev cmake build-essential pkg-config
+            fi
           else
             echo "apt-get not found; assuming remote system dependencies are already installed."
             echo "For fs, the remote host needs libuv headers or cmake, make, and a C++ compiler."
