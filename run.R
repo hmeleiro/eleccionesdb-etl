@@ -21,14 +21,30 @@ library(targets)
 
 source("R/hechos_regions.R")
 
+tar_make_local <- function(names) {
+    tar_make(
+        names = names,
+        callr_function = NULL,
+        garbage_collection = TRUE
+    )
+}
+
+run_target_local <- function(target_name) {
+    tar_make_local(tidyselect::all_of(target_name))
+}
+
+run_dims_local <- function() {
+    tar_make_local(starts_with("dim_"))
+}
+
+writedb_ordered_targets <- function() {
+    c(hechos_target_names(), "partidos_sin_id", "bind_hechos", "writedb")
+}
+
 tar_make_in_order <- function(target_names, local = FALSE) {
     for (target_name in target_names) {
         if (local) {
-            tar_make(
-                names = tidyselect::all_of(target_name),
-                callr_function = NULL,
-                garbage_collection = TRUE
-            )
+            run_target_local(target_name)
         } else {
             tar_make(names = tidyselect::all_of(target_name))
         }
@@ -51,11 +67,7 @@ run_hechos <- function() {
 
 run_hechos_ordered <- function(local = FALSE) {
     if (local) {
-        tar_make(
-            names = starts_with("dim_"),
-            callr_function = NULL,
-            garbage_collection = TRUE
-        )
+        run_dims_local()
     } else {
         tar_make(names = starts_with("dim_"))
     }

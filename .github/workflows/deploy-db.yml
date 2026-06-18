@@ -122,6 +122,13 @@ jobs:
             echo "DB_PASSWORD=${DB_PASSWORD}"
           } > .env
           
-          # Load PostgreSQL
-          Rscript -e "source('run.R'); run_writedb_ordered(local = TRUE)"
+          # Load PostgreSQL. Run each target in a fresh R process so memory is
+          # fully returned to the OS between heavy regional targets.
+          trap 'rm -f .deploy-writedb-targets' EXIT
+          Rscript -e "source('run.R'); run_dims_local()"
+          Rscript -e "source('run.R'); writeLines(writedb_ordered_targets())" > .deploy-writedb-targets
+          while IFS= read -r target_name; do
+            echo "Running target: \${target_name}"
+            Rscript -e "source('run.R'); run_target_local('\${target_name}')"
+          done < .deploy-writedb-targets
           EOF
