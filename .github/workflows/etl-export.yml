@@ -34,7 +34,6 @@ concurrency:
 
 env:
   R_VERSION: "4.5.3"
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   RENV_CONFIG_SYNCHRONIZED_CHECK: false
   TARGETS_ERROR: stop
   SKIP_PARTIDOS_SIN_ID: true
@@ -48,7 +47,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install system dependencies
         run: |
@@ -85,7 +84,7 @@ jobs:
           cache-version: 1
 
       - name: Restore targets cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: _targets
           key: targets-${{ runner.os }}-${{ hashFiles('renv.lock', '_targets.R', 'run.R', 'R/**/*.R', 'data-manifest.csv') }}
@@ -95,7 +94,7 @@ jobs:
       - name: Restore data-raw cache
         id: cache-data
         if: ${{ env.DATA_INDEX_URL == '' }}
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: data-raw
           key: data-raw-${{ runner.os }}-${{ hashFiles('data-manifest.csv') }}
@@ -117,7 +116,7 @@ jobs:
         run: Rscript R/ci/write_summary.R
 
       - name: Upload downloads artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: eleccionesdb-descargas
           path: descargas/*.zip
@@ -125,7 +124,7 @@ jobs:
           retention-days: 14
 
       - name: Upload summary artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: eleccionesdb-etl-summary
           path: ci-summary.md
@@ -134,7 +133,7 @@ jobs:
 
       - name: Configure Cloudflare R2 credentials
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_downloads }}
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.CF_S3_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.CF_S3_SECRET_KEY }}

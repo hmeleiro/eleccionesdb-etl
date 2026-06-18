@@ -10,7 +10,6 @@ permissions:
 
 env:
   R_VERSION: "4.5.3"
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   RENV_CONFIG_SYNCHRONIZED_CHECK: false
 
 jobs:
@@ -20,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install system dependencies
         run: |

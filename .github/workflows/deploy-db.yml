@@ -21,7 +21,6 @@ concurrency:
 
 env:
   R_VERSION: "4.5.3"
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   RENV_CONFIG_SYNCHRONIZED_CHECK: false
   TARGETS_ERROR: stop
   DATA_INDEX_URL: ${{ inputs.data_index_url }}
@@ -39,7 +38,7 @@ jobs:
           test "${{ inputs.confirm }}" = "TRUNCATE_AND_LOAD_ELECCIONESDB"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install system dependencies
         run: |
@@ -77,7 +76,7 @@ jobs:
       - name: Restore data-raw cache
         id: cache-data
         if: ${{ env.DATA_INDEX_URL == '' }}
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: data-raw
           key: data-raw-${{ runner.os }}-${{ hashFiles('data-manifest.csv') }}
