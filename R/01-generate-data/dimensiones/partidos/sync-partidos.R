@@ -41,29 +41,17 @@ sync_partidos <- function(path = "data-raw/partidos_recodes.xlsx",
     arrange(recode, denominacion, siglas) %>%
     mutate(id = dplyr::row_number(), .before = 1)
 
-  partidos_dimension <- partidos_final %>%
-    left_join(
-      partidos_recode %>%
-        select(partido_recode_id = id, recode = partido_recode),
-      by = "recode"
-    ) %>%
-    select(id, partido_recode_id, siglas, denominacion) %>%
-    distinct()
-
   dir.create("data-processed", recursive = TRUE, showWarnings = FALSE)
   dir.create("tablas-finales/dimensiones", recursive = TRUE, showWarnings = FALSE)
 
   readr::write_csv(partidos_final, "data-processed/partidos", na = "NNNNAAAA")
   readr::write_csv(partidos_recode, "tablas-finales/dimensiones/partidos_recode", na = "NNNNAAAA")
-  readr::write_csv(partidos_dimension, "tablas-finales/dimensiones/partidos", na = "NNNNAAAA")
 
   message("[PARTIDOS] Dimension partidos generada en data-processed/partidos.")
   message("[PARTIDOS] Dimension partidos_recode generada en tablas-finales/dimensiones/partidos_recode.")
-  message("[PARTIDOS] Dimension partidos base generada en tablas-finales/dimensiones/partidos.")
 
   invisible(list(
-    partidos = partidos_dimension,
-    partidos_raw = partidos_final,
+    partidos = partidos_final,
     partidos_recode = partidos_recode
   ))
 }

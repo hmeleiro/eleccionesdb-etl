@@ -9,6 +9,9 @@ source("R/tests/validate_tablas_finales.R")
 info_files <- list.files("data-processed/", recursive = T, full.names = T, pattern = "info")
 votos_files <- list.files("data-processed/", recursive = T, full.names = T, pattern = "votos")
 
+info_files <- info_files[20]
+votos_files <- votos_files[20]
+
 nrepresentantes <- get_nrepresentantes()
 representantes <- get_representantes()
 
@@ -35,7 +38,7 @@ votos_sin_id <- votos %>%
   filter(is.na(partido_id)) %>%
   group_by(denominacion, siglas) %>%
   summarise(
-    votos = sum(votos, na.rm = T)
+    votos = sum(votos, na.rm = T), .groups = "drop_last"
   ) %>%
   arrange(-votos) %>%
   select(denominacion, siglas, votos)
