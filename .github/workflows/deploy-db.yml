@@ -79,8 +79,8 @@ jobs:
             Rscript -e "source('R/00-setup/download_data_raw.R')"
           fi
           
-          # Restore renv and check data
-          Rscript -e "renv::restore()"
+          # Initialize renv and restore all packages
+          Rscript -e "renv::consent(provided = TRUE); renv::restore(clean = TRUE, rebuild = FALSE)"
           Rscript R/00-setup/check_data_raw.R
           
           # Write database environment
