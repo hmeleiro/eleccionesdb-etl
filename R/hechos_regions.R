@@ -23,6 +23,31 @@ hechos_regions <- c(
     minsait     = "minsait"
 )
 
+filter_hechos_regions <- function(regions) {
+    selected <- Sys.getenv("ETL_HECHOS_REGIONS", unset = "")
+    if (!nzchar(selected)) {
+        return(regions)
+    }
+
+    selected <- trimws(strsplit(selected, ",", fixed = TRUE)[[1]])
+    selected <- selected[nzchar(selected)]
+
+    keep <- names(regions) %in% selected | unname(regions) %in% selected
+    unknown <- setdiff(selected, c(names(regions), unname(regions)))
+
+    if (length(unknown) > 0) {
+        stop(
+            "ETL_HECHOS_REGIONS contiene regiones desconocidas: ",
+            paste(unknown, collapse = ", "),
+            call. = FALSE
+        )
+    }
+
+    regions[keep]
+}
+
+hechos_regions <- filter_hechos_regions(hechos_regions)
+
 hechos_target_names <- function() {
     paste0("hechos_", names(hechos_regions))
 }

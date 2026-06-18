@@ -12,6 +12,7 @@
 #   run_export()             # run everything up to and including export
 #   run_export_ordered()     # run export with regional hechos in _targets.R order
 #   run_export_pipeline_ordered() # run export + quality with ordered hechos
+#   Sys.setenv(ETL_HECHOS_REGIONS = "la_rioja") # optional smoke subset
 #   show_pipeline()          # visualize the DAG in the viewer
 #   targets::tar_outdated()  # see which targets need re-running
 

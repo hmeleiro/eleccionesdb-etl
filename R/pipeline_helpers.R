@@ -36,6 +36,11 @@ run_pipeline_script <- function(path) {
 # DIMENSIONES
 # =============================================================================
 
+run_dim_tipos_eleccion <- function() {
+  run_pipeline_script("R/01-generate-data/dimensiones/elecciones/tipos-eleccion-format.R")
+  "tablas-finales/dimensiones/tipos_eleccion"
+}
+
 run_dim_territorios <- function() {
   run_pipeline_script("R/01-generate-data/dimensiones/territorios/territorios.R")
   "tablas-finales/dimensiones/territorios"
@@ -109,7 +114,7 @@ run_bind_hechos <- function(all_hechos, partidos_sin_id) {
 # WRITE DB
 # =============================================================================
 
-run_writedb <- function(bind_hechos, dim_elecciones, dim_elecciones_fuentes,
+run_writedb <- function(bind_hechos, dim_tipos_eleccion, dim_elecciones, dim_elecciones_fuentes,
                         dim_territorios, dim_partidos) {
   run_pipeline_script("R/03-writedb/write-db.R")
   invisible(NULL)
@@ -119,7 +124,7 @@ run_writedb <- function(bind_hechos, dim_elecciones, dim_elecciones_fuentes,
 # EXPORT
 # =============================================================================
 
-run_export <- function(bind_hechos, dim_elecciones, dim_elecciones_fuentes,
+run_export <- function(bind_hechos, dim_tipos_eleccion, dim_elecciones, dim_elecciones_fuentes,
                        dim_territorios, dim_partidos) {
   run_pipeline_script("R/04-export/export-descargas.R")
   list.files("descargas", full.names = TRUE, recursive = TRUE)

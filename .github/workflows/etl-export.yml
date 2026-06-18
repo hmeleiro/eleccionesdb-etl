@@ -7,6 +7,11 @@ on:
         description: Optional local/remote data manifest override for DATA_INDEX_URL.
         required: false
         type: string
+      smoke_test:
+        description: Run a faster smoke ETL with data-manifest-smoke.csv and a small hechos subset.
+        required: true
+        default: false
+        type: boolean
       publish_downloads:
         description: Publish descargas/ to Cloudflare R2 after validation.
         required: true
@@ -21,6 +26,7 @@ on:
       - "run.R"
       - "R/**"
       - "data-manifest.csv"
+      - "data-manifest-smoke.csv"
       - "renv.lock"
       - "install_deps.R"
       - ".github/workflows/etl-export.yml"
@@ -37,7 +43,9 @@ env:
   RENV_CONFIG_SYNCHRONIZED_CHECK: false
   TARGETS_ERROR: stop
   SKIP_PARTIDOS_SIN_ID: true
-  DATA_INDEX_URL: ${{ inputs.data_index_url }}
+  ETL_SMOKE: ${{ github.event_name == 'workflow_dispatch' && inputs.smoke_test && 'true' || 'false' }}
+  DATA_INDEX_URL: ${{ inputs.data_index_url || (github.event_name == 'workflow_dispatch' && inputs.smoke_test && 'data-manifest-smoke.csv' || '') }}
+  ETL_HECHOS_REGIONS: ${{ github.event_name == 'workflow_dispatch' && inputs.smoke_test && 'la_rioja' || '' }}
 
 jobs:
   export:
@@ -84,6 +92,7 @@ jobs:
           cache-version: 1
 
       - name: Restore targets cache
+        if: ${{ env.DATA_INDEX_URL == '' && env.ETL_HECHOS_REGIONS == '' }}
         uses: actions/cache@v5
         with:
           path: _targets
@@ -118,7 +127,7 @@ jobs:
       - name: Upload downloads artifact
         uses: actions/upload-artifact@v6
         with:
-          name: eleccionesdb-descargas
+          name: ${{ env.ETL_SMOKE == 'true' && 'eleccionesdb-descargas-smoke' || 'eleccionesdb-descargas' }}
           path: descargas/*.zip
           if-no-files-found: error
           retention-days: 14
@@ -126,7 +135,7 @@ jobs:
       - name: Upload summary artifact
         uses: actions/upload-artifact@v6
         with:
-          name: eleccionesdb-etl-summary
+          name: ${{ env.ETL_SMOKE == 'true' && 'eleccionesdb-etl-summary-smoke' || 'eleccionesdb-etl-summary' }}
           path: ci-summary.md
           if-no-files-found: error
           retention-days: 14
