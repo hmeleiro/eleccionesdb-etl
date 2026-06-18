@@ -388,26 +388,31 @@ validate_votos <- function(df, label = "votos") {
 validate_info_votos_consistency <- function(info_df, votos_df, label = "") {
     lbl <- label
 
-    info_keys <- paste(info_df$eleccion_id, info_df$territorio_id, sep = "-")
-    votos_keys <- paste(votos_df$eleccion_id, votos_df$territorio_id, sep = "-")
+    key_cols <- c("eleccion_id", "territorio_id")
+    format_keys <- function(df) {
+        paste(df$eleccion_id, df$territorio_id, sep = "-")
+    }
 
-    orphan_votos <- setdiff(unique(votos_keys), unique(info_keys))
+    info_keys <- distinct(info_df[, key_cols])
+    votos_keys <- distinct(votos_df[, key_cols])
+
+    orphan_votos <- anti_join(votos_keys, info_keys, by = key_cols)
     warn_if_any(
-        length(orphan_votos) > 0,
+        nrow(orphan_votos) > 0,
         sprintf(
             "[%s] %d combinaciones (eleccion_id, territorio_id) en votos sin fila en info: %s",
-            lbl, length(orphan_votos),
-            paste(head(orphan_votos, 5), collapse = ", ")
+            lbl, nrow(orphan_votos),
+            paste(format_keys(head(orphan_votos, 5)), collapse = ", ")
         )
     )
 
-    orphan_info <- setdiff(unique(info_keys), unique(votos_keys))
+    orphan_info <- anti_join(info_keys, votos_keys, by = key_cols)
     warn_if_any(
-        length(orphan_info) > 0,
+        nrow(orphan_info) > 0,
         sprintf(
             "[%s] %d combinaciones (eleccion_id, territorio_id) en info sin votos asociados: %s",
-            lbl, length(orphan_info),
-            paste(head(orphan_info, 5), collapse = ", ")
+            lbl, nrow(orphan_info),
+            paste(format_keys(head(orphan_info, 5)), collapse = ", ")
         )
     )
 
@@ -442,15 +447,14 @@ validate_votos_partido_match <- function(df, label = "votos",
         mutate(across(c(denominacion, siglas), norm_lower, .names = "{.col}_lower")) %>%
         select(denominacion_lower, siglas_lower)
 
-    votos_with_key <- df %>%
+    votos_party_totals <- df %>%
+        group_by(siglas, denominacion) %>%
+        summarise(votos = sum(votos, na.rm = TRUE), .groups = "drop") %>%
         mutate(across(c(denominacion, siglas), norm_lower, .names = "{.col}_lower"))
 
-    sin_match_raw <- votos_with_key %>%
-        anti_join(partidos, by = c("denominacion_lower", "siglas_lower"))
-
-    sin_match <- sin_match_raw %>%
-        group_by(denominacion, siglas) %>%
-        summarise(votos = sum(votos, na.rm = TRUE), .groups = "drop") %>%
+    sin_match <- votos_party_totals %>%
+        anti_join(partidos, by = c("denominacion_lower", "siglas_lower")) %>%
+        select(denominacion, siglas, votos) %>%
         arrange(desc(votos))
 
     if (nrow(sin_match) > 0) {
@@ -464,12 +468,15 @@ validate_votos_partido_match <- function(df, label = "votos",
         if (!is.null(csv_output)) {
             elecciones_path <- "tablas-finales/dimensiones/elecciones"
             has_eleccion_id <- "eleccion_id" %in% colnames(df)
+            unmatched_parties <- sin_match %>%
+                select(siglas, denominacion)
 
             if (has_eleccion_id && file.exists(elecciones_path)) {
                 elecciones_dim <- read_csv(elecciones_path, show_col_types = FALSE) %>%
                     select(eleccion_id = id, year, codigo_ccaa, descripcion)
 
-                sin_match_ctx <- sin_match_raw %>%
+                sin_match_ctx <- df %>%
+                    semi_join(unmatched_parties, by = c("siglas", "denominacion")) %>%
                     group_by(eleccion_id, siglas, denominacion) %>%
                     summarise(votos = sum(votos, na.rm = TRUE), .groups = "drop") %>%
                     left_join(elecciones_dim, by = "eleccion_id") %>%
