@@ -19,7 +19,6 @@ votos <- map(votos_files, readRDS) %>%
   arrange(eleccion_id, territorio_id, -votos) %>%
   mutate(across(c(denominacion, siglas), normalize_lower, .names = "{.col}_lower"))
 
-
 info <- map(info_files, readRDS) %>%
   list_rbind() %>%
   arrange(eleccion_id, territorio_id)
