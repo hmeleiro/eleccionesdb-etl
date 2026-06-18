@@ -3,7 +3,7 @@
 source_manifest <- "data-manifest.csv"
 output_manifest <- "data-manifest-smoke.csv"
 
-smoke_regions <- Sys.getenv("SMOKE_HECHOS_REGIONS", unset = "17-la-rioja")
+smoke_regions <- Sys.getenv("SMOKE_HECHOS_REGIONS", unset = "17-la-rioja,00-congreso,02-aragon")
 smoke_regions <- trimws(strsplit(smoke_regions, ",", fixed = TRUE)[[1]])
 smoke_regions <- smoke_regions[nzchar(smoke_regions)]
 
