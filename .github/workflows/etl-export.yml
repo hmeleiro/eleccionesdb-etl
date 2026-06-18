@@ -44,7 +44,7 @@ env:
   TARGETS_ERROR: stop
   ETL_SMOKE: ${{ github.event_name == 'workflow_dispatch' && inputs.smoke_test && 'true' || 'false' }}
   DATA_INDEX_URL: ${{ inputs.data_index_url || (github.event_name == 'workflow_dispatch' && inputs.smoke_test && 'data-manifest-smoke.csv' || '') }}
-  ETL_HECHOS_REGIONS: ${{ github.event_name == 'workflow_dispatch' && inputs.smoke_test && 'la_rioja' || '' }}
+  ETL_HECHOS_REGIONS: ${{ github.event_name == 'workflow_dispatch' && inputs.smoke_test && 'la_rioja,congreso,aragon' || '' }}
 
 jobs:
   export:
