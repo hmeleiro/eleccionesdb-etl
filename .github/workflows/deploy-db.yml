@@ -73,6 +73,29 @@ jobs:
           export RENV_CONFIG_SYNCHRONIZED_CHECK=false
           export TARGETS_ERROR=stop
           export DATA_INDEX_URL="${DATA_INDEX_URL}"
+
+          # Ensure system dependencies required by source R packages are present.
+          # fs 2.0.1 needs libuv1-dev, or cmake/make to build vendored libuv.
+          if command -v apt-get >/dev/null 2>&1; then
+            SUDO=""
+            if [ "\$(id -u)" -ne 0 ]; then
+              if command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
+                SUDO="sudo"
+              else
+                echo "Cannot install system dependencies: apt-get requires root or passwordless sudo."
+                echo "Install libuv1-dev, cmake, build-essential, and pkg-config on the remote host, then rerun deploy-db."
+                exit 1
+              fi
+            fi
+
+            \$SUDO apt-get update
+            \$SUDO apt-get install -y libuv1-dev cmake build-essential pkg-config
+          else
+            echo "apt-get not found; assuming remote system dependencies are already installed."
+            echo "For fs, the remote host needs libuv headers or cmake, make, and a C++ compiler."
+          fi
+
+          Rscript -e "cat('R:', R.version.string, '\n'); cat('renv library:', renv::paths[['library']](), '\n'); cat('renv cache:', renv::paths[['cache']](), '\n'); cat('.libPaths:', paste(.libPaths(), collapse=' | '), '\n')"
           
           # Initialize renv and restore all packages
           Rscript -e "renv::consent(provided = TRUE); renv::restore(clean = TRUE, rebuild = FALSE)"
