@@ -58,7 +58,7 @@ jobs:
         run: |
           ssh -o ConnectTimeout=10 \
               -o StrictHostKeyChecking=accept-new \
-              "${REMOTE_USER}@${REMOTE_HOST}" bash -s << 'EOF'
+             "${REMOTE_USER}@${REMOTE_HOST}" bash -s << EOF
           set -e
           
           # Navigate to repo
