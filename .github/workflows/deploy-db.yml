@@ -120,5 +120,5 @@ jobs:
           } > .env
           
           # Load PostgreSQL
-          Rscript -e "source('run.R'); run_writedb_ordered()"
+          Rscript -e "source('run.R'); run_writedb_ordered(local = TRUE)"
           EOF

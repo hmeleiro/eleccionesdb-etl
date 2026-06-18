@@ -21,9 +21,17 @@ library(targets)
 
 source("R/hechos_regions.R")
 
-tar_make_in_order <- function(target_names) {
+tar_make_in_order <- function(target_names, local = FALSE) {
     for (target_name in target_names) {
-        tar_make(names = tidyselect::all_of(target_name))
+        if (local) {
+            tar_make(
+                names = tidyselect::all_of(target_name),
+                callr_function = NULL,
+                garbage_collection = TRUE
+            )
+        } else {
+            tar_make(names = tidyselect::all_of(target_name))
+        }
     }
 
     invisible(target_names)
@@ -41,9 +49,17 @@ run_hechos <- function() {
     tar_make(names = c(starts_with("dim_"), starts_with("hechos_")))
 }
 
-run_hechos_ordered <- function() {
-    tar_make(names = starts_with("dim_"))
-    tar_make_in_order(hechos_target_names())
+run_hechos_ordered <- function(local = FALSE) {
+    if (local) {
+        tar_make(
+            names = starts_with("dim_"),
+            callr_function = NULL,
+            garbage_collection = TRUE
+        )
+    } else {
+        tar_make(names = starts_with("dim_"))
+    }
+    tar_make_in_order(hechos_target_names(), local = local)
 }
 
 run_bind <- function() {
@@ -54,9 +70,9 @@ run_writedb <- function() {
     tar_make(names = c(starts_with("dim_"), starts_with("hechos_"), "partidos_sin_id", "bind_hechos", "writedb"))
 }
 
-run_writedb_ordered <- function() {
-    run_hechos_ordered()
-    tar_make_in_order(c("partidos_sin_id", "bind_hechos", "writedb"))
+run_writedb_ordered <- function(local = FALSE) {
+    run_hechos_ordered(local = local)
+    tar_make_in_order(c("partidos_sin_id", "bind_hechos", "writedb"), local = local)
 }
 
 run_export <- function() {
