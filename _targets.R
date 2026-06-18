@@ -9,6 +9,7 @@ options(dplyr.summarise.inform = FALSE, readr.show_col_types = FALSE)
 
 tar_option_set(
     error = Sys.getenv("TARGETS_ERROR", unset = "continue"),
+    garbage_collection = TRUE,
     # Silenciar messages de todos los targets:
     deployment = "main"
 )

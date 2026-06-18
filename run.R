@@ -23,18 +23,20 @@ source("R/hechos_regions.R")
 
 tar_make_local <- function(names) {
     tar_make(
-        names = names,
-        callr_function = NULL,
-        garbage_collection = TRUE
+        names = tidyselect::all_of(names),
+        callr_function = NULL
     )
 }
 
 run_target_local <- function(target_name) {
-    tar_make_local(tidyselect::all_of(target_name))
+    tar_make_local(target_name)
 }
 
 run_dims_local <- function() {
-    tar_make_local(starts_with("dim_"))
+    tar_make(
+        names = starts_with("dim_"),
+        callr_function = NULL
+    )
 }
 
 writedb_ordered_targets <- function() {
