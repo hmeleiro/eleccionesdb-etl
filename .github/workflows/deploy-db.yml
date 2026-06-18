@@ -74,13 +74,15 @@ jobs:
           export TARGETS_ERROR=stop
           export DATA_INDEX_URL="${DATA_INDEX_URL}"
           
+          # Initialize renv and restore all packages
+          Rscript -e "renv::consent(provided = TRUE); renv::restore(clean = TRUE, rebuild = FALSE)"
+          
           # Download data-raw if needed
           if [ -z "${DATA_INDEX_URL}" ]; then
             Rscript -e "source('R/00-setup/download_data_raw.R')"
           fi
           
-          # Initialize renv and restore all packages
-          Rscript -e "renv::consent(provided = TRUE); renv::restore(clean = TRUE, rebuild = FALSE)"
+          # Check data-raw
           Rscript R/00-setup/check_data_raw.R
           
           # Write database environment
