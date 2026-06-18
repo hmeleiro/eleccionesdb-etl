@@ -9,6 +9,7 @@
 #   run_hechos_ordered()     # run regional hechos sequentially in _targets.R order
 #   run_bind()               # run dimensions + hechos + bind
 #   run_writedb()            # run everything up to and including DB write
+#   run_writedb_ordered()    # write DB with regional hechos in separate runs
 #   run_export()             # run everything up to and including export
 #   run_export_ordered()     # run export with regional hechos in _targets.R order
 #   run_export_pipeline_ordered() # run export + quality with ordered hechos
@@ -51,6 +52,11 @@ run_bind <- function() {
 
 run_writedb <- function() {
     tar_make(names = c(starts_with("dim_"), starts_with("hechos_"), "partidos_sin_id", "bind_hechos", "writedb"))
+}
+
+run_writedb_ordered <- function() {
+    run_hechos_ordered()
+    tar_make_in_order(c("partidos_sin_id", "bind_hechos", "writedb"))
 }
 
 run_export <- function() {
