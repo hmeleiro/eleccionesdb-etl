@@ -42,6 +42,14 @@ warn_if_any <- function(cond, msg) {
   if (any(cond, na.rm = TRUE)) warning(msg, call. = FALSE)
 }
 
+has_unique_key <- function(df, cols) {
+  if (data.table::is.data.table(df)) {
+    return(anyDuplicated(df, by = cols) == 0L)
+  }
+
+  !anyDuplicated(df[, cols])
+}
+
 # Read from path only if df is NULL; otherwise use df as-is.
 .resolve_df <- function(df, path, read_fn, ...) {
   if (!is.null(df)) {
@@ -346,7 +354,7 @@ validate_hechos_info <- function(df, label = "hechos/info") {
     paste0("[", label, "] $territorio_id debe ser numérico")
   )
   stop_if_not_all(
-    !duplicated(df[, c("eleccion_id", "territorio_id")]),
+    has_unique_key(df, c("eleccion_id", "territorio_id")),
     paste0("[", label, "] UNIQUE (eleccion_id, territorio_id) violado")
   )
 
@@ -394,7 +402,7 @@ validate_hechos_votos <- function(df, label = "hechos/votos") {
     paste0("[", label, "] $partido_id debe ser numérico")
   )
   stop_if_not_all(
-    !duplicated(df[, c("eleccion_id", "territorio_id", "partido_id")]),
+    has_unique_key(df, c("eleccion_id", "territorio_id", "partido_id")),
     paste0("[", label, "] UNIQUE (eleccion_id, territorio_id, partido_id) violado")
   )
 

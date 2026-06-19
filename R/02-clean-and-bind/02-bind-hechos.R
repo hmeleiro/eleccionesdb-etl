@@ -1,85 +1,111 @@
 library(dplyr)
-library(purrr)
 library(DBI)
 library(readr)
+library(data.table)
 
 source("R/utils.R", encoding = "UTF-8")
 source("R/tests/validate_tablas_finales.R")
 
-info_files <- list.files("data-processed/", recursive = T, full.names = T, pattern = "info")
-votos_files <- list.files("data-processed/", recursive = T, full.names = T, pattern = "votos")
+read_rds_dt <- function(path) {
+  dt <- readRDS(path)
+  data.table::setDT(dt)
+  dt
+}
+
+info_files <- list.files("data-processed/", recursive = TRUE, full.names = TRUE, pattern = "info")
+votos_files <- list.files("data-processed/", recursive = TRUE, full.names = TRUE, pattern = "votos")
 
 nrepresentantes <- get_nrepresentantes()
 representantes <- get_representantes()
 
-normalize_lower <- function(x) tolower(trimws(gsub("\\s+", " ", x)))
+data.table::setDT(nrepresentantes)
+data.table::setDT(representantes)
 
-votos <- map(votos_files, readRDS) %>%
-  list_rbind() %>%
-  arrange(eleccion_id, territorio_id, -votos) %>%
-  mutate(across(c(denominacion, siglas), normalize_lower, .names = "{.col}_lower"))
+partidos <- readr::read_csv("tablas-finales/dimensiones/partidos", show_col_types = FALSE, na = "NNNNAAAA")
+data.table::setDT(partidos)
+partidos[, denominacion_lower := normalize_lower(denominacion)]
+partidos[, siglas_lower := normalize_lower(siglas)]
+partidos <- partidos[, .(partido_id = id, denominacion_lower, siglas_lower)]
 
-info <- map(info_files, readRDS) %>%
-  list_rbind() %>%
-  arrange(eleccion_id, territorio_id)
+votos <- data.table::rbindlist(lapply(votos_files, read_rds_dt), use.names = TRUE, fill = TRUE)
+data.table::setorder(votos, eleccion_id, territorio_id, -votos)
+votos[, denominacion_lower := normalize_lower(denominacion)]
+votos[, siglas_lower := normalize_lower(siglas)]
 
 # ASIGNAR ID DE PARTIDO A votos
-partidos <- read_csv("tablas-finales/dimensiones/partidos", show_col_types = F, na = "NNNNAAAA") %>%
-  mutate(across(c(denominacion, siglas), normalize_lower, .names = "{.col}_lower")) %>%
-  select(partido_id = id, denominacion_lower, siglas_lower)
+votos[partidos, partido_id := i.partido_id, on = .(denominacion_lower, siglas_lower)]
 
-votos <-
-  left_join(votos, partidos, by = c("denominacion_lower", "siglas_lower"))
-
-votos_sin_id <- votos %>%
-  filter(is.na(partido_id)) %>%
-  group_by(denominacion, siglas) %>%
-  summarise(
-    votos = sum(votos, na.rm = T), .groups = "drop_last"
-  ) %>%
-  arrange(-votos) %>%
-  select(denominacion, siglas, votos)
-
+votos_sin_id <- votos[
+  is.na(partido_id),
+  .(votos = sum(votos, na.rm = TRUE)),
+  by = .(denominacion, siglas)
+][order(-votos)]
 
 if (nrow(votos_sin_id) > 0) {
-  print(head(votos_sin_id))
+  print(head(as.data.frame(votos_sin_id)))
   stop("Hay partidos sin partido_id asignado en votos.")
 }
 
-# JOIN CON EL NÚMERO DE REPRESENTANTES (G, A, L)
-info <-
-  info %>%
-  left_join(nrepresentantes, by = join_by(eleccion_id, territorio_id)) %>%
-  mutate(
-    votos_validos = ifelse(is.na(votos_validos), censo_ine - abstenciones - votos_nulos, votos_validos),
-    nrepresentantes = coalesce(nrepresentantes.x, nrepresentantes.y),
-  ) %>%
-  select(-c(nrepresentantes.x, nrepresentantes.y))
+info <- data.table::rbindlist(lapply(info_files, read_rds_dt), use.names = TRUE, fill = TRUE)
+data.table::setorder(info, eleccion_id, territorio_id)
 
-votos <-
-  votos %>%
-  left_join(representantes, by = join_by(eleccion_id, territorio_id, partido_id)) %>%
-  select(-c(denominacion_lower, siglas_lower, denominacion, siglas))
+# JOIN CON EL NUMERO DE REPRESENTANTES (G, A, L)
+if (!"nrepresentantes" %in% names(info)) {
+  info[, nrepresentantes := NA_real_]
+}
 
-votos_grouped <-
-  votos %>%
-  dtplyr::lazy_dt() %>%
-  group_by(eleccion_id, territorio_id, partido_id) %>%
-  summarise(across(c(votos, representantes), sum, na.rm = T)) %>%
-  as_tibble()
+nrepresentantes <- nrepresentantes[, .(
+  eleccion_id,
+  territorio_id,
+  nrepresentantes_lookup = nrepresentantes
+)]
+info[
+  nrepresentantes,
+  nrepresentantes_lookup := i.nrepresentantes_lookup,
+  on = .(eleccion_id, territorio_id)
+]
+info[is.na(votos_validos), votos_validos := censo_ine - abstenciones - votos_nulos]
+info[, nrepresentantes := data.table::fcoalesce(nrepresentantes, nrepresentantes_lookup)]
+info[, nrepresentantes_lookup := NULL]
+
+representantes <- representantes[, .(eleccion_id, territorio_id, partido_id, representantes)]
+votos[
+  representantes,
+  representantes := i.representantes,
+  on = .(eleccion_id, territorio_id, partido_id)
+]
+votos[, c("denominacion_lower", "siglas_lower", "denominacion", "siglas") := NULL]
+
+votos_grouped <- votos[
+  ,
+  .(
+    votos = sum(votos, na.rm = TRUE),
+    representantes = sum(representantes, na.rm = TRUE)
+  ),
+  by = .(eleccion_id, territorio_id, partido_id)
+]
+data.table::setcolorder(votos_grouped, c("eleccion_id", "territorio_id", "partido_id", "votos", "representantes"))
+data.table::setorder(votos_grouped, eleccion_id, territorio_id, partido_id)
+
+rm(votos, partidos, representantes, nrepresentantes)
+invisible(gc())
 
 # Asegurar que columnas enteras no tengan decimales (sum() en R convierte integer a double)
-int_cols <- c(
-  "censo_ine", "participacion_1", "participacion_2", "participacion_3",
-  "votos_validos", "abstenciones", "votos_blancos", "votos_nulos", "nrepresentantes"
+int_cols <- intersect(
+  c(
+    "censo_ine", "participacion_1", "participacion_2", "participacion_3",
+    "votos_validos", "abstenciones", "votos_blancos", "votos_nulos", "nrepresentantes"
+  ),
+  names(info)
 )
-
-info <- info %>%
-  mutate(across(any_of(int_cols), ~ as.integer(round(.))))
+info[, (int_cols) := lapply(.SD, function(x) as.integer(round(x))), .SDcols = int_cols]
 
 # CHECKS
 validate_hechos_info(info, label = "[HECHOS] info")
 validate_hechos_votos(votos_grouped, label = "[HECHOS] votos")
+
+data.table::setDF(info)
+data.table::setDF(votos_grouped)
 
 saveRDS(info, "tablas-finales/hechos/info.rds")
 saveRDS(votos_grouped, "tablas-finales/hechos/votos.rds")
