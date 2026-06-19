@@ -12,11 +12,6 @@ on:
         required: true
         default: false
         type: boolean
-      publish_downloads:
-        description: Publish descargas/ to Cloudflare R2 after validation.
-        required: true
-        default: false
-        type: boolean
   schedule:
     - cron: "0 5 * * 0"
   push:
@@ -142,7 +137,7 @@ jobs:
           retention-days: 14
 
       - name: Publish downloads to Cloudflare R2
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_downloads && !inputs.smoke_test }}
+        if: ${{ env.ETL_SMOKE != 'true' }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CF_S3_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CF_S3_SECRET_KEY }}

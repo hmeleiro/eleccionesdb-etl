@@ -10,7 +10,7 @@
 El proyecto usa GitHub Actions para validar el ETL, construir la documentacion y publicar artefactos de forma controlada:
 
 - `CI`: se ejecuta en pull requests y pushes a `main`. Restaura `renv`, comprueba la sintaxis de los scripts R, carga el manifiesto de `{targets}`, ejecuta `lintr` en modo no bloqueante y construye el sitio Hugo.
-- `ETL Export`: se ejecuta manualmente, semanalmente y en cambios relevantes de `main`. Restaura `data-raw/` desde cache exacta o lo descarga desde Cloudflare R2, ejecuta `run_export()` y `run_export_calidad()`, valida los ZIP de Parquet/SQLite/CSV y el manifiesto del snapshot SQLite, y sube los resultados como artifacts.
+- `ETL Export`: se ejecuta manualmente, semanalmente y en cambios relevantes de `main`. Restaura `data-raw/` desde cache exacta o lo descarga desde Cloudflare R2, ejecuta `run_export()` y `run_export_calidad()`, valida los ZIP de Parquet/SQLite/CSV y el manifiesto del snapshot SQLite, sube los resultados como artifacts y publica automáticamente en Cloudflare R2 las ejecuciones completas.
 - `Deploy Docs`: publica el sitio Hugo en GitHub Pages.
 - `Deploy DB`: solo manual, asociado al environment protegido `production-db`. Requiere escribir `TRUNCATE_AND_LOAD_ELECCIONESDB`, ejecuta los targets pesados en procesos R separados en la maquina remota y carga PostgreSQL con staging temporal + transaccion final.
 
@@ -43,7 +43,7 @@ hugo --source docs-site --destination public
 ### Secretos usados por CI/CD
 
 - PostgreSQL (`Deploy DB`): `DB_NAME`, `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`.
-- Cloudflare R2 (`ETL Export` con publicacion manual): `CF_S3_ACCESS_KEY`, `CF_S3_SECRET_KEY`, `CF_S3_ENDPOINT`, `CF_S3_BUCKET`, `CF_S3_PUBLIC_BASE_URL`.
+- Cloudflare R2 (`ETL Export`): `CF_S3_ACCESS_KEY`, `CF_S3_SECRET_KEY`, `CF_S3_ENDPOINT`, `CF_S3_BUCKET`, `CF_S3_PUBLIC_BASE_URL`.
 - `DATA_INDEX_URL` puede definirse como input manual de los workflows para usar un manifiesto de datos alternativo; si no se define, se usa `data-manifest.csv`.
 
 Proyecto R para construir y cargar una base de datos PostgreSQL (`eleccionesdb`) con resultados electorales de España: elecciones generales (Congreso), europeas, autonómicas y municipales.

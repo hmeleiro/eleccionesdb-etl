@@ -25,6 +25,7 @@ description: "Historial de versiones de eleccionesdb"
 
 - La carga PostgreSQL usa staging temporal y una transaccion final para evitar estados parciales si falla `writedb`.
 - `Deploy DB` ejecuta targets pesados en procesos R separados en la maquina remota para reducir memoria retenida entre pasos.
+- `ETL Export` publica automaticamente en Cloudflare R2 cada ejecucion completa validada; los smoke tests siguen sin publicarse.
 
 ### Fixed
 

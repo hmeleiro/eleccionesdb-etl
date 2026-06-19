@@ -10,7 +10,7 @@ El proyecto usa GitHub Actions para separar validacion, exportacion, documentaci
 | Workflow | Disparador | Proposito |
 |---|---|---|
 | `CI` | Pull requests y pushes a `main` | Restaura `renv`, comprueba scripts R, carga el manifiesto de `{targets}`, ejecuta lint no bloqueante y construye Hugo. |
-| `ETL Export` | Manual, semanal y cambios relevantes en `main` | Restaura `data-raw/` desde cache exacta o lo descarga desde R2, ejecuta `run_export()` y `run_export_calidad()`, valida ZIPs y sube artefactos. |
+| `ETL Export` | Manual, semanal y cambios relevantes en `main` | Restaura `data-raw/` desde cache exacta o lo descarga desde R2, ejecuta `run_export()` y `run_export_calidad()`, valida ZIPs, sube artefactos y publica en R2 las ejecuciones completas. |
 | `Deploy Docs` | Manual y cambios en `docs-site/` en `main` | Construye el sitio Hugo y lo publica en GitHub Pages. |
 | `Deploy DB` | Manual | Valida o descarga datos en la maquina remota, ejecuta targets pesados en procesos R separados y carga PostgreSQL con staging transaccional. |
 
@@ -51,7 +51,7 @@ La validacion abre el SQLite y ejecuta `PRAGMA integrity_check`, comprueba tabla
 
 ## Publicacion de descargas
 
-La publicacion a Cloudflare R2 es manual. En `ETL Export`, activa el input `publish_downloads` para sincronizar `descargas/` contra:
+Cada ejecucion completa de `ETL Export` publica automaticamente las descargas validadas en Cloudflare R2. Las ejecuciones con `smoke_test` se excluyen porque contienen un subconjunto de los datos. El destino es:
 
 ```text
 s3://$CF_S3_BUCKET/eleccionesdb-etl/descargas/
