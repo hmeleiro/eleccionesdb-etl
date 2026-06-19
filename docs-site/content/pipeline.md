@@ -110,8 +110,9 @@ Antes de la carga en BD, se ejecutan validaciones automáticas (`R/tests/`):
 ### Carga a PostgreSQL (`R/03-writedb/write-db.R`)
 
 1. Ejecuta las validaciones de dimensiones y hechos.
-2. Trunca todas las tablas con `RESTART IDENTITY`.
-3. Recarga dimensiones y hechos completos con `DBI::dbWriteTable(..., append = TRUE)`.
+2. Carga dimensiones y hechos en tablas temporales de PostgreSQL usando chunks.
+3. Reemplaza las tablas finales dentro de una transaccion con rollback automatico si falla la fase final.
+4. Recrea indices secundarios de hechos y actualiza estadisticas con `ANALYZE`.
 
 ### Exportación a formatos descargables (`R/04-export/export-descargas.R`)
 
@@ -126,7 +127,7 @@ Genera tres formatos en `descargas/`:
 ## Flujo típico desde cero
 
 1. Configurar `.env` con credenciales de PostgreSQL.
-2. Crear esquema en BD ejecutando `R/db_schema.sql`.
+2. Crear esquema en BD ejecutando `R/00-setup/db_schema.sql`.
 3. Preparar ficheros de datos en `data-raw/`.
 4. Ejecutar scripts de generación por autonomía (`R/01-generate-data/hechos/*`).
 5. Ejecutar scripts de dimensiones (elecciones, territorios, partidos).

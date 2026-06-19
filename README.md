@@ -12,7 +12,7 @@ El proyecto usa GitHub Actions para validar el ETL, construir la documentacion y
 - `CI`: se ejecuta en pull requests y pushes a `main`. Restaura `renv`, comprueba la sintaxis de los scripts R, carga el manifiesto de `{targets}`, ejecuta `lintr` en modo no bloqueante y construye el sitio Hugo.
 - `ETL Export`: se ejecuta manualmente, semanalmente y en cambios relevantes de `main`. Restaura `data-raw/` desde cache exacta o lo descarga desde Cloudflare R2, ejecuta `run_export()` y `run_export_calidad()`, valida los ZIP de Parquet/SQLite/CSV y sube los resultados como artifacts.
 - `Deploy Docs`: publica el sitio Hugo en GitHub Pages.
-- `Deploy DB`: solo manual, asociado al environment protegido `production-db`. Requiere escribir `TRUNCATE_AND_LOAD_ELECCIONESDB` y usa secretos de PostgreSQL antes de ejecutar `run_writedb()`.
+- `Deploy DB`: solo manual, asociado al environment protegido `production-db`. Requiere escribir `TRUNCATE_AND_LOAD_ELECCIONESDB`, ejecuta los targets pesados en procesos R separados en la maquina remota y carga PostgreSQL con staging temporal + transaccion final.
 
 La carga a PostgreSQL no forma parte del CI ordinario. Los pull requests y pushes validan y exportan datos, pero no ejecutan `TRUNCATE` ni escriben en la base de datos real.
 
@@ -86,7 +86,7 @@ data-raw/  →  R/01-generate-data/  →  data-processed/
         -   `tablas-finales/dimensiones/`: `tipos_eleccion`, `elecciones`, `elecciones_fuentes`, `territorios`, `partidos`, `partidos_recode`.
         -   `tablas-finales/hechos/`: `info.rds` (→ `resumen_territorial`), `votos.rds` (→ `votos_territoriales`).
 4.  **Escritura a BD y exportación**
-    -   `R/03-writedb/write-db.R`: trunca todas las tablas de la base de datos y recarga desde `tablas-finales/` a PostgreSQL.
+    -   `R/03-writedb/write-db.R`: valida `tablas-finales/`, carga staging temporal en PostgreSQL y reemplaza las tablas finales dentro de una transaccion.
     -   `R/04-export/export-descargas.R`: exporta a Parquet, SQLite (con esquema relacional) y CSV planos pre-joineados en `descargas/`.
 
 ## Esquema de base de datos
@@ -203,10 +203,11 @@ run_fact_checks()
 
 ## Carga en la base de datos
 
--   Script único: `R/03-writedb/write-db.R`.
+-   Script unico: `R/03-writedb/write-db.R`.
 -   Ejecuta primero `run_dimension_checks()` y `run_fact_checks()`.
--   Hace `TRUNCATE` de todas las tablas con `RESTART IDENTITY` y recarga dimensiones y hechos completos.
--   Patrón: `tryCatch({ dbWriteTable(..., append = TRUE) }, finally = dbDisconnect(con))`.
+-   Carga dimensiones y hechos en tablas temporales de PostgreSQL usando chunks.
+-   Reemplaza las tablas finales con `TRUNCATE ... RESTART IDENTITY` e `INSERT ... SELECT` dentro de una unica transaccion.
+-   Si falla la fase final, hace rollback y conserva el estado anterior de la base de datos.
 
 ## Exportación a formatos descargables
 
@@ -226,7 +227,7 @@ El pipeline completo se orquesta con el paquete [{targets}](https://docs.ropensc
 
 ### Estructura del pipeline
 
-El pipeline se define en `_targets.R` y consta de 31 targets organizados en 6 fases:
+El pipeline se define en `_targets.R` y consta de 33 targets organizados en 6 fases:
 
 ```         
 Phase 1: Dimensiones (independientes entre sí)
@@ -365,17 +366,19 @@ Rscript R/00-setup/check_data_raw.R
 
 ### Caché en GitHub Actions
 
-`ETL Export` y `Deploy DB` cachean la carpeta completa `data-raw/` con `actions/cache@v4`. La clave exacta es:
+`ETL Export` cachea la carpeta completa `data-raw/` con `actions/cache@v5`. La clave exacta es:
 
 ``` text
 data-raw-${{ runner.os }}-${{ hashFiles('data-manifest.csv') }}
 ```
 
-No se usan `restore-keys` para `data-raw/`, así que GitHub Actions solo reutiliza una caché cuyo manifiesto coincide exactamente. Si se usa el input manual `DATA_INDEX_URL`, el workflow descarga desde ese manifiesto alternativo.
+No se usan `restore-keys` para `data-raw/`, asi que GitHub Actions solo reutiliza una cache cuyo manifiesto coincide exactamente. Si se usa el input manual `DATA_INDEX_URL`, el workflow descarga desde ese manifiesto alternativo.
+
+`Deploy DB` se ejecuta por SSH en la maquina remota: no puede reutilizar la cache de GitHub Actions para `data-raw/`, pero valida la carpeta remota y descarga solo los ficheros ausentes o con tamano distinto segun `data-manifest.csv`.
 
 ### Cómo invalidar la caché
 
-Cuando cambien los datos en R2, modifica o regenera `data-manifest.csv` y commitea ese cambio. Al cambiar el hash del manifiesto, GitHub Actions creará una clave nueva y volverá a descargar `data-raw/` antes de ejecutar el pipeline.
+Cuando cambien los datos en R2, modifica o regenera `data-manifest.csv` y commitea ese cambio. Al cambiar el hash del manifiesto, GitHub Actions creara una clave nueva y volvera a descargar `data-raw/` antes de ejecutar el pipeline de exportacion.
 
 ### Cómo se genera el manifiesto (solo admins)
 

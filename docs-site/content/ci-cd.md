@@ -12,7 +12,7 @@ El proyecto usa GitHub Actions para separar validacion, exportacion, documentaci
 | `CI` | Pull requests y pushes a `main` | Restaura `renv`, comprueba scripts R, carga el manifiesto de `{targets}`, ejecuta lint no bloqueante y construye Hugo. |
 | `ETL Export` | Manual, semanal y cambios relevantes en `main` | Restaura `data-raw/` desde cache exacta o lo descarga desde R2, ejecuta `run_export()` y `run_export_calidad()`, valida ZIPs y sube artefactos. |
 | `Deploy Docs` | Manual y cambios en `docs-site/` en `main` | Construye el sitio Hugo y lo publica en GitHub Pages. |
-| `Deploy DB` | Manual | Restaura o descarga datos, ejecuta el pipeline hasta `run_writedb()` y carga PostgreSQL con secretos. |
+| `Deploy DB` | Manual | Valida o descarga datos en la maquina remota, ejecuta targets pesados en procesos R separados y carga PostgreSQL con staging transaccional. |
 
 ## Reproducibilidad
 
@@ -28,13 +28,15 @@ El script `install_deps.R` se mantiene como bootstrap secundario para entornos s
 
 Los datos maestros viven en Cloudflare R2 bajo `eleccionesdb-etl/data-raw/` y no se versionan en Git. El archivo `data-manifest.csv` es la fuente de verdad para descarga, validacion e invalidacion de cache.
 
-`ETL Export` y `Deploy DB` usan `actions/cache@v4` con una clave exacta:
+`ETL Export` usa `actions/cache@v5` con una clave exacta:
 
 ```text
 data-raw-${{ runner.os }}-${{ hashFiles('data-manifest.csv') }}
 ```
 
 No se usan `restore-keys` para evitar recuperar datos obsoletos. Si cambian objetos en R2, hay que regenerar y commitear `data-manifest.csv`; ese cambio fuerza una nueva cache.
+
+`Deploy DB` no usa esa cache porque se ejecuta por SSH en la maquina remota. Alli valida `data-raw/` y descarga solo los ficheros ausentes o con tamano distinto.
 
 ## Artefactos de exportacion
 
@@ -79,4 +81,4 @@ Secretos requeridos:
 - `DB_USER`
 - `DB_PASSWORD`
 
-Este workflow ejecuta `run_writedb()`, que valida tablas finales y recarga PostgreSQL. No debe habilitarse en pull requests.
+Este workflow ejecuta los targets de escritura en orden y en procesos R separados. El ultimo paso valida tablas finales, carga staging temporal y reemplaza PostgreSQL dentro de una transaccion. No debe habilitarse en pull requests.

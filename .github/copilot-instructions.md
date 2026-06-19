@@ -11,16 +11,16 @@ Keep them short, concrete, and specific to this project.
   - **Processed intermediates** in `data-processed/` (RDS, e.g. `data-processed/hechos/01-andalucia/*.rds`).
   - **Final tabular outputs** in `tablas-finales/` (CSV and RDS ready to load into Postgres).
 - Pipeline orchestration: `_targets.R` defines the DAG, `R/pipeline_helpers.R` wraps scripts, `run.R` provides convenience functions.
-- Database loading is done by `R/03-writedb/write-db.R`, which connects to Postgres and uses `DBI::dbWriteTable`.
+- Database loading is done by `R/03-writedb/write-db.R`, which validates final tables, loads temporary staging tables, and replaces Postgres tables in one transaction.
 
 ## Key Files and Responsibilities
 
-- `_targets.R`: {targets} pipeline definition with 23 targets across 5 phases.
+- `_targets.R`: {targets} pipeline definition with 33 targets across 6 phases.
 - `R/pipeline_helpers.R`: wrapper functions that `source()` each script and return output paths.
 - `run.R`: entry point with `run_all()`, `run_dims()`, `run_hechos()`, `run_bind()`, `run_writedb()`, `run_export()`.
 - `new-eleccionesdb.Rproj`: RStudio project; assume R working directory is the repo root when running scripts.
 - `R/utils.R`: defines `connect()` which reads DB credentials from `.env` and returns a `RPostgreSQL` connection. **Always use this helper instead of creating new connections directly.**
-- `R/db_schema.sql`: DDL for the target Postgres schema; align column names and types in generated tables with this file.
+- `R/00-setup/db_schema.sql`: DDL for the target Postgres schema; align column names and types in generated tables with this file.
 - `R/01-generate-data/dimensiones/`:
   - `elecciones/fechas-elecciones-format.R`: reads `data-raw/fechas_elecciones.csv`, normalizes Spanish dates, assigns `codigo_ccaa`, and writes `tablas-finales/dimensiones/elecciones`.
   - `elecciones/elecciones-fuentes-format.R`: maps election metadata to sources.
@@ -28,7 +28,7 @@ Keep them short, concrete, and specific to this project.
   - `partidos/sync-partidos.R`: builds party dimensions from `data-raw/partidos_recodes.xlsx`.
 - `R/01-generate-data/hechos/*/format.R`: one format script per region, all named `format.R`. Each reads from `data-raw/hechos/<region>/`, joins with dimensions, validates, and writes `data-processed/hechos/<region>/{info.rds, votos.rds}`.
 - `R/02-clean-and-bind/02-bind-hechos.R`: binds all regional hechos, assigns `partido_id`, validates, writes `tablas-finales/hechos/{info.rds, votos.rds}`.
-- `R/03-writedb/write-db.R`: truncates and reloads all Postgres tables from `tablas-finales/`.
+- `R/03-writedb/write-db.R`: stages final tables in PostgreSQL temp tables, then truncates and reloads production tables inside a rollback-safe transaction.
 - `R/04-export/export-descargas.R`: exports to Parquet, SQLite, and CSV in `descargas/`.
 
 ## Data & Naming Conventions
@@ -44,11 +44,12 @@ Keep them short, concrete, and specific to this project.
 
 - DB connection parameters are read from `.env` via `dotenv::load_dot_env()` inside `connect()`:
   - `DB_NAME`, `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`.
-- Assume Postgres and the target schema already exist and match `R/db_schema.sql`.
+- Assume Postgres and the target schema already exist and match `R/00-setup/db_schema.sql`.
 - When modifying load scripts, keep the following pattern:
   - `con <- connect()`
-  - Optional `dbExecute(con, "TRUNCATE ... RESTART IDENTITY")` for full reloads.
-  - `tryCatch({ dbWriteTable(...) }, error = function(e) { message(...) }, finally = dbDisconnect(con))`.
+  - Load large data into temporary staging tables first.
+  - Use `DBI::dbBegin()` / `dbCommit()` / `dbRollback()` around the final replacement.
+  - Keep `tryCatch(..., finally = dbDisconnect(con))`.
 
 ## How to Extend the Pipeline
 
@@ -67,9 +68,9 @@ When adding new data flows (e.g., a new region or dimension):
 
 - Assume execution from the repo root; use relative paths consistent with existing scripts.
 - Reuse existing helpers and patterns (especially `connect()` and the `tryCatch` around `dbWriteTable`) instead of inventing new abstractions.
-- Prefer `dplyr` verbs and `readr`/`stringr` over base R where existing code does so.
+- Prefer the style already used in the file. Use `data.table` in memory-sensitive fact/bind/load paths, and `dplyr`/`readr`/`stringr` where the surrounding code already uses them.
 - Do **not** commit or rely on real DB credentials; `.env` should remain untracked.
-- Before changing schemas or table column sets, inspect and align with `R/db_schema.sql` and all scripts that read/write those tables.
+- Before changing schemas or table column sets, inspect and align with `R/00-setup/db_schema.sql` and all scripts that read/write those tables.
 - All regional format scripts must be named `format.R`.
 
 # Instrucciones para documentación y changelog

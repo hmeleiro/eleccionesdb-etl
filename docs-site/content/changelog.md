@@ -15,6 +15,15 @@ description: "Historial de versiones de eleccionesdb"
 
 ---
 
+## Unreleased
+
+### Changed
+
+- La carga PostgreSQL usa staging temporal y una transaccion final para evitar estados parciales si falla `writedb`.
+- `Deploy DB` ejecuta targets pesados en procesos R separados en la maquina remota para reducir memoria retenida entre pasos.
+
+---
+
 ## v1.2.0 — 2026-04-28
 
 ### Added

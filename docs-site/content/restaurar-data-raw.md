@@ -49,13 +49,15 @@ El CSV debe contener al menos las columnas `key` y `url`. La columna `size` es o
 
 ## Cache en GitHub Actions
 
-Los workflows `ETL Export` y `Deploy DB` restauran `data-raw/` desde `actions/cache@v4` antes de descargar. La clave depende exactamente de `data-manifest.csv`:
+El workflow `ETL Export` restaura `data-raw/` desde `actions/cache@v5` antes de descargar. La clave depende exactamente de `data-manifest.csv`:
 
 ```text
 data-raw-${{ runner.os }}-${{ hashFiles('data-manifest.csv') }}
 ```
 
 No hay `restore-keys` para esta carpeta. Para invalidar la cache, regenera o modifica `data-manifest.csv` y commitea el cambio.
+
+`Deploy DB` se ejecuta por SSH en la maquina remota y no puede reutilizar esa cache de GitHub Actions. En su lugar, valida `data-raw/` en la maquina remota y descarga solo los ficheros ausentes o con tamano distinto.
 
 ## Como se genera el indice
 
