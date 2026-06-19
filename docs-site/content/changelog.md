@@ -17,10 +17,18 @@ description: "Historial de versiones de eleccionesdb"
 
 ## Unreleased
 
+### Added
+
+- El snapshot SQLite publica un manifiesto JSON con versión de esquema, fecha de generación, tamaños y checksums SHA-256 del ZIP y de la base de datos para permitir actualizaciones verificadas desde el paquete R.
+
 ### Changed
 
 - La carga PostgreSQL usa staging temporal y una transaccion final para evitar estados parciales si falla `writedb`.
 - `Deploy DB` ejecuta targets pesados en procesos R separados en la maquina remota para reducir memoria retenida entre pasos.
+
+### Fixed
+
+- La exportación SQLite declara `PRAGMA user_version = 1`, incluye `participacion_3` y falla de forma explícita si no puede construir la base; CI comprueba además el contrato de esquema, la integridad referencial y los checksums publicados.
 
 ---
 

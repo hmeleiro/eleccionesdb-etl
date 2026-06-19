@@ -15,6 +15,12 @@ library(DBI)
 library(RSQLite)
 library(zip)
 
+sqlite_schema_version <- 1L
+sqlite_download_url <- paste0(
+  "https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/",
+  "eleccionesdb_sqlite.zip"
+)
+
 # ---------------------------------------------------------------------------
 # 0. Leer tablas finales
 # ---------------------------------------------------------------------------
@@ -57,7 +63,9 @@ message("[EXPORT] Parquet exportado en descargas/parquet/")
 dir.create("descargas", recursive = TRUE, showWarnings = FALSE)
 
 sqlite_path <- "descargas/eleccionesdb.sqlite"
+sqlite_manifest_path <- "descargas/eleccionesdb_sqlite.json"
 if (file.exists(sqlite_path)) invisible(file.remove(sqlite_path))
+if (file.exists(sqlite_manifest_path)) invisible(file.remove(sqlite_manifest_path))
 
 con_lite <- dbConnect(SQLite(), sqlite_path)
 
@@ -65,6 +73,7 @@ tryCatch(
   {
     # Activar foreign keys (desactivadas por defecto en SQLite)
     dbExecute(con_lite, "PRAGMA foreign_keys = ON")
+    dbExecute(con_lite, paste0("PRAGMA user_version = ", sqlite_schema_version))
 
     # --- DDL: crear tablas con restricciones ---
 
@@ -136,6 +145,7 @@ tryCatch(
         censo_ine       INTEGER,
         participacion_1 INTEGER,
         participacion_2 INTEGER,
+        participacion_3 INTEGER,
         votos_validos   INTEGER,
         abstenciones    INTEGER,
         votos_blancos   INTEGER,
@@ -194,7 +204,7 @@ tryCatch(
     dbExecute(con_lite, "CREATE INDEX idx_votos_partido ON votos_territoriales(partido_id)")
   },
   error = function(e) {
-    message("[EXPORT] Error SQLite: ", e$message)
+    stop("[EXPORT] Error SQLite: ", conditionMessage(e), call. = FALSE)
   },
   finally = dbDisconnect(con_lite)
 )
@@ -306,8 +316,30 @@ message("[EXPORT] ZIP CSV generado en ", csv_zip)
 sqlite_zip <- "descargas/eleccionesdb_sqlite.zip"
 if (file.exists(sqlite_zip)) invisible(file.remove(sqlite_zip))
 zipr(sqlite_zip, files = sqlite_path)
-invisible(file.remove(sqlite_path))              # ← añadir
 message("[EXPORT] ZIP SQLite generado en ", sqlite_zip)
+
+sqlite_manifest <- list(
+  schema_version = sqlite_schema_version,
+  generated_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
+  url = sqlite_download_url,
+  archive_size = unname(file.info(sqlite_zip)$size),
+  archive_sha256 = tolower(digest::digest(
+    file = sqlite_zip, algo = "sha256", serialize = FALSE
+  )),
+  database_filename = basename(sqlite_path),
+  database_size = unname(file.info(sqlite_path)$size),
+  database_sha256 = tolower(digest::digest(
+    file = sqlite_path, algo = "sha256", serialize = FALSE
+  ))
+)
+jsonlite::write_json(
+  sqlite_manifest,
+  sqlite_manifest_path,
+  auto_unbox = TRUE,
+  pretty = TRUE
+)
+invisible(file.remove(sqlite_path))
+message("[EXPORT] Manifiesto SQLite generado en ", sqlite_manifest_path)
 # ---------------------------------------------------------------------------
 # Resumen final
 # ---------------------------------------------------------------------------

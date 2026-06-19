@@ -10,7 +10,7 @@
 El proyecto usa GitHub Actions para validar el ETL, construir la documentacion y publicar artefactos de forma controlada:
 
 - `CI`: se ejecuta en pull requests y pushes a `main`. Restaura `renv`, comprueba la sintaxis de los scripts R, carga el manifiesto de `{targets}`, ejecuta `lintr` en modo no bloqueante y construye el sitio Hugo.
-- `ETL Export`: se ejecuta manualmente, semanalmente y en cambios relevantes de `main`. Restaura `data-raw/` desde cache exacta o lo descarga desde Cloudflare R2, ejecuta `run_export()` y `run_export_calidad()`, valida los ZIP de Parquet/SQLite/CSV y sube los resultados como artifacts.
+- `ETL Export`: se ejecuta manualmente, semanalmente y en cambios relevantes de `main`. Restaura `data-raw/` desde cache exacta o lo descarga desde Cloudflare R2, ejecuta `run_export()` y `run_export_calidad()`, valida los ZIP de Parquet/SQLite/CSV y el manifiesto del snapshot SQLite, y sube los resultados como artifacts.
 - `Deploy Docs`: publica el sitio Hugo en GitHub Pages.
 - `Deploy DB`: solo manual, asociado al environment protegido `production-db`. Requiere escribir `TRUNCATE_AND_LOAD_ELECCIONESDB`, ejecuta los targets pesados en procesos R separados en la maquina remota y carga PostgreSQL con staging temporal + transaccion final.
 
@@ -214,7 +214,7 @@ run_fact_checks()
 -   Script: `R/04-export/export-descargas.R`.
 -   Genera tres formatos en `descargas/`:
     1.  **Parquet**: `descargas/parquet/dimensiones/*.parquet` + `descargas/parquet/hechos/*.parquet`.
-    2.  **SQLite**: `descargas/eleccionesdb.sqlite` con esquema relacional completo (PKs, FKs, UNIQUE, índices).
+    2.  **SQLite**: `descargas/eleccionesdb_sqlite.zip` con esquema relacional versionado y `descargas/eleccionesdb_sqlite.json` con URL, tamaños y checksums SHA-256 para actualizaciones seguras.
     3.  **CSV planos** (pre-joineados): `descargas/csv/resumen_territorial.csv`, `descargas/csv/votos_territoriales.csv` — tablas de hechos con todas las dimensiones ya unidas.
 
 ## Orquestación con {targets} {#orquestación-con-targets}

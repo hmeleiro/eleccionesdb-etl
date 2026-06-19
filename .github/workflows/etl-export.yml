@@ -127,7 +127,9 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: ${{ env.ETL_SMOKE == 'true' && 'eleccionesdb-descargas-smoke' || 'eleccionesdb-descargas' }}
-          path: descargas/*.zip
+          path: |
+            descargas/*.zip
+            descargas/eleccionesdb_sqlite.json
           if-no-files-found: error
           retention-days: 14
 
@@ -140,7 +142,7 @@ jobs:
           retention-days: 14
 
       - name: Publish downloads to Cloudflare R2
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_downloads }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_downloads && !inputs.smoke_test }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CF_S3_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CF_S3_SECRET_KEY }}
@@ -153,5 +155,9 @@ jobs:
         run: |
           aws s3 sync descargas "s3://${CF_S3_BUCKET}/eleccionesdb-etl/descargas/" \
             --endpoint-url "${CF_S3_ENDPOINT}" \
-            --delete
+            --delete \
+            --exclude "eleccionesdb_sqlite.json"
+          aws s3 cp descargas/eleccionesdb_sqlite.json \
+            "s3://${CF_S3_BUCKET}/eleccionesdb-etl/descargas/eleccionesdb_sqlite.json" \
+            --endpoint-url "${CF_S3_ENDPOINT}"
           echo "Published: ${CF_S3_PUBLIC_BASE_URL}/eleccionesdb-etl/descargas/" >> "${GITHUB_STEP_SUMMARY}"

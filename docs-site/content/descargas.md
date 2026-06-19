@@ -111,6 +111,9 @@ Un único fichero `descargas/eleccionesdb.sqlite` con el esquema relacional comp
 - No requiere servidor: funciona directamente en local.
 - Permite consultas SQL complejas con JOINs, agregaciones, subqueries.
 - Esquema con integridad referencial.
+- El manifiesto [`eleccionesdb_sqlite.json`](https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb_sqlite.json) publica la versión del esquema, tamaños y checksums SHA-256 para clientes automatizados.
+
+Los usuarios de R pueden descargar, verificar y activar este snapshot directamente con `eleccionesdb::edb_download_sqlite()` y `eleccionesdb::edb_set_backend("sqlite")`.
 
 ### Cómo usarlo en R
 

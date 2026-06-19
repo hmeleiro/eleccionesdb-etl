@@ -5,11 +5,18 @@ library(DBI)
 library(RSQLite)
 library(arrow)
 library(readr)
+library(digest)
+library(jsonlite)
 
 required_zips <- c(
     parquet = "descargas/eleccionesdb_parquet.zip",
     sqlite = "descargas/eleccionesdb_sqlite.zip",
     csv = "descargas/eleccionesdb_csv.zip"
+)
+sqlite_manifest_path <- "descargas/eleccionesdb_sqlite.json"
+sqlite_download_url <- paste0(
+    "https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/",
+    "eleccionesdb_sqlite.zip"
 )
 
 stop_if_missing <- function(path) {
@@ -36,10 +43,80 @@ extract_zip <- function(path) {
 for (path in required_zips) {
     stop_if_missing(path)
 }
+stop_if_missing(sqlite_manifest_path)
 
-message("[ci] ZIPs requeridos presentes")
+message("[ci] ZIPs y manifiesto requeridos presentes")
 
-sqlite_dir <- extract_zip(required_zips[["sqlite"]])
+sha256_file <- function(path) {
+    tolower(digest::digest(file = path, algo = "sha256", serialize = FALSE))
+}
+
+sqlite_manifest <- jsonlite::read_json(sqlite_manifest_path, simplifyVector = TRUE)
+required_manifest_fields <- c(
+    "schema_version",
+    "generated_at",
+    "url",
+    "archive_size",
+    "archive_sha256",
+    "database_filename",
+    "database_size",
+    "database_sha256"
+)
+missing_manifest_fields <- setdiff(required_manifest_fields, names(sqlite_manifest))
+if (length(missing_manifest_fields) > 0) {
+    stop(
+        "Faltan campos en el manifiesto SQLite: ",
+        paste(missing_manifest_fields, collapse = ", "),
+        call. = FALSE
+    )
+}
+if (!identical(as.integer(sqlite_manifest$schema_version), 1L)) {
+    stop("El manifiesto SQLite no usa schema_version 1", call. = FALSE)
+}
+if (!identical(sqlite_manifest$url, sqlite_download_url)) {
+    stop("La URL del manifiesto SQLite no es la URL publica esperada", call. = FALSE)
+}
+if (!grepl(
+    "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+    sqlite_manifest$generated_at
+)) {
+    stop("generated_at no es una fecha UTC valida", call. = FALSE)
+}
+manifest_hashes <- c(
+    sqlite_manifest$archive_sha256,
+    sqlite_manifest$database_sha256
+)
+if (any(!grepl("^[0-9a-f]{64}$", manifest_hashes))) {
+    stop("El manifiesto SQLite contiene checksums SHA-256 invalidos", call. = FALSE)
+}
+
+sqlite_zip <- required_zips[["sqlite"]]
+if (!identical(
+    as.numeric(file.info(sqlite_zip)$size),
+    as.numeric(sqlite_manifest$archive_size)
+)) {
+    stop("El tamano del ZIP SQLite no coincide con el manifiesto", call. = FALSE)
+}
+if (!identical(sha256_file(sqlite_zip), sqlite_manifest$archive_sha256)) {
+    stop("El SHA-256 del ZIP SQLite no coincide con el manifiesto", call. = FALSE)
+}
+
+sqlite_listing <- utils::unzip(sqlite_zip, list = TRUE)
+if (
+    nrow(sqlite_listing) != 1 ||
+    !identical(sqlite_listing$Name[[1]], sqlite_manifest$database_filename) ||
+    !identical(
+        basename(sqlite_manifest$database_filename),
+        sqlite_manifest$database_filename
+    )
+) {
+    stop(
+        "El ZIP SQLite debe contener unicamente el fichero declarado en el manifiesto",
+        call. = FALSE
+    )
+}
+
+sqlite_dir <- extract_zip(sqlite_zip)
 sqlite_files <- list.files(
     sqlite_dir,
     pattern = "eleccionesdb\\.sqlite$",
@@ -49,9 +126,27 @@ sqlite_files <- list.files(
 if (length(sqlite_files) != 1) {
     stop("No se encontro un unico SQLite dentro del ZIP", call. = FALSE)
 }
+if (!identical(
+    as.numeric(file.info(sqlite_files[[1]])$size),
+    as.numeric(sqlite_manifest$database_size)
+)) {
+    stop("El tamano del SQLite no coincide con el manifiesto", call. = FALSE)
+}
+if (!identical(sha256_file(sqlite_files[[1]]), sqlite_manifest$database_sha256)) {
+    stop("El SHA-256 del SQLite no coincide con el manifiesto", call. = FALSE)
+}
 
-con <- DBI::dbConnect(RSQLite::SQLite(), sqlite_files[[1]])
+con <- DBI::dbConnect(
+    RSQLite::SQLite(),
+    sqlite_files[[1]],
+    flags = RSQLite::SQLITE_RO
+)
 on.exit(DBI::dbDisconnect(con), add = TRUE)
+
+schema_version <- DBI::dbGetQuery(con, "PRAGMA user_version")[[1]][[1]]
+if (!identical(as.integer(schema_version), 1L)) {
+    stop("SQLite no usa PRAGMA user_version = 1", call. = FALSE)
+}
 
 integrity <- DBI::dbGetQuery(con, "PRAGMA integrity_check")[[1]]
 if (!identical(integrity, "ok")) {
@@ -75,6 +170,37 @@ tables <- DBI::dbGetQuery(
 missing_tables <- setdiff(required_tables, tables)
 if (length(missing_tables) > 0) {
     stop("Faltan tablas SQLite: ", paste(missing_tables, collapse = ", "), call. = FALSE)
+}
+
+required_resumen_columns <- c(
+    "id",
+    "eleccion_id",
+    "territorio_id",
+    "censo_ine",
+    "participacion_1",
+    "participacion_2",
+    "participacion_3",
+    "votos_validos",
+    "abstenciones",
+    "votos_blancos",
+    "votos_nulos",
+    "nrepresentantes"
+)
+missing_resumen_columns <- setdiff(
+    required_resumen_columns,
+    DBI::dbListFields(con, "resumen_territorial")
+)
+if (length(missing_resumen_columns) > 0) {
+    stop(
+        "Faltan columnas en resumen_territorial: ",
+        paste(missing_resumen_columns, collapse = ", "),
+        call. = FALSE
+    )
+}
+
+foreign_key_violations <- DBI::dbGetQuery(con, "PRAGMA foreign_key_check")
+if (nrow(foreign_key_violations) > 0) {
+    stop("SQLite contiene violaciones de claves foraneas", call. = FALSE)
 }
 
 row_counts <- vapply(

@@ -43,10 +43,11 @@ metrics <- data.frame(
 )
 
 artifacts <- data.frame(
-    artefacto = c("Parquet ZIP", "SQLite ZIP", "CSV ZIP"),
+    artefacto = c("Parquet ZIP", "SQLite ZIP", "SQLite manifest", "CSV ZIP"),
     ruta = c(
         "descargas/eleccionesdb_parquet.zip",
         "descargas/eleccionesdb_sqlite.zip",
+        "descargas/eleccionesdb_sqlite.json",
         "descargas/eleccionesdb_csv.zip"
     )
 )
