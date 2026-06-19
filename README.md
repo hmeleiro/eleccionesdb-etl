@@ -3,6 +3,7 @@
 [![CI](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/ci.yml/badge.svg)](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/ci.yml)
 [![ETL Export](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/etl-export.yml/badge.svg)](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/etl-export.yml)
 [![Deploy Docs](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/deploy-docs.yml)
+[![Deploy DB](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/deploy-db.yml/badge.svg)](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/deploy-db.yml)
 
 ## CI/CD
 
