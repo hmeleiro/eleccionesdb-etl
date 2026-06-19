@@ -6,7 +6,7 @@ library(data.table)
 source("R/utils.R", encoding = "UTF-8")
 source("R/tests/validate_tablas_finales.R", encoding = "UTF-8")
 
-write_table_chunked <- function(con, table, df, chunk_size = 500000L) {
+write_table_chunked <- function(con, table, df, chunk_size = 1000000L) {
   n <- nrow(df)
   if (!n) {
     return(invisible(NULL))
@@ -26,6 +26,32 @@ write_table_chunked <- function(con, table, df, chunk_size = 500000L) {
   }
 
   invisible(NULL)
+}
+
+drop_load_indexes <- function(con) {
+  DBI::dbExecute(con, "DROP INDEX IF EXISTS idx_resumen_territorio")
+  DBI::dbExecute(con, "DROP INDEX IF EXISTS idx_votos_eleccion_territorio")
+  DBI::dbExecute(con, "DROP INDEX IF EXISTS idx_votos_partido")
+}
+
+recreate_load_indexes <- function(con) {
+  DBI::dbExecute(
+    con,
+    "CREATE INDEX IF NOT EXISTS idx_resumen_territorio
+       ON resumen_territorial(territorio_id)"
+  )
+  DBI::dbExecute(
+    con,
+    "CREATE INDEX IF NOT EXISTS idx_votos_eleccion_territorio
+       ON votos_territoriales(eleccion_id, territorio_id)"
+  )
+  DBI::dbExecute(
+    con,
+    "CREATE INDEX IF NOT EXISTS idx_votos_partido
+       ON votos_territoriales(partido_id)"
+  )
+  DBI::dbExecute(con, "ANALYZE resumen_territorial")
+  DBI::dbExecute(con, "ANALYZE votos_territoriales")
 }
 
 # DIMENSIONES
@@ -61,9 +87,14 @@ run_fact_checks(
 )
 
 con <- connect()
+indexes_dropped <- FALSE
 
 tryCatch(
   {
+    DBI::dbExecute(con, "SET synchronous_commit TO off")
+    drop_load_indexes(con)
+    indexes_dropped <- TRUE
+
     dbExecute(con, "TRUNCATE tipos_eleccion, elecciones, territorios, partidos,
           resumen_territorial, votos_territoriales, partidos_recode,
           resumen_cera, votos_cera, elecciones_fuentes RESTART IDENTITY")
@@ -80,9 +111,16 @@ tryCatch(
     invisible(gc())
 
     write_table_chunked(con, "votos_territoriales", votos)
+
+    recreate_load_indexes(con)
+    indexes_dropped <- FALSE
   },
   error = function(e) {
     message("An error occurred: ", e$message)
+    if (isTRUE(indexes_dropped)) {
+      message("Recreating load indexes after error...")
+      try(recreate_load_indexes(con), silent = TRUE)
+    }
     stop(e)
   },
   finally = dbDisconnect(con)
