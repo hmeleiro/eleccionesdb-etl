@@ -2,6 +2,8 @@ library(dplyr)
 library(readr)
 library(purrr)
 
+source("R/tests/validate_tablas_finales.R", encoding = "UTF-8")
+
 INPUT_DIR <- "data-raw/codigos_territorios"
 
 files <- list.files(INPUT_DIR, pattern = "\\.rds$", full.names = T)
@@ -45,7 +47,7 @@ ccaa <- codigos_secciones %>%
   select(-n) %>%
   mutate(
     codigo_provincia = "99",
-    codigo_circunscripcion = NA_character_,
+    codigo_circunscripcion = "99",
     codigo_municipio = "999",
     codigo_distrito = "99",
     codigo_seccion = "9999"
@@ -59,7 +61,7 @@ provincia <- codigos_secciones %>%
   count() %>%
   select(-n) %>%
   mutate(
-    codigo_circunscripcion = NA_character_,
+    codigo_circunscripcion = "99",
     codigo_municipio = "999",
     codigo_distrito = "99",
     codigo_seccion = "9999"
@@ -148,7 +150,7 @@ territorios <-
   ) %>%
   mutate(
     codigo_circunscripcion = case_when(
-      tipo %in% c("ccaa", "provincia") ~ NA_character_,
+      tipo %in% c("ccaa", "provincia") ~ "99",
       !is.na(circ_auto) ~ circ_auto,
       TRUE ~ coalesce(codigo_circunscripcion, codigo_provincia)
     )
@@ -268,5 +270,6 @@ territorios <-
     parent_id = as.integer(parent_id)
   )
 
+validate_dim_territorios(territorios)
 write_csv(territorios, "tablas-finales/dimensiones/territorios")
 

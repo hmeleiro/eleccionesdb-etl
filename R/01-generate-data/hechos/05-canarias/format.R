@@ -173,7 +173,7 @@ info_prov_83_87 <- read_xlsx(paste0(INPUT_DIR, "info_prov_canarias_83_87.xlsx"))
     across(c(starts_with("codigo_"), year), as.character),
     votos_validos = validos,
     abstenciones = abstencion,
-    codigo_circunscripcion = NA_character_
+    codigo_circunscripcion = "99"
   ) %>%
   select(
     year, codigo_ccaa, codigo_provincia, codigo_circunscripcion,
@@ -251,7 +251,10 @@ info_auto_circ <-
 info_cer <-
   bind_rows(info_ccaa, info_prov, info_circ, info_auto_circ, info_muni, info_seccion) %>%
   mutate(
-    across(c(codigo_provincia, codigo_distrito), ~ ifelse(is.na(.), "99", .)),
+    across(
+      c(codigo_provincia, codigo_distrito, codigo_circunscripcion),
+      ~ ifelse(is.na(.), "99", .)
+    ),
     codigo_municipio = ifelse(is.na(codigo_municipio), "999", codigo_municipio),
     codigo_seccion = ifelse(is.na(codigo_seccion), "9999", codigo_seccion)
   ) %>%
@@ -331,7 +334,10 @@ votos_auto_circ <-
 votos_cer <-
   bind_rows(votos_ccaa, votos_prov, votos_circ, votos_auto_circ, votos_muni, votos_seccion) %>%
   mutate(
-    across(c(codigo_provincia, codigo_distrito), ~ ifelse(is.na(.), "99", .)),
+    across(
+      c(codigo_provincia, codigo_distrito, codigo_circunscripcion),
+      ~ ifelse(is.na(.), "99", .)
+    ),
     codigo_municipio = ifelse(is.na(codigo_municipio), "999", codigo_municipio),
     codigo_seccion = ifelse(is.na(codigo_seccion), "9999", codigo_seccion)
   ) %>%

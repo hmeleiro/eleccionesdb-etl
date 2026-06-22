@@ -247,6 +247,21 @@ validate_dim_territorios <- function(df, label = "territorios") {
     nchar(df$codigo_seccion) == 4 | is.na(df$codigo_seccion),
     paste0("[", label, "] $codigo_seccion debe tener longitud 4 o ser NA")
   )
+  aggregated_types <- df$tipo %in% c("ccaa", "provincia")
+  stop_if_not_all(
+    !is.na(df$codigo_circunscripcion[aggregated_types]) &
+      df$codigo_circunscripcion[aggregated_types] == "99",
+    paste0(
+      "[", label, "] $codigo_circunscripcion debe ser '99' para tipo ccaa y provincia"
+    )
+  )
+  stop_if_not_all(
+    !is.na(df$codigo_circunscripcion[!aggregated_types]) &
+      df$codigo_circunscripcion[!aggregated_types] != "99",
+    paste0(
+      "[", label, "] $codigo_circunscripcion real no puede ser NA ni '99'"
+    )
+  )
   stop_if_not_all(
     nchar(df$codigo_completo) <= 13 | is.na(df$codigo_completo),
     paste0("[", label, "] $codigo_completo debe tener longitud <= 13 o ser NA")

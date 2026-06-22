@@ -181,7 +181,7 @@ Jerarquía territorial con auto-referencia vía `parent_id`. Cada registro repre
 | `codigo_municipio` | `CHAR(3)` | Código INE de municipio |
 | `codigo_distrito` | `CHAR(2)` | Código de distrito censal |
 | `codigo_seccion` | `CHAR(4)` | Código de sección censal |
-| `codigo_circunscripcion` | `CHAR(3)` | Código de circunscripción (sub-provincial en Canarias, Asturias, Baleares) |
+| `codigo_circunscripcion` | `CHAR(3)` | Código de circunscripción; usa `99` como centinela en territorios `ccaa` y `provincia` |
 | `nombre` | `VARCHAR(255)` | Nombre del territorio |
 | `codigo_completo` | `VARCHAR(13)` | Código concatenado completo |
 | `parent_id` | `INT` FK | Referencia al territorio padre en la jerarquía |

@@ -185,6 +185,63 @@ if (nrow(invalid_years) > 0) {
         "SQLite contiene valores de year que no son texto de cuatro digitos: ",
         paste(invalid_years$year, collapse = ", "),
         call. = FALSE
+  )
+}
+
+invalid_aggregate_circunscripciones <- DBI::dbGetQuery(
+    con,
+    paste(
+        "SELECT tipo, codigo_ccaa, codigo_provincia, codigo_circunscripcion",
+        "FROM territorios",
+        "WHERE tipo IN ('ccaa', 'provincia')",
+        "AND (codigo_circunscripcion IS NULL OR codigo_circunscripcion <> '99')"
+    )
+)
+if (nrow(invalid_aggregate_circunscripciones) > 0) {
+    stop(
+        "SQLite contiene territorios ccaa/provincia sin codigo_circunscripcion = '99'",
+        call. = FALSE
+    )
+}
+
+invalid_real_circunscripciones <- DBI::dbGetQuery(
+    con,
+    paste(
+        "SELECT tipo, codigo_ccaa, codigo_provincia, codigo_circunscripcion",
+        "FROM territorios",
+        "WHERE tipo NOT IN ('ccaa', 'provincia')",
+        "AND (codigo_circunscripcion IS NULL OR codigo_circunscripcion = '99')"
+    )
+)
+if (nrow(invalid_real_circunscripciones) > 0) {
+    stop(
+        "SQLite ha sustituido por NULL/'99' algun codigo_circunscripcion real",
+        call. = FALSE
+    )
+}
+
+expected_circunscripciones <- readr::read_csv(
+    "data-raw/codigos_territorios/circunscripciones.csv",
+    show_col_types = FALSE,
+    col_types = readr::cols(.default = "c")
+)
+sqlite_circunscripciones <- DBI::dbGetQuery(
+    con,
+    paste(
+        "SELECT codigo_ccaa, codigo_provincia, codigo_circunscripcion, nombre",
+        "FROM territorios WHERE tipo = 'circunscripcion'"
+    )
+)
+circunscripcion_key <- function(df) {
+    do.call(paste, c(df, sep = "\r"))
+}
+if (!identical(
+    sort(circunscripcion_key(expected_circunscripciones)),
+    sort(circunscripcion_key(sqlite_circunscripciones))
+)) {
+    stop(
+        "Los codigos de circunscripcion reales del SQLite no coinciden con su definicion",
+        call. = FALSE
     )
 }
 
