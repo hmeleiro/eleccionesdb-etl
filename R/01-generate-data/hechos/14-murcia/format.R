@@ -369,6 +369,7 @@ info_cer <-
   bind_rows(info_ccaa, info_prov, info_circ, info_muni, info_seccion) %>%
   mutate(
     across(c(codigo_provincia, codigo_distrito), ~ ifelse(is.na(.), "99", .)),
+    codigo_circunscripcion = ifelse(is.na(codigo_circunscripcion), "99", codigo_circunscripcion),
     codigo_municipio = ifelse(is.na(codigo_municipio), "999", codigo_municipio),
     codigo_seccion   = ifelse(is.na(codigo_seccion), "9999", codigo_seccion)
   ) %>%
@@ -396,6 +397,7 @@ votos_cer <-
   bind_rows(votos_ccaa, votos_prov, votos_circ, votos_muni, votos_seccion) %>%
   mutate(
     across(c(codigo_provincia, codigo_distrito), ~ ifelse(is.na(.), "99", .)),
+    codigo_circunscripcion = ifelse(is.na(codigo_circunscripcion), "99", codigo_circunscripcion),
     codigo_municipio = ifelse(is.na(codigo_municipio), "999", codigo_municipio),
     codigo_seccion   = ifelse(is.na(codigo_seccion), "9999", codigo_seccion)
   ) %>%
