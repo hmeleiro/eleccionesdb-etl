@@ -222,6 +222,7 @@ info_cer <-
       c(codigo_provincia, codigo_distrito),
       ~ ifelse(is.na(.), "99", .)
     ),
+    codigo_circunscripcion = ifelse(is.na(codigo_circunscripcion), "99", codigo_circunscripcion),
     codigo_municipio = ifelse(is.na(codigo_municipio), "999", codigo_municipio),
     codigo_seccion = ifelse(is.na(codigo_seccion), "9999", codigo_seccion)
   ) %>%
@@ -315,6 +316,7 @@ votos_cer <-
       c(codigo_provincia, codigo_distrito),
       ~ ifelse(is.na(.), "99", .)
     ),
+    codigo_circunscripcion = ifelse(is.na(codigo_circunscripcion), "99", codigo_circunscripcion),
     codigo_municipio = ifelse(is.na(codigo_municipio), "999", codigo_municipio),
     codigo_seccion = ifelse(is.na(codigo_seccion), "9999", codigo_seccion)
   ) %>%
@@ -329,7 +331,6 @@ votos_cer <-
   arrange(eleccion_id, territorio_id) %>%
   select(-c(year, starts_with("codigo_"))) %>%
   relocate(eleccion_id, territorio_id)
-
 
 # Mesas y secciones solo existen para 2015+
 info_mesas <- info_mesas %>% filter(!is.na(codigo_mesa))
