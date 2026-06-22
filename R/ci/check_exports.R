@@ -172,6 +172,22 @@ if (length(missing_tables) > 0) {
     stop("Faltan tablas SQLite: ", paste(missing_tables, collapse = ", "), call. = FALSE)
 }
 
+invalid_years <- DBI::dbGetQuery(
+    con,
+    paste(
+        "SELECT DISTINCT year FROM elecciones",
+        "WHERE typeof(year) <> 'text'",
+        "OR year NOT GLOB '[0-9][0-9][0-9][0-9]'"
+    )
+)
+if (nrow(invalid_years) > 0) {
+    stop(
+        "SQLite contiene valores de year que no son texto de cuatro digitos: ",
+        paste(invalid_years$year, collapse = ", "),
+        call. = FALSE
+    )
+}
+
 required_resumen_columns <- c(
     "id",
     "eleccion_id",

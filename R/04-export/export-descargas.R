@@ -26,7 +26,11 @@ sqlite_download_url <- paste0(
 # ---------------------------------------------------------------------------
 
 tipos_eleccion <- read_csv("tablas-finales/dimensiones/tipos_eleccion", show_col_types = FALSE)
-elecciones <- read_csv("tablas-finales/dimensiones/elecciones", show_col_types = FALSE)
+elecciones <- read_csv(
+  "tablas-finales/dimensiones/elecciones",
+  show_col_types = FALSE,
+  col_types = cols(year = col_character())
+)
 territorios <- read_csv("tablas-finales/dimensiones/territorios", show_col_types = FALSE)
 partidos_recode <- read_csv("tablas-finales/dimensiones/partidos_recode", show_col_types = FALSE, na = "NNNNAAAA")
 partidos <- read_csv("tablas-finales/dimensiones/partidos", show_col_types = FALSE, na = "NNNNAAAA")
