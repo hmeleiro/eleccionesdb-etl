@@ -41,8 +41,8 @@ run_dim_tipos_eleccion <- function() {
   "tablas-finales/dimensiones/tipos_eleccion"
 }
 
-run_dim_territorios <- function() {
-  run_pipeline_script("R/01-generate-data/dimensiones/territorios/territorios.R")
+run_dim_territorios <- function(script_path) {
+  run_pipeline_script(script_path)
   "tablas-finales/dimensiones/territorios"
 }
 
