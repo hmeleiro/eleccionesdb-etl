@@ -20,7 +20,7 @@ show_pipeline()
 
 targets::tar_meta(fields = warnings, complete_only = TRUE)
 
-tar_invalidate(names = c("hechos_minsait"))
+tar_invalidate(names = c("bind_hechos"))
 # tar_invalidate(names = everything())
 # tar_destroy()
 
