@@ -41,6 +41,16 @@ list(
     # ---------------------------------------------------------------------------
     tar_target(raw_fechas_elecciones, "data-raw/fechas_elecciones.csv", format = "file"),
     tar_target(
+        raw_representantes,
+        c(
+            nrepresentantes_prov = "data-raw/representantes/nrepresentantes_prov.xlsx",
+            nrepresentantes_muni = "data-raw/representantes/nrepresentantes_muni.xlsx",
+            representantes_prov = "data-raw/representantes/representantes_prov.xlsx",
+            representantes_muni = "data-raw/representantes/representantes_muni.xlsx"
+        ),
+        format = "file"
+    ),
+    tar_target(
         script_dim_territorios,
         "R/01-generate-data/dimensiones/territorios/territorios.R",
         format = "file"
@@ -78,8 +88,20 @@ list(
     tar_target_raw(
         name = "bind_hechos",
         command = substitute(
-            run_bind_hechos(all_hechos, partidos_sin_id),
+            run_bind_hechos(all_hechos, partidos_sin_id, raw_representantes),
             list(all_hechos = as.call(c(as.symbol("list"), all_hechos_syms)))
+        ),
+        format = "file"
+    ),
+
+    # ---------------------------------------------------------------------------
+    # Phase 3c: Cobertura de representantes (no bloqueante)
+    # ---------------------------------------------------------------------------
+    tar_target(
+        representantes_coverage,
+        run_representantes_coverage_target(
+            bind_hechos, dim_elecciones, dim_territorios, dim_partidos,
+            raw_representantes
         ),
         format = "file"
     ),
@@ -89,7 +111,7 @@ list(
     # ---------------------------------------------------------------------------
     tar_target(writedb, run_writedb(
         bind_hechos, dim_tipos_eleccion, dim_elecciones, dim_elecciones_fuentes,
-        dim_territorios, dim_partidos
+        dim_territorios, dim_partidos, representantes_coverage
     )),
 
     # ---------------------------------------------------------------------------
@@ -97,7 +119,7 @@ list(
     # ---------------------------------------------------------------------------
     tar_target(export, run_export(
         bind_hechos, dim_tipos_eleccion, dim_elecciones, dim_elecciones_fuentes,
-        dim_territorios, dim_partidos
+        dim_territorios, dim_partidos, representantes_coverage
     ),
     format = "file"
     ),

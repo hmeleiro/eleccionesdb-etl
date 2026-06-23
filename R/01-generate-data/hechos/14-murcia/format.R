@@ -299,9 +299,14 @@ info_muni <-
   summarise(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)), .groups = "drop") %>%
   arrange(year, codigo_municipio)
 
+
+
 info_circ <-
   info_muni %>%
   select(-codigo_municipio) %>%
+  # A partir de 2019, ya no hay circunscripciones inferiores
+  # a la provincia en Murcia
+  filter(year < 2019) %>%
   group_by(across(where(is.character))) %>%
   summarise(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)), .groups = "drop") %>%
   arrange(year, codigo_circunscripcion)
@@ -343,9 +348,12 @@ votos_muni <-
 votos_circ <-
   votos_muni %>%
   select(-codigo_municipio) %>%
+  # A partir de 2019, ya no hay circunscripciones
+  # inferiores a la provincia en Murcia
+  filter(year < 2019) %>%
   group_by(across(where(is.character))) %>%
   summarise(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)), .groups = "drop") %>%
-  arrange(year, codigo_circunscripcion, -votos)
+  arrange(year, codigo_circunscripcion)
 
 votos_prov <-
   votos_circ %>%
@@ -368,8 +376,7 @@ votos_ccaa <-
 info_cer <-
   bind_rows(info_ccaa, info_prov, info_circ, info_muni, info_seccion) %>%
   mutate(
-    across(c(codigo_provincia, codigo_distrito), ~ ifelse(is.na(.), "99", .)),
-    codigo_circunscripcion = ifelse(is.na(codigo_circunscripcion), "99", codigo_circunscripcion),
+    across(c(codigo_provincia, codigo_distrito, codigo_circunscripcion), ~ ifelse(is.na(.), "99", .)),
     codigo_municipio = ifelse(is.na(codigo_municipio), "999", codigo_municipio),
     codigo_seccion   = ifelse(is.na(codigo_seccion), "9999", codigo_seccion)
   ) %>%
@@ -396,8 +403,7 @@ info_cer <-
 votos_cer <-
   bind_rows(votos_ccaa, votos_prov, votos_circ, votos_muni, votos_seccion) %>%
   mutate(
-    across(c(codigo_provincia, codigo_distrito), ~ ifelse(is.na(.), "99", .)),
-    codigo_circunscripcion = ifelse(is.na(codigo_circunscripcion), "99", codigo_circunscripcion),
+    across(c(codigo_provincia, codigo_distrito, codigo_circunscripcion), ~ ifelse(is.na(.), "99", .)),
     codigo_municipio = ifelse(is.na(codigo_municipio), "999", codigo_municipio),
     codigo_seccion   = ifelse(is.na(codigo_seccion), "9999", codigo_seccion)
   ) %>%

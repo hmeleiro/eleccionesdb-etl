@@ -227,7 +227,7 @@ El pipeline completo se orquesta con el paquete [{targets}](https://docs.ropensc
 
 ### Estructura del pipeline
 
-El pipeline se define en `_targets.R` y consta de 33 targets organizados en 6 fases:
+El pipeline se define en `_targets.R` y organiza las dimensiones, hechos, controles y exportaciones en 6 fases:
 
 ```         
 Phase 1: Dimensiones (independientes entre sí)
@@ -248,6 +248,9 @@ Phase 3a: Completar partidos (← todos los hechos + partidos)
 
 Phase 3b: Bind (← todos los hechos + partidos)
   bind_hechos
+
+Phase 3c: Cobertura de representantes (← bind + Excel manuales)
+  representantes_coverage
 
 Phase 4: Write DB (← bind + dims)
   writedb
@@ -270,13 +273,29 @@ run_all()
 # Ejecutar solo fases específicas
 run_dims()      # solo dimensiones
 run_hechos()    # dimensiones + hechos regionales
-run_bind()      # dimensiones + hechos + bind
+run_bind()      # dimensiones + hechos + bind + cobertura de representantes
+run_representantes_coverage() # genera data-processed/representantes_pending.xlsx
 run_writedb()   # todo hasta escritura a BD
 run_export()    # todo hasta exportación
 
 # Visualizar el grafo de dependencias
 show_pipeline()
 ```
+
+### Cobertura de representantes
+
+El target `representantes_coverage` comprueba los repartos de elecciones generales,
+autonómicas y locales; las europeas quedan excluidas. Para G/A utiliza las
+circunscripciones explícitas cuando existen y, en otro caso, la provincia. Para
+locales utiliza el municipio.
+
+El control avisa, sin detener el pipeline, cuando falta `nrepresentantes`, no hay
+ningún representante electo o la suma de electos no coincide con los escaños. Además,
+genera `data-processed/representantes_pending.xlsx`, con cuatro hojas para revisar
+`representantes_prov.xlsx`, `representantes_muni.xlsx`,
+`nrepresentantes_prov.xlsx` y `nrepresentantes_muni.xlsx`. Los cuatro Excel de origen
+son dependencias de {targets}: al modificarlos se vuelven a ejecutar el bind y este
+diagnóstico.
 
 ### Comandos {targets} útiles
 

@@ -1,6 +1,6 @@
 source("run.R")
 
-targets::tar_manifest() |> print(n = 30)
+targets::tar_manifest() |> print(n = 40)
 
 run_hechos()
 
@@ -13,12 +13,14 @@ run_dims()      # solo dimensiones
 run_hechos()    # dimensiones + hechos regionales
 run_bind()      # dimensiones + hechos + bind
 
+run_representantes_coverage()
+
 # Visualizar el grafo de dependencias
 show_pipeline()
 
 targets::tar_meta(fields = warnings, complete_only = TRUE)
 
-tar_invalidate(names = c("bind_hechos", "writedb"))
+tar_invalidate(names = c("representantes_coverage"))
 # tar_invalidate(names = everything())
 # tar_destroy()
 

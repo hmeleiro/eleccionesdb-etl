@@ -8,6 +8,7 @@
 #   run_hechos()             # run dimensions + all regional hechos
 #   run_hechos_ordered()     # run regional hechos sequentially in _targets.R order
 #   run_bind()               # run dimensions + hechos + bind
+#   run_representantes_coverage() # bind + diagnóstico de representantes
 #   run_writedb()            # run everything up to and including DB write
 #   run_writedb_ordered()    # write DB with regional hechos in separate runs
 #   run_export()             # run everything up to and including export
@@ -40,7 +41,10 @@ run_dims_local <- function() {
 }
 
 writedb_ordered_targets <- function() {
-    c(hechos_target_names(), "partidos_sin_id", "bind_hechos", "writedb")
+    c(
+        hechos_target_names(), "partidos_sin_id", "bind_hechos",
+        "representantes_coverage", "writedb"
+    )
 }
 
 tar_make_in_order <- function(target_names, local = FALSE) {
@@ -77,34 +81,62 @@ run_hechos_ordered <- function(local = FALSE) {
 }
 
 run_bind <- function() {
-    tar_make(names = c(starts_with("dim_"), starts_with("hechos_"), "partidos_sin_id", "bind_hechos"))
+    tar_make(names = c(
+        starts_with("dim_"), starts_with("hechos_"), "partidos_sin_id",
+        "bind_hechos", "representantes_coverage"
+    ))
+}
+
+run_representantes_coverage <- function() {
+    tar_make(names = c(
+        starts_with("dim_"), starts_with("hechos_"), "partidos_sin_id",
+        "bind_hechos", "representantes_coverage"
+    ))
 }
 
 run_writedb <- function() {
-    tar_make(names = c(starts_with("dim_"), starts_with("hechos_"), "partidos_sin_id", "bind_hechos", "writedb"))
+    tar_make(names = c(
+        starts_with("dim_"), starts_with("hechos_"), "partidos_sin_id",
+        "bind_hechos", "representantes_coverage", "writedb"
+    ))
 }
 
 run_writedb_ordered <- function(local = FALSE) {
     run_hechos_ordered(local = local)
-    tar_make_in_order(c("partidos_sin_id", "bind_hechos", "writedb"), local = local)
+    tar_make_in_order(
+        c("partidos_sin_id", "bind_hechos", "representantes_coverage", "writedb"),
+        local = local
+    )
 }
 
 run_export <- function() {
-    tar_make(names = c(starts_with("dim_"), starts_with("hechos_"), "partidos_sin_id", "bind_hechos", "export"))
+    tar_make(names = c(
+        starts_with("dim_"), starts_with("hechos_"), "partidos_sin_id",
+        "bind_hechos", "representantes_coverage", "export"
+    ))
 }
 
 run_export_ordered <- function() {
     run_hechos_ordered()
-    tar_make_in_order(c("partidos_sin_id", "bind_hechos", "export"))
+    tar_make_in_order(c(
+        "partidos_sin_id", "bind_hechos", "representantes_coverage", "export"
+    ))
 }
 
 run_export_pipeline_ordered <- function() {
     run_hechos_ordered()
-    tar_make_in_order(c("partidos_sin_id", "bind_hechos", "export", "gen_diagnosticos", "export_calidad"))
+    tar_make_in_order(c(
+        "partidos_sin_id", "bind_hechos", "representantes_coverage", "export",
+        "gen_diagnosticos", "export_calidad"
+    ))
 }
 
 run_export_calidad <- function() {
-    tar_make(names = c(starts_with("dim_"), starts_with("hechos_"), "partidos_sin_id", "bind_hechos", "gen_diagnosticos", "export_calidad"))
+    tar_make(names = c(
+        starts_with("dim_"), starts_with("hechos_"), "partidos_sin_id",
+        "bind_hechos", "representantes_coverage", "gen_diagnosticos",
+        "export_calidad"
+    ))
 }
 
 show_pipeline <- function() {

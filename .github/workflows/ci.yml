@@ -57,6 +57,9 @@ jobs:
       - name: Check R project
         run: Rscript R/ci/check_project.R
 
+      - name: Test representative coverage
+        run: Rscript R/tests/test_representantes_coverage.R
+
       - name: Lint R scripts
         continue-on-error: true
         run: Rscript R/ci/lint.R

@@ -94,7 +94,7 @@ run_partidos_sin_id <- function(all_hechos, dim_partidos) {
 # BIND
 # =============================================================================
 
-run_bind_hechos <- function(all_hechos, partidos_sin_id) {
+run_bind_hechos <- function(all_hechos, partidos_sin_id, raw_representantes) {
   run_pipeline_script("R/02-clean-and-bind/02-bind-hechos.R")
   c(
     "tablas-finales/hechos/info.rds",
@@ -103,11 +103,25 @@ run_bind_hechos <- function(all_hechos, partidos_sin_id) {
 }
 
 # =============================================================================
+# COBERTURA DE REPRESENTANTES
+# =============================================================================
+
+run_representantes_coverage_target <- function(
+    bind_hechos, dim_elecciones, dim_territorios, dim_partidos,
+    raw_representantes) {
+  env <- source_pipeline_env("R/tests/validate_representantes_coverage.R")
+  env$validate_representantes_coverage(raw_paths = raw_representantes)
+  rm(env)
+  invisible(gc())
+  "data-processed/representantes_pending.xlsx"
+}
+
+# =============================================================================
 # WRITE DB
 # =============================================================================
 
 run_writedb <- function(bind_hechos, dim_tipos_eleccion, dim_elecciones, dim_elecciones_fuentes,
-                        dim_territorios, dim_partidos) {
+                        dim_territorios, dim_partidos, representantes_coverage) {
   run_pipeline_script("R/03-writedb/write-db.R")
   invisible(NULL)
 }
@@ -117,7 +131,7 @@ run_writedb <- function(bind_hechos, dim_tipos_eleccion, dim_elecciones, dim_ele
 # =============================================================================
 
 run_export <- function(bind_hechos, dim_tipos_eleccion, dim_elecciones, dim_elecciones_fuentes,
-                       dim_territorios, dim_partidos) {
+                       dim_territorios, dim_partidos, representantes_coverage) {
   run_pipeline_script("R/04-export/export-descargas.R")
   list.files("descargas", full.names = TRUE, recursive = TRUE)
 }

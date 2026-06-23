@@ -46,6 +46,13 @@ if (nrow(votos_sin_id) > 0) {
   stop("Hay partidos sin partido_id asignado en votos.")
 }
 
+# ASIGNAR partido_id A REPRESENTANTES EN EL CONTEXTO ELECCION-TERRITORIO
+# El Excel histórico no siempre usa las mismas siglas que los resultados
+# (p. ej. "COALICION CANARIA" frente a "CC"). Se prioriza coincidencia exacta
+# y se recurre a denominación o siglas solo cuando identifican un único partido
+# dentro del reparto concreto.
+representantes <- match_representantes_to_votos(representantes, votos)
+
 info <- data.table::rbindlist(lapply(info_files, read_rds_dt), use.names = TRUE, fill = TRUE)
 data.table::setorder(info, eleccion_id, territorio_id)
 
