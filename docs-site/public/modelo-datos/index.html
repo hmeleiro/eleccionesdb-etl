@@ -60,6 +60,12 @@
           </li>
         
           <li class="nav-item">
+            <a href="/ci-cd/" class="nav-link">
+              CI/CD
+            </a>
+          </li>
+        
+          <li class="nav-item">
             <a href="/modelo-datos/" class="nav-link is-active">
               Modelo de datos
             </a>
@@ -416,7 +422,7 @@ erDiagram
       <tr>
           <td><code>codigo_circunscripcion</code></td>
           <td><code>CHAR(3)</code></td>
-          <td>Código de circunscripción (sub-provincial en Canarias, Asturias, Baleares)</td>
+          <td>Código de circunscripción; usa <code>99</code> como centinela en territorios <code>ccaa</code> y <code>provincia</code></td>
       </tr>
       <tr>
           <td><code>nombre</code></td>

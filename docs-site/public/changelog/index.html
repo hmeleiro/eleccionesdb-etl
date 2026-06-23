@@ -60,6 +60,12 @@
           </li>
         
           <li class="nav-item">
+            <a href="/ci-cd/" class="nav-link">
+              CI/CD
+            </a>
+          </li>
+        
+          <li class="nav-item">
             <a href="/modelo-datos/" class="nav-link">
               Modelo de datos
             </a>
@@ -130,8 +136,42 @@
 </ul>
 </div>
 <hr>
-<h2 id="v110--2026-04-22">v1.1.0 — 2026-04-22</h2>
+<h2 id="unreleased">Unreleased</h2>
 <h3 id="added">Added</h3>
+<h3 id="changed">Changed</h3>
+<h3 id="fixed">Fixed</h3>
+<h3 id="removed">Removed</h3>
+<hr>
+<h2 id="v130--2026-06-19">v1.3.0 — 2026-06-19</h2>
+<h3 id="added-1">Added</h3>
+<ul>
+<li>El snapshot SQLite publica un manifiesto JSON con versión de esquema, fecha de generación, tamaños y checksums SHA-256 del ZIP y de la base de datos para permitir actualizaciones verificadas desde el paquete R.</li>
+</ul>
+<h3 id="changed-1">Changed</h3>
+<ul>
+<li>La carga PostgreSQL usa staging temporal y una transaccion final para evitar estados parciales si falla <code>writedb</code>.</li>
+<li><code>Deploy DB</code> ejecuta targets pesados en procesos R separados en la maquina remota para reducir memoria retenida entre pasos.</li>
+<li><code>ETL Export</code> publica automaticamente en Cloudflare R2 cada ejecucion completa validada; los smoke tests siguen sin publicarse.</li>
+</ul>
+<h3 id="fixed-1">Fixed</h3>
+<ul>
+<li>La exportación SQLite declara <code>PRAGMA user_version = 1</code>, incluye <code>participacion_3</code> y falla de forma explícita si no puede construir la base; CI comprueba además el contrato de esquema, la integridad referencial y los checksums publicados.</li>
+</ul>
+<hr>
+<h2 id="v120--2026-04-28">v1.2.0 — 2026-04-28</h2>
+<h3 id="added-2">Added</h3>
+<ul>
+<li><strong>Elecciones europeas:</strong> se incorporan las convocatorias 1987–2024 a partir del Ministerio del Interior vía paquete <code>infoelectoral</code>.
+<ul>
+<li>Nuevo procesamiento <code>R/01-generate-data/hechos/00c-europeas/</code> con descarga en <code>fetch-data.R</code> y normalización en <code>format.R</code>.</li>
+<li>Integración en el pipeline de <code>{targets}</code> mediante el target <code>hechos_europeas</code>.</li>
+<li>Granularidad hasta sección censal cuando está disponible, con fallback municipal para convocatorias históricas sin mesas.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="v110--2026-04-22">v1.1.0 — 2026-04-22</h2>
+<h3 id="added-3">Added</h3>
 <ul>
 <li><strong>Escrutinio provisional (Minsait):</strong> se incorporan los datos de la noche electoral para tres convocatorias autonómicas recientes sin datos definitivos publicados: Extremadura 2025 (21 dic 2025), Aragón 2026 (8 feb 2026) y Castilla y León 2026 (15 mar 2026).
 <ul>

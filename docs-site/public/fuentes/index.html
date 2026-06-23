@@ -60,6 +60,12 @@
           </li>
         
           <li class="nav-item">
+            <a href="/ci-cd/" class="nav-link">
+              CI/CD
+            </a>
+          </li>
+        
+          <li class="nav-item">
             <a href="/modelo-datos/" class="nav-link">
               Modelo de datos
             </a>
@@ -125,6 +131,7 @@
 <ul>
 <li>Elecciones al Congreso: todas las convocatorias.</li>
 <li>Elecciones municipales: todas las convocatorias.</li>
+<li>Elecciones europeas: todas las convocatorias desde 1987.</li>
 <li>Elecciones autonómicas: las 17 comunidades autónomas.</li>
 </ul>
 <div class="callout callout-warning">
@@ -151,7 +158,13 @@
       <tr>
           <td>Municipales</td>
           <td>Todas las convocatorias</td>
-          <td>Municipal</td>
+          <td>Sección censal (cuando hay mesa/sección disponible) / Municipal (histórico sin mesa)</td>
+          <td>Datos vía paquete <code>infoelectoral</code></td>
+      </tr>
+      <tr>
+          <td>Europeas</td>
+          <td>Todas las convocatorias desde 1987</td>
+          <td>Sección censal (cuando hay mesa/sección disponible) / Municipal (histórico sin mesa)</td>
           <td>Datos vía paquete <code>infoelectoral</code></td>
       </tr>
       <tr>
@@ -283,6 +296,13 @@
           <td>Texto sin delimitar</td>
           <td><a href="https://infoelectoral.spainelectoralproject.com/">infoelectoral</a> (R package)</td>
           <td>Todas las convocatorias</td>
+      </tr>
+      <tr>
+          <td>Europeas</td>
+          <td>Ministerio del Interior</td>
+          <td>Texto sin delimitar</td>
+          <td><a href="https://infoelectoral.spainelectoralproject.com/">infoelectoral</a> (R package)</td>
+          <td>1987–2024</td>
       </tr>
       <tr>
           <td>Andalucía</td>
@@ -424,6 +444,16 @@
 <li><strong>Ficheros brutos</strong>: No hay CSV en <code>data-raw/</code>; el paquete descarga directamente desde la fuente oficial.</li>
 <li><strong>Scripts</strong>: <code>format.R</code>.</li>
 <li><strong>Notas</strong>: Separa CER/CERA y homogeneiza estructura territorial para todas las convocatorias.</li>
+</ul>
+<hr>
+<h3 id="europeas-00c-europeas">Europeas (<code>00c-europeas</code>)</h3>
+<ul>
+<li><strong>Fuente</strong>: Paquete R <a href="https://infoelectoral.spainelectoralproject.com/"><code>infoelectoral</code></a> (datos del Ministerio del Interior).</li>
+<li><strong>Método</strong>: Funciones <code>provincias()</code>, <code>municipios()</code> y <code>mesas()</code>; para convocatorias históricas sin datos de mesa/sección se integra el fallback municipal.</li>
+<li><strong>Granularidad</strong>: Sección censal cuando está disponible y municipal en los años históricos sin mesa.</li>
+<li><strong>Ficheros brutos</strong>: <code>data-raw/hechos/00c-europeas/{mesas,municipios,provincias,codigos_ccaa}.rds</code>, generados con <code>fetch-data.R</code>.</li>
+<li><strong>Scripts</strong>: <code>fetch-data.R</code> (descarga/preparación de RDS) y <code>format.R</code>.</li>
+<li><strong>Notas</strong>: Separa CER/CERA, remapea códigos de CCAA de <code>infoelectoral</code> a INE y agrega resultados a CCAA, provincia, municipio y sección.</li>
 </ul>
 <hr>
 <h3 id="andalucía-01-andalucia">Andalucía (<code>01-andalucia</code>)</h3>
@@ -609,6 +639,7 @@
 <li><strong>Scripts</strong>: <code>R/01-generate-data/hechos/minsait/format.R</code> (script unificado para todas las CCAA de esta fuente).</li>
 <li><strong>Elecciones cubiertas</strong>:
 <ul>
+<li>Andalucía — Elecciones Autonómicas 2026 (17 de mayo de 2026)</li>
 <li>Aragón — Elecciones Autonómicas 2026 (8 de febrero de 2026)</li>
 <li>Castilla y León — Elecciones Autonómicas 2026 (15 de marzo de 2026)</li>
 <li>Extremadura — Elecciones Autonómicas 2025 (21 de diciembre de 2025)</li>

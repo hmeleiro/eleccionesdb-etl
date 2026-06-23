@@ -60,6 +60,12 @@
           </li>
         
           <li class="nav-item">
+            <a href="/ci-cd/" class="nav-link">
+              CI/CD
+            </a>
+          </li>
+        
+          <li class="nav-item">
             <a href="/modelo-datos/" class="nav-link">
               Modelo de datos
             </a>
@@ -199,22 +205,32 @@ flowchart LR
       <tr>
           <td><code>00-congreso/</code></td>
           <td>Congreso (nacional)</td>
-          <td><code>sauron_formats.R</code> → <code>format_provincias.R</code>, <code>format_municipios.R</code>, <code>format_secciones.R</code></td>
+          <td><code>fetch-data.R</code>, <code>format.R</code></td>
+      </tr>
+      <tr>
+          <td><code>00b-municipales/</code></td>
+          <td>Municipales (nacional)</td>
+          <td><code>fetch-data.R</code>, <code>format.R</code></td>
+      </tr>
+      <tr>
+          <td><code>00c-europeas/</code></td>
+          <td>Europeas (nacional)</td>
+          <td><code>fetch-data.R</code>, <code>format.R</code></td>
       </tr>
       <tr>
           <td><code>01-andalucia/</code></td>
           <td>Andalucía</td>
-          <td><code>00_fetch-nomenclators.R</code> → <code>01-06_fetch-*.R</code> → <code>07-format-data.R</code></td>
+          <td><code>fetch-data/</code>, <code>format.R</code></td>
       </tr>
       <tr>
           <td><code>02-aragon/</code></td>
           <td>Aragón</td>
-          <td><code>01_format-info.R</code>, <code>02_format-votos.R</code></td>
+          <td><code>fetch-data.R</code>, <code>format.R</code></td>
       </tr>
       <tr>
           <td><code>03-asturias/</code></td>
           <td>Asturias</td>
-          <td><code>00_get-nomenclator-sadei.R</code>, <code>01_format-data.R</code></td>
+          <td><code>get-nomenclator-sadei.R</code>, <code>format.R</code></td>
       </tr>
       <tr>
           <td><code>04-baleares/</code></td>
@@ -224,7 +240,12 @@ flowchart LR
       <tr>
           <td><code>05-canarias/</code></td>
           <td>Canarias</td>
-          <td><code>00_download-data-parcan.R</code>, <code>format.R</code></td>
+          <td><code>download-data-parcan.R</code>, <code>format.R</code></td>
+      </tr>
+      <tr>
+          <td><code>06-cantabria/</code></td>
+          <td>Cantabria</td>
+          <td><code>format.R</code></td>
       </tr>
       <tr>
           <td><code>07-cyl/</code></td>
@@ -232,9 +253,14 @@ flowchart LR
           <td><code>format.R</code></td>
       </tr>
       <tr>
+          <td><code>08-clm/</code></td>
+          <td>Castilla-La Mancha</td>
+          <td><code>fetch-data.R</code>, <code>format.R</code></td>
+      </tr>
+      <tr>
           <td><code>09-catalunya/</code></td>
           <td>Cataluña</td>
-          <td><code>01_format-data.R</code></td>
+          <td><code>format.R</code></td>
       </tr>
       <tr>
           <td><code>10-comunidad-valenciana/</code></td>
@@ -242,8 +268,43 @@ flowchart LR
           <td><code>format.R</code></td>
       </tr>
       <tr>
+          <td><code>11-extremadura/</code></td>
+          <td>Extremadura</td>
+          <td><code>format.R</code></td>
+      </tr>
+      <tr>
+          <td><code>12-galicia/</code></td>
+          <td>Galicia</td>
+          <td><code>00_functions.R</code>, <code>format.R</code></td>
+      </tr>
+      <tr>
           <td><code>13-comunidad-madrid/</code></td>
           <td>C. de Madrid</td>
+          <td><code>format.R</code></td>
+      </tr>
+      <tr>
+          <td><code>14-murcia/</code></td>
+          <td>Murcia</td>
+          <td><code>format.R</code></td>
+      </tr>
+      <tr>
+          <td><code>15-navarra/</code></td>
+          <td>Navarra</td>
+          <td><code>format.R</code></td>
+      </tr>
+      <tr>
+          <td><code>16-pais-vasco/</code></td>
+          <td>País Vasco</td>
+          <td><code>format.R</code></td>
+      </tr>
+      <tr>
+          <td><code>17-la-rioja/</code></td>
+          <td>La Rioja</td>
+          <td><code>format.R</code></td>
+      </tr>
+      <tr>
+          <td><code>minsait/</code></td>
+          <td>Escrutinio provisional</td>
           <td><code>format.R</code></td>
       </tr>
   </tbody>
@@ -276,8 +337,9 @@ flowchart LR
 <h3 id="carga-a-postgresql-r03-writedbwrite-dbr">Carga a PostgreSQL (<code>R/03-writedb/write-db.R</code>)</h3>
 <ol>
 <li>Ejecuta las validaciones de dimensiones y hechos.</li>
-<li>Trunca todas las tablas con <code>RESTART IDENTITY</code>.</li>
-<li>Recarga dimensiones y hechos completos con <code>DBI::dbWriteTable(..., append = TRUE)</code>.</li>
+<li>Carga dimensiones y hechos en tablas temporales de PostgreSQL usando chunks.</li>
+<li>Reemplaza las tablas finales dentro de una transaccion con rollback automatico si falla la fase final.</li>
+<li>Recrea indices secundarios de hechos y actualiza estadisticas con <code>ANALYZE</code>.</li>
 </ol>
 <h3 id="exportación-a-formatos-descargables-r04-exportexport-descargasr">Exportación a formatos descargables (<code>R/04-export/export-descargas.R</code>)</h3>
 <p>Genera tres formatos en <code>descargas/</code>:</p>
@@ -310,7 +372,7 @@ flowchart LR
 <h2 id="flujo-típico-desde-cero">Flujo típico desde cero</h2>
 <ol>
 <li>Configurar <code>.env</code> con credenciales de PostgreSQL.</li>
-<li>Crear esquema en BD ejecutando <code>R/db_schema.sql</code>.</li>
+<li>Crear esquema en BD ejecutando <code>R/00-setup/db_schema.sql</code>.</li>
 <li>Preparar ficheros de datos en <code>data-raw/</code>.</li>
 <li>Ejecutar scripts de generación por autonomía (<code>R/01-generate-data/hechos/*</code>).</li>
 <li>Ejecutar scripts de dimensiones (elecciones, territorios, partidos).</li>

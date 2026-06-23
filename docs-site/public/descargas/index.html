@@ -60,6 +60,12 @@
           </li>
         
           <li class="nav-item">
+            <a href="/ci-cd/" class="nav-link">
+              CI/CD
+            </a>
+          </li>
+        
+          <li class="nav-item">
             <a href="/modelo-datos/" class="nav-link">
               Modelo de datos
             </a>
@@ -206,7 +212,9 @@
 <li>No requiere servidor: funciona directamente en local.</li>
 <li>Permite consultas SQL complejas con JOINs, agregaciones, subqueries.</li>
 <li>Esquema con integridad referencial.</li>
+<li>El manifiesto <a href="https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/eleccionesdb_sqlite.json"><code>eleccionesdb_sqlite.json</code></a> publica la versión del esquema, tamaños y checksums SHA-256 para clientes automatizados.</li>
 </ul>
+<p>Los usuarios de R pueden descargar, verificar y activar este snapshot directamente con <code>eleccionesdb::edb_download_sqlite()</code> y <code>eleccionesdb::edb_set_backend(&quot;sqlite&quot;)</code>.</p>
 <h3 id="cómo-usarlo-en-r-1">Cómo usarlo en R</h3>
 <div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">library</span>(<span style="color:#58a1dd">DBI</span>)
 </span></span><span style="display:flex;"><span><span style="color:#58a1dd">library</span>(<span style="color:#58a1dd">RSQLite</span>)

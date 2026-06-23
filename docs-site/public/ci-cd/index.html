@@ -2,18 +2,18 @@
 <html lang="es">
   <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Restaurar data-raw/ · eleccionesdb</title>
-<meta name="description" content="Como poblar el directorio data-raw/ para reproducir el ETL" />
+<title>CI/CD · eleccionesdb</title>
+<meta name="description" content="Automatizacion de validaciones, exportaciones, documentacion y despliegues" />
 <meta name="author" content="Héctor Meleiro" />
 
 
-<meta property="og:title" content="Restaurar data-raw/" />
+<meta property="og:title" content="CI/CD" />
 <meta
   property="og:description"
-  content="Como poblar el directorio data-raw/ para reproducir el ETL"
+  content="Automatizacion de validaciones, exportaciones, documentacion y despliegues"
 />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://eleccionesdb.spainelectoralproject.com/restaurar-data-raw/" />
+<meta property="og:url" content="https://eleccionesdb.spainelectoralproject.com/ci-cd/" />
 <meta property="og:site_name" content="eleccionesdb" />
 
 
@@ -60,7 +60,7 @@
           </li>
         
           <li class="nav-item">
-            <a href="/ci-cd/" class="nav-link">
+            <a href="/ci-cd/" class="nav-link is-active">
               CI/CD
             </a>
           </li>
@@ -120,48 +120,87 @@
   <article class="page-single">
     <div class="container">
       <div class="page-header">
-        <h1>Restaurar data-raw/</h1>
+        <h1>CI/CD</h1>
         
-          <p class="page-desc">Como poblar el directorio data-raw/ para reproducir el ETL</p>
+          <p class="page-desc">Automatizacion de validaciones, exportaciones, documentacion y despliegues</p>
         
       </div>
       <div class="page-content prose">
-        <p>Para ejecutar el pipeline ETL necesitas poblar el directorio <code>data-raw/</code> con los datos originales. Por motivos de tamaño, estos archivos no estan en el repositorio. Los maestros viven en Cloudflare R2 bajo <code>eleccionesdb-etl/data-raw/</code>.</p>
-<h2 id="descarga-automatica-de-datos">Descarga automatica de datos</h2>
-<ol>
-<li>Restaura el entorno R del proyecto:</li>
-</ol>
+        <p>El proyecto usa GitHub Actions para separar validacion, exportacion, documentacion y despliegue de base de datos. La regla principal es que el CI ordinario nunca escribe en PostgreSQL: la carga real queda aislada en un workflow manual protegido.</p>
+<h2 id="workflows">Workflows</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Workflow</th>
+          <th>Disparador</th>
+          <th>Proposito</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>CI</code></td>
+          <td>Pull requests y pushes a <code>main</code></td>
+          <td>Restaura <code>renv</code>, comprueba scripts R, carga el manifiesto de <code>{targets}</code>, ejecuta lint no bloqueante y construye Hugo.</td>
+      </tr>
+      <tr>
+          <td><code>ETL Export</code></td>
+          <td>Manual, semanal y cambios relevantes en <code>main</code></td>
+          <td>Restaura <code>data-raw/</code> desde cache exacta o lo descarga desde R2, ejecuta <code>run_export()</code> y <code>run_export_calidad()</code>, valida ZIPs, sube artefactos y publica en R2 las ejecuciones completas.</td>
+      </tr>
+      <tr>
+          <td><code>Deploy Docs</code></td>
+          <td>Manual y cambios en <code>docs-site/</code> en <code>main</code></td>
+          <td>Construye el sitio Hugo y lo publica en GitHub Pages.</td>
+      </tr>
+      <tr>
+          <td><code>Deploy DB</code></td>
+          <td>Manual</td>
+          <td>Valida o descarga datos en la maquina remota, ejecuta targets pesados en procesos R separados y carga PostgreSQL con staging transaccional.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="reproducibilidad">Reproducibilidad</h2>
+<p>La fuente canonica de dependencias es <code>renv.lock</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">renv</span><span style="color:#ff636f">::</span><span style="color:#58a1dd">restore</span>(<span style="color:#58a1dd">prompt</span> <span style="color:#ff636f">=</span> <span style="color:#ff636f">FALSE</span>)
-</span></span></code></pre></div><ol start="2">
-<li>Ejecuta el script:</li>
-</ol>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">source</span>(<span style="color:#a6be9d">&#34;R/00-setup/download_data_raw.R&#34;</span>)
-</span></span></code></pre></div><p>Por defecto, el script lee el manifiesto versionado <code>data-manifest.csv</code>, descarga todos los archivos listados y los coloca bajo <code>data-raw/</code>. Si las claves del manifiesto incluyen el prefijo <code>eleccionesdb-etl/data-raw/</code>, el script lo normaliza para restaurar la estructura local correcta.</p>
-<p>El script es idempotente: solo descarga archivos que no existen localmente o que no coinciden con el tamaño esperado.</p>
-<p>Puedes validar una restauracion con:</p>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">source</span>(<span style="color:#a6be9d">&#34;R/00-setup/check_data_raw.R&#34;</span>)
-</span></span></code></pre></div><h2 id="usar-un-indice-alternativo">Usar un indice alternativo</h2>
-<p>En CI/CD o en reproducciones puntuales puedes usar otro indice local o remoto con <code>DATA_INDEX_URL</code>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">Sys.setenv</span>(<span style="color:#58a1dd">DATA_INDEX_URL</span> <span style="color:#ff636f">=</span> <span style="color:#a6be9d">&#34;https://data.spainelectoralproject.com/eleccionesdb-etl/data-manifest.csv&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">source</span>(<span style="color:#a6be9d">&#34;R/00-setup/download_data_raw.R&#34;</span>)
-</span></span></code></pre></div><p>Tambien puede apuntar a un CSV local:</p>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">Sys.setenv</span>(<span style="color:#58a1dd">DATA_INDEX_URL</span> <span style="color:#ff636f">=</span> <span style="color:#a6be9d">&#34;tmp/data-manifest.csv&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">source</span>(<span style="color:#a6be9d">&#34;R/00-setup/download_data_raw.R&#34;</span>)
-</span></span></code></pre></div><p>El CSV debe contener al menos las columnas <code>key</code> y <code>url</code>. La columna <code>size</code> es opcional, pero permite verificar que la restauracion esta completa.</p>
-<h2 id="cache-en-github-actions">Cache en GitHub Actions</h2>
-<p>El workflow <code>ETL Export</code> restaura <code>data-raw/</code> desde <code>actions/cache@v5</code> antes de descargar. La clave depende exactamente de <code>data-manifest.csv</code>:</p>
+</span></span></code></pre></div><p>El script <code>install_deps.R</code> se mantiene como bootstrap secundario para entornos sin <code>renv</code>, pero no sustituye al lockfile.</p>
+<h2 id="cache-de-data-raw">Cache de data-raw/</h2>
+<p>Los datos maestros viven en Cloudflare R2 bajo <code>eleccionesdb-etl/data-raw/</code> y no se versionan en Git. El archivo <code>data-manifest.csv</code> es la fuente de verdad para descarga, validacion e invalidacion de cache.</p>
+<p><code>ETL Export</code> usa <code>actions/cache@v5</code> con una clave exacta:</p>
 <div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>data-raw-${{ runner.os }}-${{ hashFiles(&#39;data-manifest.csv&#39;) }}
-</span></span></code></pre></div><p>No hay <code>restore-keys</code> para esta carpeta. Para invalidar la cache, regenera o modifica <code>data-manifest.csv</code> y commitea el cambio.</p>
-<p><code>Deploy DB</code> se ejecuta por SSH en la maquina remota y no puede reutilizar esa cache de GitHub Actions. En su lugar, valida <code>data-raw/</code> en la maquina remota y descarga solo los ficheros ausentes o con tamano distinto.</p>
-<h2 id="como-se-genera-el-indice">Como se genera el indice</h2>
-<p>Solo los administradores con credenciales S3/R2 pueden generar o actualizar el manifiesto:</p>
-<ol>
-<li>Configura las variables en <code>.env</code>: <code>CF_S3_ACCESS_KEY</code>, <code>CF_S3_SECRET_KEY</code>, <code>CF_S3_ENDPOINT</code>, <code>CF_S3_BUCKET</code>, <code>CF_S3_PUBLIC_BASE_URL</code>.</li>
-<li>Ejecuta:</li>
-</ol>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">source</span>(<span style="color:#a6be9d">&#34;R/00-setup/generate_data_index.R&#34;</span>)
-</span></span></code></pre></div><p>Esto crea o actualiza <code>data-manifest.csv</code> con la lista de archivos y URLs publicas de <code>eleccionesdb-etl/data-raw/</code>.</p>
-<p>Si los datos del bucket cambian, regenera <code>data-manifest.csv</code> antes de ejecutar el ETL en CI.</p>
+</span></span></code></pre></div><p>No se usan <code>restore-keys</code> para evitar recuperar datos obsoletos. Si cambian objetos en R2, hay que regenerar y commitear <code>data-manifest.csv</code>; ese cambio fuerza una nueva cache.</p>
+<p><code>Deploy DB</code> no usa esa cache porque se ejecuta por SSH en la maquina remota. Alli valida <code>data-raw/</code> y descarga solo los ficheros ausentes o con tamano distinto.</p>
+<h2 id="artefactos-de-exportacion">Artefactos de exportacion</h2>
+<p><code>ETL Export</code> genera y valida:</p>
+<ul>
+<li><code>descargas/eleccionesdb_parquet.zip</code></li>
+<li><code>descargas/eleccionesdb_sqlite.zip</code></li>
+<li><code>descargas/eleccionesdb_csv.zip</code></li>
+<li><code>ci-summary.md</code>, con metricas basicas de tablas finales, diagnosticos y tamaños de artefactos.</li>
+</ul>
+<p>La validacion abre el SQLite y ejecuta <code>PRAGMA integrity_check</code>, comprueba tablas obligatorias, extrae los ZIP y lee muestras de Parquet y CSV.</p>
+<h2 id="publicacion-de-descargas">Publicacion de descargas</h2>
+<p>Cada ejecucion completa de <code>ETL Export</code> publica automaticamente las descargas validadas en Cloudflare R2. Las ejecuciones con <code>smoke_test</code> se excluyen porque contienen un subconjunto de los datos. El destino es:</p>
+<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>s3://$CF_S3_BUCKET/eleccionesdb-etl/descargas/
+</span></span></code></pre></div><p>Secretos requeridos:</p>
+<ul>
+<li><code>CF_S3_ACCESS_KEY</code></li>
+<li><code>CF_S3_SECRET_KEY</code></li>
+<li><code>CF_S3_ENDPOINT</code></li>
+<li><code>CF_S3_BUCKET</code></li>
+<li><code>CF_S3_PUBLIC_BASE_URL</code></li>
+</ul>
+<h2 id="carga-postgresql">Carga PostgreSQL</h2>
+<p><code>Deploy DB</code> usa el environment protegido <code>production-db</code> y requiere confirmar manualmente con:</p>
+<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>TRUNCATE_AND_LOAD_ELECCIONESDB
+</span></span></code></pre></div><p>Secretos requeridos:</p>
+<ul>
+<li><code>DB_NAME</code></li>
+<li><code>DB_HOST</code></li>
+<li><code>DB_PORT</code></li>
+<li><code>DB_USER</code></li>
+<li><code>DB_PASSWORD</code></li>
+</ul>
+<p>Este workflow ejecuta los targets de escritura en orden y en procesos R separados. El ultimo paso valida tablas finales, carga staging temporal y reemplaza PostgreSQL dentro de una transaccion. No debe habilitarse en pull requests.</p>
 
       </div>
     </div>

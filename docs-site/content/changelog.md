@@ -14,8 +14,19 @@ description: "Historial de versiones de eleccionesdb"
 </div>
 
 ---
-
 ## Unreleased
+
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
+---
+
+## v1.3.0 — 2026-06-19
 
 ### Added
 
