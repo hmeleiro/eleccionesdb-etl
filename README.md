@@ -1,9 +1,21 @@
 # eleccionesdb-etl
 
+[![GitHub release](https://img.shields.io/github/v/release/hmeleiro/eleccionesdb-etl)](https://github.com/hmeleiro/eleccionesdb-etl/releases)
 [![CI](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/ci.yml/badge.svg)](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/ci.yml)
 [![ETL Export](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/etl-export.yml/badge.svg)](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/etl-export.yml)
 [![Deploy Docs](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/deploy-docs.yml)
 [![Deploy DB](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/deploy-db.yml/badge.svg)](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/deploy-db.yml)
+
+## Versionado
+
+La version identifica releases del codigo ETL, no cada ejecucion del pipeline ni
+cada commit. Cada run de GitHub Actions y sus artefactos deben trazarse mediante
+metadatos de ejecucion como commit SHA, fecha, `run_id` o `run_number`, sin cambiar
+por ahora los nombres actuales de los artefactos automaticos.
+
+- [CHANGELOG.md](CHANGELOG.md)
+- [Estrategia de versionado](docs/versioning.md)
+- [GitHub Releases](https://github.com/hmeleiro/eleccionesdb-etl/releases)
 
 ## CI/CD
 
