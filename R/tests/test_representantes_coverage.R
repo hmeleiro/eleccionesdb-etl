@@ -167,4 +167,107 @@ complete <- audit_representantes_coverage(
 )
 stopifnot(all(vapply(complete$sheets, nrow, integer(1)) == 0L))
 
+prop_elecciones <- data.frame(
+  id = c(1, 2, 3, 6),
+  tipo_eleccion = c("G", "A", "L", "A"),
+  year = c("2000", "2001", "2002", "2006"),
+  mes = c("03", "04", "05", "06"),
+  stringsAsFactors = FALSE
+)
+
+prop_territorios <- data.frame(
+  id = c(11, 101, 31, 201, 202, 203, 41, 401, 301, 61, 601, 602, 603),
+  parent_id = c(NA, 11, NA, 31, 201, 201, NA, 41, 401, NA, 61, 601, 601),
+  tipo = c(
+    "ccaa", "provincia",
+    "ccaa", "provincia", "circunscripcion", "circunscripcion",
+    "ccaa", "provincia", "municipio",
+    "ccaa", "provincia", "circunscripcion", "circunscripcion"
+  ),
+  codigo_ccaa = c("01", "01", "03", "03", "03", "03", "04", "04", "04", "06", "06", "06", "06"),
+  codigo_provincia = c("99", "01", "99", "33", "33", "33", "99", "04", "04", "99", "66", "66", "66"),
+  codigo_circunscripcion = c("99", "99", "99", "99", "331", "332", "99", "99", "04", "99", "99", "661", "662"),
+  codigo_municipio = c("999", "999", "999", "999", "999", "999", "999", "999", "001", "999", "999", "999", "999"),
+  stringsAsFactors = FALSE
+)
+
+prop_info <- data.frame(
+  eleccion_id = c(1, 1, 2, 2, 2, 2, 3, 3, 3, 6, 6, 6, 6),
+  territorio_id = prop_territorios$id,
+  nrepresentantes = c(0, 3, 0, 0, 2, 1, 0, 0, 3, 0, 0, 2, 1)
+)
+
+prop_votos <- data.table::data.table(
+  eleccion_id = c(
+    1, 1, 1, 1,
+    2, 2, 2, 2, 2, 2, 2,
+    3, 3, 3, 3, 3, 3,
+    6, 6, 6, 6, 6, 6, 6
+  ),
+  territorio_id = c(
+    101, 101, 11, 11,
+    202, 202, 203, 201, 201, 31, 31,
+    301, 301, 401, 401, 41, 41,
+    602, 602, 603, 601, 601, 61, 61
+  ),
+  partido_id = c(
+    1, 2, 1, 2,
+    1, 2, 3, 1, 3, 1, 3,
+    1, 2, 1, 2, 1, 2,
+    1, 2, 3, 1, 3, 1, 3
+  ),
+  votos = 1L,
+  representantes = c(
+    2, 1, 0, 0,
+    2, 0, 1, 0, 0, 0, 0,
+    2, 1, 0, 0, 0, 0,
+    2, 0, 0, 0, 0, 0, 0
+  )
+)
+
+prop_result <- propagate_representantes_to_ancestors(
+  prop_info,
+  prop_votos,
+  prop_elecciones,
+  prop_territorios
+)
+prop_info_out <- prop_result$info
+prop_votos_out <- prop_result$votos
+
+stopifnot(prop_info_out[eleccion_id == 1L & territorio_id == 11L, nrepresentantes] == 3)
+stopifnot(prop_votos_out[eleccion_id == 1L & territorio_id == 11L & partido_id == 1L, representantes] == 2)
+stopifnot(prop_votos_out[eleccion_id == 1L & territorio_id == 11L & partido_id == 2L, representantes] == 1)
+
+stopifnot(prop_info_out[eleccion_id == 2L & territorio_id == 201L, nrepresentantes] == 3)
+stopifnot(prop_info_out[eleccion_id == 2L & territorio_id == 31L, nrepresentantes] == 3)
+stopifnot(prop_votos_out[eleccion_id == 2L & territorio_id == 201L & partido_id == 1L, representantes] == 2)
+stopifnot(prop_votos_out[eleccion_id == 2L & territorio_id == 201L & partido_id == 3L, representantes] == 1)
+stopifnot(prop_votos_out[eleccion_id == 2L & territorio_id == 31L & partido_id == 3L, representantes] == 1)
+
+stopifnot(prop_info_out[eleccion_id == 3L & territorio_id == 401L, nrepresentantes] == 3)
+stopifnot(prop_info_out[eleccion_id == 3L & territorio_id == 41L, nrepresentantes] == 3)
+stopifnot(prop_votos_out[eleccion_id == 3L & territorio_id == 401L & partido_id == 1L, representantes] == 2)
+stopifnot(prop_votos_out[eleccion_id == 3L & territorio_id == 41L & partido_id == 2L, representantes] == 1)
+
+stopifnot(prop_info_out[eleccion_id == 6L & territorio_id == 601L, nrepresentantes] == 0)
+stopifnot(prop_info_out[eleccion_id == 6L & territorio_id == 61L, nrepresentantes] == 0)
+stopifnot(prop_votos_out[eleccion_id == 6L & territorio_id == 601L & partido_id == 1L, representantes] == 0)
+stopifnot(prop_votos_out[eleccion_id == 6L & territorio_id == 61L & partido_id == 1L, representantes] == 0)
+
+bad_votos <- prop_votos[!(eleccion_id == 2L & territorio_id == 31L & partido_id == 3L)]
+missing_party_error <- tryCatch(
+  {
+    propagate_representantes_to_ancestors(
+      prop_info,
+      bad_votos,
+      prop_elecciones,
+      prop_territorios
+    )
+    NULL
+  },
+  error = function(e) e
+)
+stopifnot(inherits(missing_party_error, "error"))
+stopifnot(grepl("No existen filas de votos", conditionMessage(missing_party_error), fixed = TRUE))
+
 message("[OK] Pruebas sintéticas de cobertura de representantes")

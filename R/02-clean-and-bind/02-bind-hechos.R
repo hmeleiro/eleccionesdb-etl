@@ -5,6 +5,7 @@ library(data.table)
 
 source("R/utils.R", encoding = "UTF-8")
 source("R/tests/validate_tablas_finales.R")
+source("R/tests/validate_representantes_coverage.R", encoding = "UTF-8")
 
 read_rds_dt <- function(path) {
   dt <- readRDS(path)
@@ -94,7 +95,29 @@ votos_grouped <- votos[
 data.table::setcolorder(votos_grouped, c("eleccion_id", "territorio_id", "partido_id", "votos", "representantes"))
 data.table::setorder(votos_grouped, eleccion_id, territorio_id, partido_id)
 
-rm(votos, partidos, representantes, nrepresentantes)
+elecciones_dim <- data.table::fread(
+  "tablas-finales/dimensiones/elecciones",
+  colClasses = "character"
+)
+territorios_dim <- data.table::fread(
+  "tablas-finales/dimensiones/territorios",
+  colClasses = "character"
+)
+representantes_agregados <- propagate_representantes_to_ancestors(
+  info,
+  votos_grouped,
+  elecciones_dim,
+  territorios_dim
+)
+info <- representantes_agregados$info
+votos_grouped <- representantes_agregados$votos
+data.table::setcolorder(votos_grouped, c("eleccion_id", "territorio_id", "partido_id", "votos", "representantes"))
+data.table::setorder(votos_grouped, eleccion_id, territorio_id, partido_id)
+
+rm(
+  votos, partidos, representantes, nrepresentantes,
+  elecciones_dim, territorios_dim, representantes_agregados
+)
 invisible(gc())
 
 # Asegurar que columnas enteras no tengan decimales (sum() en R convierte integer a double)

@@ -188,6 +188,199 @@ audit_final_representantes <- function(universe, relevant_votes) {
   result
 }
 
+build_territory_ancestor_map <- function(territorios) {
+  terr <- normalize_coverage_keys(territorios)[
+    , .(
+      territorio_id = as.integer(id),
+      parent_id = as.integer(parent_id)
+    )
+  ]
+  terr <- terr[!is.na(territorio_id)]
+
+  links <- terr[!is.na(parent_id), .(
+    territorio_id,
+    ancestor_territorio_id = parent_id
+  )]
+  all_links <- data.table::copy(links)
+
+  while (nrow(links) > 0L) {
+    links <- merge(
+      links,
+      terr,
+      by.x = "ancestor_territorio_id",
+      by.y = "territorio_id",
+      all.x = FALSE,
+      allow.cartesian = TRUE
+    )[!is.na(parent_id), .(
+      territorio_id,
+      ancestor_territorio_id = parent_id
+    )]
+
+    if (nrow(links) > 0L) {
+      all_links <- data.table::rbindlist(
+        list(all_links, links),
+        use.names = TRUE
+      )
+      all_links <- unique(all_links)
+    }
+  }
+
+  unique(all_links[territorio_id != ancestor_territorio_id])
+}
+
+propagate_representantes_to_ancestors <- function(
+    info,
+    votos,
+    elecciones,
+    territorios) {
+  info_dt <- data.table::as.data.table(data.table::copy(info))
+  votos_dt <- data.table::as.data.table(data.table::copy(votos))
+  info_dt[, `:=`(
+    eleccion_id = as.integer(eleccion_id),
+    territorio_id = as.integer(territorio_id)
+  )]
+  votos_dt[, `:=`(
+    eleccion_id = as.integer(eleccion_id),
+    territorio_id = as.integer(territorio_id),
+    partido_id = as.integer(partido_id)
+  )]
+
+  universe <- build_reparto_universe(info_dt, elecciones, territorios)
+  relevant_votes <- votos_dt[
+    unique(universe[, .(eleccion_id, territorio_id)]),
+    on = .(eleccion_id, territorio_id),
+    nomatch = 0L
+  ]
+  final_coverage <- audit_final_representantes(universe, relevant_votes)[
+    , .(
+      eleccion_id,
+      territorio_id,
+      nrepresentantes,
+      reparto_completo = !nrepresentantes_invalido &
+        !representantes_ausentes &
+        !representantes_descuadrados
+    )
+  ]
+
+  ancestor_map <- build_territory_ancestor_map(territorios)
+  if (nrow(ancestor_map) == 0L || nrow(final_coverage) == 0L) {
+    return(list(info = info_dt, votos = votos_dt))
+  }
+
+  reparto_ancestors <- merge(
+    final_coverage,
+    ancestor_map,
+    by = "territorio_id",
+    all = FALSE,
+    allow.cartesian = TRUE
+  )
+  info_keys <- unique(info_dt[, .(
+    eleccion_id,
+    ancestor_territorio_id = territorio_id
+  )])
+  reparto_ancestors <- reparto_ancestors[
+    info_keys,
+    on = .(eleccion_id, ancestor_territorio_id),
+    nomatch = 0L
+  ]
+  if (nrow(reparto_ancestors) == 0L) {
+    return(list(info = info_dt, votos = votos_dt))
+  }
+
+  complete_ancestors <- reparto_ancestors[
+    ,
+    .(
+      repartos = .N,
+      repartos_completos = sum(reparto_completo)
+    ),
+    by = .(eleccion_id, ancestor_territorio_id)
+  ][repartos == repartos_completos]
+  if (nrow(complete_ancestors) == 0L) {
+    return(list(info = info_dt, votos = votos_dt))
+  }
+
+  complete_links <- reparto_ancestors[
+    complete_ancestors,
+    on = .(eleccion_id, ancestor_territorio_id),
+    nomatch = 0L
+  ]
+
+  nrep_updates <- complete_links[
+    ,
+    .(nrepresentantes_agregado = sum(nrepresentantes, na.rm = TRUE)),
+    by = .(eleccion_id, territorio_id = ancestor_territorio_id)
+  ]
+  info_dt[
+    nrep_updates,
+    nrepresentantes := i.nrepresentantes_agregado,
+    on = .(eleccion_id, territorio_id)
+  ]
+
+  votos_source <- votos_dt[
+    unique(complete_links[, .(eleccion_id, territorio_id)]),
+    on = .(eleccion_id, territorio_id),
+    nomatch = 0L
+  ][representantes > 0]
+  rep_updates <- merge(
+    complete_links[, .(
+      eleccion_id,
+      territorio_id,
+      ancestor_territorio_id
+    )],
+    votos_source[, .(
+      eleccion_id,
+      territorio_id,
+      partido_id,
+      representantes
+    )],
+    by = c("eleccion_id", "territorio_id"),
+    all = FALSE,
+    allow.cartesian = TRUE
+  )[
+    ,
+    .(representantes_agregado = sum(representantes, na.rm = TRUE)),
+    by = .(
+      eleccion_id,
+      territorio_id = ancestor_territorio_id,
+      partido_id
+    )
+  ][representantes_agregado > 0]
+
+  if (nrow(rep_updates) > 0L) {
+    votos_keys <- unique(votos_dt[, .(eleccion_id, territorio_id, partido_id)])
+    missing_vote_rows <- rep_updates[
+      !votos_keys,
+      on = .(eleccion_id, territorio_id, partido_id)
+    ]
+    if (nrow(missing_vote_rows) > 0L) {
+      examples <- head(missing_vote_rows, 5L)
+      stop(sprintf(
+        paste0(
+          "[representantes] No existen filas de votos para agregar ",
+          "representantes en territorios superiores. Ejemplos: %s"
+        ),
+        paste(
+          sprintf(
+            "%s/%s/%s",
+            examples$eleccion_id,
+            examples$territorio_id,
+            examples$partido_id
+          ),
+          collapse = "; "
+        )
+      ), call. = FALSE)
+    }
+
+    votos_dt[
+      rep_updates,
+      representantes := i.representantes_agregado,
+      on = .(eleccion_id, territorio_id, partido_id)
+    ]
+  }
+
+  list(info = info_dt, votos = votos_dt)
+}
+
 summarize_nrepresentantes_workbook <- function(df, key_cols) {
   dt <- normalize_coverage_keys(df)
   dt[
