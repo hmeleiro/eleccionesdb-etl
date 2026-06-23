@@ -26,7 +26,7 @@
 
 
 
-<link rel="stylesheet" href="/css/main.min.a274442a983c222a5b2608b4a4d0e99af90d69dfcc43825d0a878b987a4326a3.css" integrity="sha256-onREKpg8IipbJgi0pNDpmvkNad/MQ4JdCoeLmHpDJqM=" />
+<link rel="stylesheet" href="/css/main.min.41f247ec0982a68b7c6276e9b201307dec6710c540a36c9fb3f5a4cf65b8a9aa.css" integrity="sha256-QfJH7AmCpot8YnbpsgEwfexnEMVAo2yfs/Wkz2W4qao=" />
 
 
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
@@ -173,28 +173,28 @@
 <li>Compatible con DuckDB para consultas SQL directamente sobre los ficheros.</li>
 </ul>
 <h3 id="cómo-usarlo-en-r">Cómo usarlo en R</h3>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">library</span>(<span style="color:#58a1dd">arrow</span>)
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">library</span>(arrow)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Leer una tabla</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">elecciones</span> <span style="color:#ff636f">&lt;-</span> <span style="color:#58a1dd">read_parquet</span>(<span style="color:#a6be9d">&#34;descargas/parquet/dimensiones/elecciones.parquet&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">votos</span> <span style="color:#ff636f">&lt;-</span> <span style="color:#58a1dd">read_parquet</span>(<span style="color:#a6be9d">&#34;descargas/parquet/hechos/votos_territoriales.parquet&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># Leer una tabla</span>
+</span></span><span style="display:flex;"><span>elecciones <span style="color:#ff7b72;font-weight:bold">&lt;-</span> <span style="color:#d2a8ff;font-weight:bold">read_parquet</span>(<span style="color:#a5d6ff">&#34;descargas/parquet/dimensiones/elecciones.parquet&#34;</span>)
+</span></span><span style="display:flex;"><span>votos <span style="color:#ff7b72;font-weight:bold">&lt;-</span> <span style="color:#d2a8ff;font-weight:bold">read_parquet</span>(<span style="color:#a5d6ff">&#34;descargas/parquet/hechos/votos_territoriales.parquet&#34;</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Unir dimensiones con hechos</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">library</span>(<span style="color:#58a1dd">dplyr</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">votos_con_partido</span> <span style="color:#ff636f">&lt;-</span> <span style="color:#58a1dd">votos</span> <span style="color:#ff636f">|&gt;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#58a1dd">left_join</span>(<span style="color:#58a1dd">read_parquet</span>(<span style="color:#a6be9d">&#34;descargas/parquet/dimensiones/partidos.parquet&#34;</span>),
-</span></span><span style="display:flex;"><span>            <span style="color:#58a1dd">by</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">c</span>(<span style="color:#a6be9d">&#34;partido_id&#34;</span> <span style="color:#ff636f">=</span> <span style="color:#a6be9d">&#34;id&#34;</span>))
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># Unir dimensiones con hechos</span>
+</span></span><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">library</span>(dplyr)
+</span></span><span style="display:flex;"><span>votos_con_partido <span style="color:#ff7b72;font-weight:bold">&lt;-</span> votos <span style="color:#ff7b72;font-weight:bold">|&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#d2a8ff;font-weight:bold">left_join</span>(<span style="color:#d2a8ff;font-weight:bold">read_parquet</span>(<span style="color:#a5d6ff">&#34;descargas/parquet/dimensiones/partidos.parquet&#34;</span>),
+</span></span><span style="display:flex;"><span>            by <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#d2a8ff;font-weight:bold">c</span>(<span style="color:#a5d6ff">&#34;partido_id&#34;</span> <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#a5d6ff">&#34;id&#34;</span>))
 </span></span></code></pre></div><h3 id="cómo-usarlo-en-python">Cómo usarlo en Python</h3>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff636f">import</span> <span style="color:#58a1dd">pandas</span> <span style="color:#ff636f">as</span> <span style="color:#58a1dd">pd</span>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff7b72">import</span> <span style="color:#ff7b72">pandas</span> <span style="color:#ff7b72">as</span> <span style="color:#ff7b72">pd</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Leer una tabla</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">elecciones</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">pd</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">read_parquet</span>(<span style="color:#a6be9d">&#34;descargas/parquet/dimensiones/elecciones.parquet&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">votos</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">pd</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">read_parquet</span>(<span style="color:#a6be9d">&#34;descargas/parquet/hechos/votos_territoriales.parquet&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># Leer una tabla</span>
+</span></span><span style="display:flex;"><span>elecciones <span style="color:#ff7b72;font-weight:bold">=</span> pd<span style="color:#ff7b72;font-weight:bold">.</span>read_parquet(<span style="color:#a5d6ff">&#34;descargas/parquet/dimensiones/elecciones.parquet&#34;</span>)
+</span></span><span style="display:flex;"><span>votos <span style="color:#ff7b72;font-weight:bold">=</span> pd<span style="color:#ff7b72;font-weight:bold">.</span>read_parquet(<span style="color:#a5d6ff">&#34;descargas/parquet/hechos/votos_territoriales.parquet&#34;</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Con PyArrow</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff636f">import</span> <span style="color:#58a1dd">pyarrow.parquet</span> <span style="color:#ff636f">as</span> <span style="color:#58a1dd">pq</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">table</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">pq</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">read_table</span>(<span style="color:#a6be9d">&#34;descargas/parquet/hechos/votos_territoriales.parquet&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">df</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">table</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">to_pandas</span>()
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># Con PyArrow</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff7b72">import</span> <span style="color:#ff7b72">pyarrow.parquet</span> <span style="color:#ff7b72">as</span> <span style="color:#ff7b72">pq</span>
+</span></span><span style="display:flex;"><span>table <span style="color:#ff7b72;font-weight:bold">=</span> pq<span style="color:#ff7b72;font-weight:bold">.</span>read_table(<span style="color:#a5d6ff">&#34;descargas/parquet/hechos/votos_territoriales.parquet&#34;</span>)
+</span></span><span style="display:flex;"><span>df <span style="color:#ff7b72;font-weight:bold">=</span> table<span style="color:#ff7b72;font-weight:bold">.</span>to_pandas()
 </span></span></code></pre></div><hr>
 <h2 id="sqlite">SQLite</h2>
 <p><strong>Ideal para</strong>: consultas SQL, exploración relacional, prototipos de aplicaciones.</p>
@@ -216,49 +216,49 @@
 </ul>
 <p>Los usuarios de R pueden descargar, verificar y activar este snapshot directamente con <code>eleccionesdb::edb_download_sqlite()</code> y <code>eleccionesdb::edb_set_backend(&quot;sqlite&quot;)</code>.</p>
 <h3 id="cómo-usarlo-en-r-1">Cómo usarlo en R</h3>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">library</span>(<span style="color:#58a1dd">DBI</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">library</span>(<span style="color:#58a1dd">RSQLite</span>)
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">library</span>(DBI)
+</span></span><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">library</span>(RSQLite)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">con</span> <span style="color:#ff636f">&lt;-</span> <span style="color:#58a1dd">dbConnect</span>(<span style="color:#58a1dd">SQLite</span>(), <span style="color:#a6be9d">&#34;descargas/eleccionesdb.sqlite&#34;</span>)
+</span></span><span style="display:flex;"><span>con <span style="color:#ff7b72;font-weight:bold">&lt;-</span> <span style="color:#d2a8ff;font-weight:bold">dbConnect</span>(<span style="color:#d2a8ff;font-weight:bold">SQLite</span>(), <span style="color:#a5d6ff">&#34;descargas/eleccionesdb.sqlite&#34;</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Listar tablas</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">dbListTables</span>(<span style="color:#58a1dd">con</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># Listar tablas</span>
+</span></span><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">dbListTables</span>(con)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Consulta SQL</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">votos_psoe</span> <span style="color:#ff636f">&lt;-</span> <span style="color:#58a1dd">dbGetQuery</span>(<span style="color:#58a1dd">con</span>, <span style="color:#a6be9d">&#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  SELECT e.year, e.descripcion, SUM(v.votos) as total_votos
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  FROM votos_territoriales v
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  JOIN elecciones e ON v.eleccion_id = e.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  JOIN partidos p ON v.partido_id = p.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  JOIN partidos_recode pr ON p.partido_recode_id = pr.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  WHERE pr.partido_recode = &#39;PSOE&#39;
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  GROUP BY e.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">  ORDER BY e.year
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># Consulta SQL</span>
+</span></span><span style="display:flex;"><span>votos_psoe <span style="color:#ff7b72;font-weight:bold">&lt;-</span> <span style="color:#d2a8ff;font-weight:bold">dbGetQuery</span>(con, <span style="color:#a5d6ff">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">  SELECT e.year, e.descripcion, SUM(v.votos) as total_votos
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">  FROM votos_territoriales v
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">  JOIN elecciones e ON v.eleccion_id = e.id
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">  JOIN partidos p ON v.partido_id = p.id
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">  JOIN partidos_recode pr ON p.partido_recode_id = pr.id
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">  WHERE pr.partido_recode = &#39;PSOE&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">  GROUP BY e.id
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">  ORDER BY e.year
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">&#34;</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">dbDisconnect</span>(<span style="color:#58a1dd">con</span>)
+</span></span><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">dbDisconnect</span>(con)
 </span></span></code></pre></div><h3 id="cómo-usarlo-en-python-1">Cómo usarlo en Python</h3>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff636f">import</span> <span style="color:#58a1dd">sqlite3</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff636f">import</span> <span style="color:#58a1dd">pandas</span> <span style="color:#ff636f">as</span> <span style="color:#58a1dd">pd</span>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff7b72">import</span> <span style="color:#ff7b72">sqlite3</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff7b72">import</span> <span style="color:#ff7b72">pandas</span> <span style="color:#ff7b72">as</span> <span style="color:#ff7b72">pd</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">con</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">sqlite3</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">connect</span>(<span style="color:#a6be9d">&#34;descargas/eleccionesdb.sqlite&#34;</span>)
+</span></span><span style="display:flex;"><span>con <span style="color:#ff7b72;font-weight:bold">=</span> sqlite3<span style="color:#ff7b72;font-weight:bold">.</span>connect(<span style="color:#a5d6ff">&#34;descargas/eleccionesdb.sqlite&#34;</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Listar tablas</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">tables</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">pd</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">read_sql</span>(<span style="color:#a6be9d">&#34;SELECT name FROM sqlite_master WHERE type=&#39;table&#39;&#34;</span>, <span style="color:#58a1dd">con</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># Listar tablas</span>
+</span></span><span style="display:flex;"><span>tables <span style="color:#ff7b72;font-weight:bold">=</span> pd<span style="color:#ff7b72;font-weight:bold">.</span>read_sql(<span style="color:#a5d6ff">&#34;SELECT name FROM sqlite_master WHERE type=&#39;table&#39;&#34;</span>, con)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#828b96;font-style:italic"># Consulta SQL</span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">df</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">pd</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">read_sql</span>(<span style="color:#a6be9d">&#34;&#34;&#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    SELECT e.year, e.descripcion, SUM(v.votos) as total_votos
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    FROM votos_territoriales v
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    JOIN elecciones e ON v.eleccion_id = e.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    JOIN partidos p ON v.partido_id = p.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    JOIN partidos_recode pr ON p.partido_recode_id = pr.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    WHERE pr.partido_recode = &#39;PSOE&#39;
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    GROUP BY e.id
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">    ORDER BY e.year
-</span></span></span><span style="display:flex;"><span><span style="color:#a6be9d">&#34;&#34;&#34;</span>, <span style="color:#58a1dd">con</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># Consulta SQL</span>
+</span></span><span style="display:flex;"><span>df <span style="color:#ff7b72;font-weight:bold">=</span> pd<span style="color:#ff7b72;font-weight:bold">.</span>read_sql(<span style="color:#a5d6ff">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">    SELECT e.year, e.descripcion, SUM(v.votos) as total_votos
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">    FROM votos_territoriales v
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">    JOIN elecciones e ON v.eleccion_id = e.id
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">    JOIN partidos p ON v.partido_id = p.id
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">    JOIN partidos_recode pr ON p.partido_recode_id = pr.id
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">    WHERE pr.partido_recode = &#39;PSOE&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">    GROUP BY e.id
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">    ORDER BY e.year
+</span></span></span><span style="display:flex;"><span><span style="color:#a5d6ff">&#34;&#34;&#34;</span>, con)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">con</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">close</span>()
+</span></span><span style="display:flex;"><span>con<span style="color:#ff7b72;font-weight:bold">.</span>close()
 </span></span></code></pre></div><hr>
 <h2 id="csv-planos-pre-joineados">CSV planos (pre-joineados)</h2>
 <p><strong>Ideal para</strong>: uso rápido, hojas de cálculo, importación directa sin necesidad de JOINs.</p>
@@ -275,15 +275,15 @@
 <li>Formato universal compatible con cualquier herramienta.</li>
 </ul>
 <h3 id="cómo-usarlo-en-r-2">Cómo usarlo en R</h3>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">library</span>(<span style="color:#58a1dd">readr</span>)
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">library</span>(readr)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">resumen</span> <span style="color:#ff636f">&lt;-</span> <span style="color:#58a1dd">read_csv</span>(<span style="color:#a6be9d">&#34;descargas/csv/resumen_territorial.csv&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">votos</span> <span style="color:#ff636f">&lt;-</span> <span style="color:#58a1dd">read_csv</span>(<span style="color:#a6be9d">&#34;descargas/csv/votos_territoriales.csv&#34;</span>)
+</span></span><span style="display:flex;"><span>resumen <span style="color:#ff7b72;font-weight:bold">&lt;-</span> <span style="color:#d2a8ff;font-weight:bold">read_csv</span>(<span style="color:#a5d6ff">&#34;descargas/csv/resumen_territorial.csv&#34;</span>)
+</span></span><span style="display:flex;"><span>votos <span style="color:#ff7b72;font-weight:bold">&lt;-</span> <span style="color:#d2a8ff;font-weight:bold">read_csv</span>(<span style="color:#a5d6ff">&#34;descargas/csv/votos_territoriales.csv&#34;</span>)
 </span></span></code></pre></div><h3 id="cómo-usarlo-en-python-2">Cómo usarlo en Python</h3>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff636f">import</span> <span style="color:#58a1dd">pandas</span> <span style="color:#ff636f">as</span> <span style="color:#58a1dd">pd</span>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff7b72">import</span> <span style="color:#ff7b72">pandas</span> <span style="color:#ff7b72">as</span> <span style="color:#ff7b72">pd</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">resumen</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">pd</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">read_csv</span>(<span style="color:#a6be9d">&#34;descargas/csv/resumen_territorial.csv&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">votos</span> <span style="color:#ff636f">=</span> <span style="color:#58a1dd">pd</span><span style="color:#ff636f">.</span><span style="color:#58a1dd">read_csv</span>(<span style="color:#a6be9d">&#34;descargas/csv/votos_territoriales.csv&#34;</span>)
+</span></span><span style="display:flex;"><span>resumen <span style="color:#ff7b72;font-weight:bold">=</span> pd<span style="color:#ff7b72;font-weight:bold">.</span>read_csv(<span style="color:#a5d6ff">&#34;descargas/csv/resumen_territorial.csv&#34;</span>)
+</span></span><span style="display:flex;"><span>votos <span style="color:#ff7b72;font-weight:bold">=</span> pd<span style="color:#ff7b72;font-weight:bold">.</span>read_csv(<span style="color:#a5d6ff">&#34;descargas/csv/votos_territoriales.csv&#34;</span>)
 </span></span></code></pre></div><hr>
 <h2 id="comparativa-de-formatos">Comparativa de formatos</h2>
 <table>

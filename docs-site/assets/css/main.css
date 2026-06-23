@@ -141,8 +141,9 @@ pre {
 }
 
 pre {
-  background: var(--color-text);
-  color: #e5e7eb;
+  background: #0d1117;
+  color: #e6edf3;
+  border: 1px solid #30363d;
   padding: var(--space-4);
   border-radius: var(--radius-md);
   overflow-x: auto;

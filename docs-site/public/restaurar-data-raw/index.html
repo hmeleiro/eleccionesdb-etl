@@ -26,7 +26,7 @@
 
 
 
-<link rel="stylesheet" href="/css/main.min.a274442a983c222a5b2608b4a4d0e99af90d69dfcc43825d0a878b987a4326a3.css" integrity="sha256-onREKpg8IipbJgi0pNDpmvkNad/MQ4JdCoeLmHpDJqM=" />
+<link rel="stylesheet" href="/css/main.min.41f247ec0982a68b7c6276e9b201307dec6710c540a36c9fb3f5a4cf65b8a9aa.css" integrity="sha256-QfJH7AmCpot8YnbpsgEwfexnEMVAo2yfs/Wkz2W4qao=" />
 
 
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
@@ -131,26 +131,26 @@
 <ol>
 <li>Restaura el entorno R del proyecto:</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">renv</span><span style="color:#ff636f">::</span><span style="color:#58a1dd">restore</span>(<span style="color:#58a1dd">prompt</span> <span style="color:#ff636f">=</span> <span style="color:#ff636f">FALSE</span>)
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>renv<span style="color:#ff7b72;font-weight:bold">::</span><span style="color:#d2a8ff;font-weight:bold">restore</span>(prompt <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#79c0ff">FALSE</span>)
 </span></span></code></pre></div><ol start="2">
 <li>Ejecuta el script:</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">source</span>(<span style="color:#a6be9d">&#34;R/00-setup/download_data_raw.R&#34;</span>)
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">source</span>(<span style="color:#a5d6ff">&#34;R/00-setup/download_data_raw.R&#34;</span>)
 </span></span></code></pre></div><p>Por defecto, el script lee el manifiesto versionado <code>data-manifest.csv</code>, descarga todos los archivos listados y los coloca bajo <code>data-raw/</code>. Si las claves del manifiesto incluyen el prefijo <code>eleccionesdb-etl/data-raw/</code>, el script lo normaliza para restaurar la estructura local correcta.</p>
 <p>El script es idempotente: solo descarga archivos que no existen localmente o que no coinciden con el tamaño esperado.</p>
 <p>Puedes validar una restauracion con:</p>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">source</span>(<span style="color:#a6be9d">&#34;R/00-setup/check_data_raw.R&#34;</span>)
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">source</span>(<span style="color:#a5d6ff">&#34;R/00-setup/check_data_raw.R&#34;</span>)
 </span></span></code></pre></div><h2 id="usar-un-indice-alternativo">Usar un indice alternativo</h2>
 <p>En CI/CD o en reproducciones puntuales puedes usar otro indice local o remoto con <code>DATA_INDEX_URL</code>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">Sys.setenv</span>(<span style="color:#58a1dd">DATA_INDEX_URL</span> <span style="color:#ff636f">=</span> <span style="color:#a6be9d">&#34;https://data.spainelectoralproject.com/eleccionesdb-etl/data-manifest.csv&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">source</span>(<span style="color:#a6be9d">&#34;R/00-setup/download_data_raw.R&#34;</span>)
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">Sys.setenv</span>(DATA_INDEX_URL <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#a5d6ff">&#34;https://data.spainelectoralproject.com/eleccionesdb-etl/data-manifest.csv&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">source</span>(<span style="color:#a5d6ff">&#34;R/00-setup/download_data_raw.R&#34;</span>)
 </span></span></code></pre></div><p>Tambien puede apuntar a un CSV local:</p>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">Sys.setenv</span>(<span style="color:#58a1dd">DATA_INDEX_URL</span> <span style="color:#ff636f">=</span> <span style="color:#a6be9d">&#34;tmp/data-manifest.csv&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#58a1dd">source</span>(<span style="color:#a6be9d">&#34;R/00-setup/download_data_raw.R&#34;</span>)
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">Sys.setenv</span>(DATA_INDEX_URL <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#a5d6ff">&#34;tmp/data-manifest.csv&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">source</span>(<span style="color:#a5d6ff">&#34;R/00-setup/download_data_raw.R&#34;</span>)
 </span></span></code></pre></div><p>El CSV debe contener al menos las columnas <code>key</code> y <code>url</code>. La columna <code>size</code> es opcional, pero permite verificar que la restauracion esta completa.</p>
 <h2 id="cache-en-github-actions">Cache en GitHub Actions</h2>
 <p>El workflow <code>ETL Export</code> restaura <code>data-raw/</code> desde <code>actions/cache@v5</code> antes de descargar. La clave depende exactamente de <code>data-manifest.csv</code>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>data-raw-${{ runner.os }}-${{ hashFiles(&#39;data-manifest.csv&#39;) }}
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>data-raw-${{ runner.os }}-${{ hashFiles(&#39;data-manifest.csv&#39;) }}
 </span></span></code></pre></div><p>No hay <code>restore-keys</code> para esta carpeta. Para invalidar la cache, regenera o modifica <code>data-manifest.csv</code> y commitea el cambio.</p>
 <p><code>Deploy DB</code> se ejecuta por SSH en la maquina remota y no puede reutilizar esa cache de GitHub Actions. En su lugar, valida <code>data-raw/</code> en la maquina remota y descarga solo los ficheros ausentes o con tamano distinto.</p>
 <h2 id="como-se-genera-el-indice">Como se genera el indice</h2>
@@ -159,7 +159,7 @@
 <li>Configura las variables en <code>.env</code>: <code>CF_S3_ACCESS_KEY</code>, <code>CF_S3_SECRET_KEY</code>, <code>CF_S3_ENDPOINT</code>, <code>CF_S3_BUCKET</code>, <code>CF_S3_PUBLIC_BASE_URL</code>.</li>
 <li>Ejecuta:</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">source</span>(<span style="color:#a6be9d">&#34;R/00-setup/generate_data_index.R&#34;</span>)
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">source</span>(<span style="color:#a5d6ff">&#34;R/00-setup/generate_data_index.R&#34;</span>)
 </span></span></code></pre></div><p>Esto crea o actualiza <code>data-manifest.csv</code> con la lista de archivos y URLs publicas de <code>eleccionesdb-etl/data-raw/</code>.</p>
 <p>Si los datos del bucket cambian, regenera <code>data-manifest.csv</code> antes de ejecutar el ETL en CI.</p>
 

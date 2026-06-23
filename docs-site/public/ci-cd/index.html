@@ -26,7 +26,7 @@
 
 
 
-<link rel="stylesheet" href="/css/main.min.a274442a983c222a5b2608b4a4d0e99af90d69dfcc43825d0a878b987a4326a3.css" integrity="sha256-onREKpg8IipbJgi0pNDpmvkNad/MQ4JdCoeLmHpDJqM=" />
+<link rel="stylesheet" href="/css/main.min.41f247ec0982a68b7c6276e9b201307dec6710c540a36c9fb3f5a4cf65b8a9aa.css" integrity="sha256-QfJH7AmCpot8YnbpsgEwfexnEMVAo2yfs/Wkz2W4qao=" />
 
 
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
@@ -161,12 +161,12 @@
 </table>
 <h2 id="reproducibilidad">Reproducibilidad</h2>
 <p>La fuente canonica de dependencias es <code>renv.lock</code>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#58a1dd">renv</span><span style="color:#ff636f">::</span><span style="color:#58a1dd">restore</span>(<span style="color:#58a1dd">prompt</span> <span style="color:#ff636f">=</span> <span style="color:#ff636f">FALSE</span>)
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-r" data-lang="r"><span style="display:flex;"><span>renv<span style="color:#ff7b72;font-weight:bold">::</span><span style="color:#d2a8ff;font-weight:bold">restore</span>(prompt <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#79c0ff">FALSE</span>)
 </span></span></code></pre></div><p>El script <code>install_deps.R</code> se mantiene como bootstrap secundario para entornos sin <code>renv</code>, pero no sustituye al lockfile.</p>
 <h2 id="cache-de-data-raw">Cache de data-raw/</h2>
 <p>Los datos maestros viven en Cloudflare R2 bajo <code>eleccionesdb-etl/data-raw/</code> y no se versionan en Git. El archivo <code>data-manifest.csv</code> es la fuente de verdad para descarga, validacion e invalidacion de cache.</p>
 <p><code>ETL Export</code> usa <code>actions/cache@v5</code> con una clave exacta:</p>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>data-raw-${{ runner.os }}-${{ hashFiles(&#39;data-manifest.csv&#39;) }}
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>data-raw-${{ runner.os }}-${{ hashFiles(&#39;data-manifest.csv&#39;) }}
 </span></span></code></pre></div><p>No se usan <code>restore-keys</code> para evitar recuperar datos obsoletos. Si cambian objetos en R2, hay que regenerar y commitear <code>data-manifest.csv</code>; ese cambio fuerza una nueva cache.</p>
 <p><code>Deploy DB</code> no usa esa cache porque se ejecuta por SSH en la maquina remota. Alli valida <code>data-raw/</code> y descarga solo los ficheros ausentes o con tamano distinto.</p>
 <h2 id="artefactos-de-exportacion">Artefactos de exportacion</h2>
@@ -180,7 +180,7 @@
 <p>La validacion abre el SQLite y ejecuta <code>PRAGMA integrity_check</code>, comprueba tablas obligatorias, extrae los ZIP y lee muestras de Parquet y CSV.</p>
 <h2 id="publicacion-de-descargas">Publicacion de descargas</h2>
 <p>Cada ejecucion completa de <code>ETL Export</code> publica automaticamente las descargas validadas en Cloudflare R2. Las ejecuciones con <code>smoke_test</code> se excluyen porque contienen un subconjunto de los datos. El destino es:</p>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>s3://$CF_S3_BUCKET/eleccionesdb-etl/descargas/
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>s3://$CF_S3_BUCKET/eleccionesdb-etl/descargas/
 </span></span></code></pre></div><p>Secretos requeridos:</p>
 <ul>
 <li><code>CF_S3_ACCESS_KEY</code></li>
@@ -191,7 +191,7 @@
 </ul>
 <h2 id="carga-postgresql">Carga PostgreSQL</h2>
 <p><code>Deploy DB</code> usa el environment protegido <code>production-db</code> y requiere confirmar manualmente con:</p>
-<div class="highlight"><pre tabindex="0" style="color:#1d2432;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>TRUNCATE_AND_LOAD_ELECCIONESDB
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>TRUNCATE_AND_LOAD_ELECCIONESDB
 </span></span></code></pre></div><p>Secretos requeridos:</p>
 <ul>
 <li><code>DB_NAME</code></li>

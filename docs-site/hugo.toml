@@ -50,7 +50,7 @@ title = "eleccionesdb"
 
 [markup]
   [markup.highlight]
-    style = "hrdark"
+    style = "github-dark"
     lineNos = false
   [markup.goldmark]
     [markup.goldmark.renderer]

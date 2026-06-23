@@ -20,6 +20,8 @@ description: "Historial de versiones de eleccionesdb"
 
 ### Changed
 
+- `resumen_territorial.nrepresentantes` y `votos_territoriales.representantes` agregan ahora los representantes de los territorios de reparto hacia sus niveles territoriales superiores cuando la cobertura del reparto es completa.
+
 ### Fixed
 
 ### Removed
