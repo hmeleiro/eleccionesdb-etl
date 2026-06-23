@@ -129,7 +129,6 @@ VOTOS_COLS <- c(
   "siglas", "denominacion", "votos"
 )
 
-
 votos_mesas <- data_raw %>%
   select(all_of(VOTOS_COLS)) %>%
   filter(!is.na(votos)) %>%
