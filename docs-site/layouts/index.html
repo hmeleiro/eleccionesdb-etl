@@ -94,7 +94,7 @@
   {{/* API */}}
   <section class="home-section">
     <div class="container">
-      {{ partial "section-header.html" (dict "title" "Acceso programático" "description" "¿Prefieres consultar los datos mediante una API? EleccionesDB API ofrece acceso REST gratuito, abierto y sin autenticación a toda la base de datos.") }}
+      {{ partial "section-header.html" (dict "title" "Acceso programático" "description" "¿Prefieres consultar los datos mediante una API? EleccionesDB API ofrece acceso REST gratuito y abierto a toda la base de datos, con autenticación mediante correo y API key.") }}
       <div class="value-grid" style="grid-template-columns: repeat(2, 1fr);">
         <div class="value-item">
           <span class="value-icon">🔌</span>
@@ -102,9 +102,9 @@
           <p>Endpoints para elecciones, territorios, partidos y resultados. Filtros flexibles, paginación y respuestas JSON.</p>
         </div>
         <div class="value-item">
-          <span class="value-icon">🚀</span>
-          <h3>Sin autenticación</h3>
-          <p>Acceso directo desde cualquier lenguaje: curl, Python, R, JavaScript. Sin claves, sin registro.</p>
+          <span class="value-icon">🔑</span>
+          <h3>Autenticación con API key</h3>
+          <p>Regístrate con tu correo para obtener una API key y consultar la API desde curl, Python, R o JavaScript.</p>
         </div>
       </div>
       <div class="section-cta">

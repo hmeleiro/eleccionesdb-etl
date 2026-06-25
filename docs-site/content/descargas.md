@@ -7,7 +7,7 @@ Los datos de `eleccionesdb` están disponibles para descarga en tres formatos, p
 
 <div class="callout callout-tip">
 <strong>¿Prefieres acceso programático?</strong>
-<p><a href="https://eleccionesdb-api.spainelectoralproject.com/" target="_blank" rel="noopener">EleccionesDB API</a> ofrece una API REST gratuita, abierta y sin autenticación para consultar todos estos datos directamente desde tu código.</p>
+<p><a href="https://eleccionesdb-api.spainelectoralproject.com/" target="_blank" rel="noopener">EleccionesDB API</a> ofrece una API REST gratuita y abierta para consultar estos datos directamente desde tu código, con autenticación mediante correo y API key.</p>
 </div>
 
 <div class="download-options">
