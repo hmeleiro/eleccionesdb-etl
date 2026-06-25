@@ -167,6 +167,41 @@ complete <- audit_representantes_coverage(
 )
 stopifnot(all(vapply(complete$sheets, nrow, integer(1)) == 0L))
 
+circ_join_territorios <- data.frame(
+  id = c(5010, 5351),
+  tipo = c("circunscripcion", "circunscripcion"),
+  codigo_ccaa = c("05", "05"),
+  codigo_provincia = c("99", "35"),
+  codigo_circunscripcion = c("050", "351"),
+  codigo_municipio = c("999", "999"),
+  codigo_distrito = c("99", "99"),
+  codigo_seccion = c("9999", "9999"),
+  stringsAsFactors = FALSE
+)
+
+circ_join_representantes <- data.frame(
+  codigo_ccaa = c("05", "05"),
+  codigo_circunscripcion = c("050", "351"),
+  codigo_municipio = c("999", "999"),
+  codigo_distrito = c("99", "99"),
+  codigo_seccion = c("9999", "9999"),
+  stringsAsFactors = FALSE
+)
+
+circ_join_result <- dplyr::left_join(
+  circ_join_representantes,
+  dplyr::select(
+    dplyr::filter(circ_join_territorios, tipo == "circunscripcion"),
+    codigo_ccaa, codigo_circunscripcion, codigo_municipio,
+    codigo_distrito, codigo_seccion, territorio_id = id
+  ),
+  by = dplyr::join_by(
+    codigo_ccaa, codigo_circunscripcion, codigo_municipio,
+    codigo_distrito, codigo_seccion
+  )
+)
+stopifnot(identical(circ_join_result$territorio_id, c(5010, 5351)))
+
 prop_elecciones <- data.frame(
   id = c(1, 2, 3, 6),
   tipo_eleccion = c("G", "A", "L", "A"),

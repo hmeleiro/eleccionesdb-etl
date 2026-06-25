@@ -24,6 +24,8 @@ description: "Historial de versiones de eleccionesdb"
 
 ### Fixed
 
+- Los representantes de la circunscripciÃ³n autonÃ³mica de Canarias se enlazan ahora con su territorio `050` sin derivar una provincia inexistente desde el cÃ³digo de circunscripciÃ³n.
+
 ### Removed
 
 ---

@@ -100,7 +100,7 @@ get_representantes <- function() {
 
   territorios_circ <- territorios %>%
     filter(tipo == "circunscripcion") %>%
-    select(codigo_provincia, codigo_circunscripcion, codigo_municipio,
+    select(codigo_ccaa, codigo_circunscripcion, codigo_municipio,
            codigo_distrito, codigo_seccion,
            territorio_id = id
     )
@@ -122,16 +122,13 @@ get_representantes <- function() {
 
   representantes_circ <- representantes_prov_raw %>%
     filter(nchar(codigo_circunscripcion) >= 3) %>%
-    mutate(
-      codigo_provincia = substr(codigo_circunscripcion, 1, 2),
-      codigo_ccaa = ifelse(tipo_eleccion %in% c("G", "L"), "99", codigo_ccaa)
-    ) %>%
+    mutate(codigo_ccaa = ifelse(tipo_eleccion %in% c("G", "L"), "99", codigo_ccaa)) %>%
     left_join(elecciones_id,
               by = join_by(year, mes, codigo_ccaa, tipo_eleccion)
     ) %>%
     left_join(territorios_circ,
               by = join_by(
-                codigo_provincia, codigo_circunscripcion, codigo_municipio,
+                codigo_ccaa, codigo_circunscripcion, codigo_municipio,
                 codigo_distrito, codigo_seccion
               )
     )

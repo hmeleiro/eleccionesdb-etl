@@ -45,20 +45,20 @@ message("[EXPORT] Tablas cargadas correctamente")
 # 1. PARQUET
 # ---------------------------------------------------------------------------
 
-dir.create("descargas/parquet/dimensiones", recursive = TRUE, showWarnings = FALSE)
-dir.create("descargas/parquet/hechos", recursive = TRUE, showWarnings = FALSE)
-
-write_parquet(tipos_eleccion, "descargas/parquet/dimensiones/tipos_eleccion.parquet")
-write_parquet(elecciones, "descargas/parquet/dimensiones/elecciones.parquet")
-write_parquet(territorios, "descargas/parquet/dimensiones/territorios.parquet")
-write_parquet(partidos_recode, "descargas/parquet/dimensiones/partidos_recode.parquet")
-write_parquet(partidos, "descargas/parquet/dimensiones/partidos.parquet")
-write_parquet(elecciones_fuentes, "descargas/parquet/dimensiones/elecciones_fuentes.parquet")
-
-write_parquet(info, "descargas/parquet/hechos/resumen_territorial.parquet")
-write_parquet(votos, "descargas/parquet/hechos/votos_territoriales.parquet")
-
-message("[EXPORT] Parquet exportado en descargas/parquet/")
+# dir.create("descargas/parquet/dimensiones", recursive = TRUE, showWarnings = FALSE)
+# dir.create("descargas/parquet/hechos", recursive = TRUE, showWarnings = FALSE)
+#
+# write_parquet(tipos_eleccion, "descargas/parquet/dimensiones/tipos_eleccion.parquet")
+# write_parquet(elecciones, "descargas/parquet/dimensiones/elecciones.parquet")
+# write_parquet(territorios, "descargas/parquet/dimensiones/territorios.parquet")
+# write_parquet(partidos_recode, "descargas/parquet/dimensiones/partidos_recode.parquet")
+# write_parquet(partidos, "descargas/parquet/dimensiones/partidos.parquet")
+# write_parquet(elecciones_fuentes, "descargas/parquet/dimensiones/elecciones_fuentes.parquet")
+#
+# write_parquet(info, "descargas/parquet/hechos/resumen_territorial.parquet")
+# write_parquet(votos, "descargas/parquet/hechos/votos_territoriales.parquet")
+#
+# message("[EXPORT] Parquet exportado en descargas/parquet/")
 
 # ---------------------------------------------------------------------------
 # 2. SQLite (con esquema relacional: PKs, FKs, UNIQUE, índices)
@@ -219,144 +219,144 @@ message("[EXPORT] SQLite exportado en ", sqlite_path)
 # 3. CSVs planos (pre-joineados)
 # ---------------------------------------------------------------------------
 
-dir.create("descargas/csv", recursive = TRUE, showWarnings = FALSE)
-
-# Preparar dimensiones para los JOINs
-elecciones_join <- elecciones %>%
-  left_join(tipos_eleccion, by = c("tipo_eleccion" = "codigo"), suffix = c("", "_tipo")) %>%
-  rename(tipo_eleccion_descripcion = descripcion_tipo, descripcion_eleccion = descripcion) %>%
-  select(
-    eleccion_id = id, tipo_eleccion, tipo_eleccion_descripcion,
-    fecha, year, mes, dia, descripcion_eleccion, ambito, slug
-  )
-
-territorios_join <- territorios %>%
-  select(
-    territorio_id = id, tipo_territorio = tipo,
-    codigo_ccaa, codigo_provincia, codigo_municipio,
-    codigo_distrito, codigo_seccion, codigo_circunscripcion,
-    nombre_territorio = nombre, codigo_completo
-  )
-
-partidos_join <- partidos %>%
-  left_join(partidos_recode, by = c("partido_recode_id" = "id")) %>%
-  select(
-    partido_id = id, siglas, denominacion,
-    partido_recode, agrupacion
-  )
-
-# --- CSV 1: Resumen territorial (plano) ---
-resumen_plano <- info %>%
-  left_join(elecciones_join, by = "eleccion_id") %>%
-  left_join(territorios_join, by = "territorio_id") %>%
-  select(
-    # Elección
-    tipo_eleccion, tipo_eleccion_descripcion, fecha, year, mes,
-    descripcion_eleccion, ambito, slug,
-    # Territorio
-    tipo_territorio, nombre_territorio,
-    codigo_ccaa, codigo_provincia, codigo_municipio,
-    codigo_distrito, codigo_seccion, codigo_completo,
-    # Datos
-    censo_ine, participacion_1, participacion_2,
-    votos_validos, abstenciones, votos_blancos, votos_nulos, nrepresentantes
-  )
-
-write_csv(resumen_plano, "descargas/csv/resumen_territorial.csv", na = "")
-
-message(
-  "[EXPORT] CSV resumen_territorial.csv generado (",
-  format(nrow(resumen_plano), big.mark = ","), " filas)"
-)
-
-# --- CSV 2: Votos por partido (plano) ---
-votos_plano <- votos %>%
-  left_join(elecciones_join, by = "eleccion_id") %>%
-  left_join(territorios_join, by = "territorio_id") %>%
-  left_join(partidos_join, by = "partido_id") %>%
-  select(
-    # Elección
-    tipo_eleccion, tipo_eleccion_descripcion, fecha, year, mes,
-    descripcion_eleccion, ambito, slug,
-    # Territorio
-    tipo_territorio, nombre_territorio,
-    codigo_ccaa, codigo_provincia, codigo_municipio,
-    codigo_distrito, codigo_seccion, codigo_completo,
-    # Partido
-    siglas, denominacion, partido_recode, agrupacion,
-    # Datos
-    votos, representantes
-  )
-
-write_csv(votos_plano, "descargas/csv/votos_territoriales.csv", na = "")
-
-message(
-  "[EXPORT] CSV votos_territoriales.csv generado (",
-  format(nrow(votos_plano), big.mark = ","), " filas)"
-)
+# dir.create("descargas/csv", recursive = TRUE, showWarnings = FALSE)
+#
+# # Preparar dimensiones para los JOINs
+# elecciones_join <- elecciones %>%
+#   left_join(tipos_eleccion, by = c("tipo_eleccion" = "codigo"), suffix = c("", "_tipo")) %>%
+#   rename(tipo_eleccion_descripcion = descripcion_tipo, descripcion_eleccion = descripcion) %>%
+#   select(
+#     eleccion_id = id, tipo_eleccion, tipo_eleccion_descripcion,
+#     fecha, year, mes, dia, descripcion_eleccion, ambito, slug
+#   )
+#
+# territorios_join <- territorios %>%
+#   select(
+#     territorio_id = id, tipo_territorio = tipo,
+#     codigo_ccaa, codigo_provincia, codigo_municipio,
+#     codigo_distrito, codigo_seccion, codigo_circunscripcion,
+#     nombre_territorio = nombre, codigo_completo
+#   )
+#
+# partidos_join <- partidos %>%
+#   left_join(partidos_recode, by = c("partido_recode_id" = "id")) %>%
+#   select(
+#     partido_id = id, siglas, denominacion,
+#     partido_recode, agrupacion
+#   )
+#
+# # --- CSV 1: Resumen territorial (plano) ---
+# resumen_plano <- info %>%
+#   left_join(elecciones_join, by = "eleccion_id") %>%
+#   left_join(territorios_join, by = "territorio_id") %>%
+#   select(
+#     # Elección
+#     tipo_eleccion, tipo_eleccion_descripcion, fecha, year, mes,
+#     descripcion_eleccion, ambito, slug,
+#     # Territorio
+#     tipo_territorio, nombre_territorio,
+#     codigo_ccaa, codigo_provincia, codigo_municipio,
+#     codigo_distrito, codigo_seccion, codigo_completo,
+#     # Datos
+#     censo_ine, participacion_1, participacion_2,
+#     votos_validos, abstenciones, votos_blancos, votos_nulos, nrepresentantes
+#   )
+#
+# write_csv(resumen_plano, "descargas/csv/resumen_territorial.csv", na = "")
+#
+# message(
+#   "[EXPORT] CSV resumen_territorial.csv generado (",
+#   format(nrow(resumen_plano), big.mark = ","), " filas)"
+# )
+#
+# # --- CSV 2: Votos por partido (plano) ---
+# votos_plano <- votos %>%
+#   left_join(elecciones_join, by = "eleccion_id") %>%
+#   left_join(territorios_join, by = "territorio_id") %>%
+#   left_join(partidos_join, by = "partido_id") %>%
+#   select(
+#     # Elección
+#     tipo_eleccion, tipo_eleccion_descripcion, fecha, year, mes,
+#     descripcion_eleccion, ambito, slug,
+#     # Territorio
+#     tipo_territorio, nombre_territorio,
+#     codigo_ccaa, codigo_provincia, codigo_municipio,
+#     codigo_distrito, codigo_seccion, codigo_completo,
+#     # Partido
+#     siglas, denominacion, partido_recode, agrupacion,
+#     # Datos
+#     votos, representantes
+#   )
+#
+# write_csv(votos_plano, "descargas/csv/votos_territoriales.csv", na = "")
+#
+# message(
+#   "[EXPORT] CSV votos_territoriales.csv generado (",
+#   format(nrow(votos_plano), big.mark = ","), " filas)"
+# )
 
 # ---------------------------------------------------------------------------
 # 4. Compresión ZIP
 # ---------------------------------------------------------------------------
 
-parquet_size <- sum(file.info(list.files("descargas/parquet", recursive = TRUE, full.names = TRUE))$size)
-sqlite_size <- file.info(sqlite_path)$size
-csv_size <- sum(file.info(list.files("descargas/csv", full.names = TRUE))$size)
-
-parquet_zip <- "descargas/eleccionesdb_parquet.zip"
-if (file.exists(parquet_zip)) invisible(file.remove(parquet_zip))
-parquet_files <- list.files("descargas/parquet", recursive = TRUE, full.names = TRUE)
-zipr(parquet_zip, files = parquet_files)
-unlink("descargas/parquet", recursive = TRUE)   # ← añadir
-message("[EXPORT] ZIP Parquet generado en ", parquet_zip)
-
-csv_zip <- "descargas/eleccionesdb_csv.zip"
-if (file.exists(csv_zip)) invisible(file.remove(csv_zip))
-csv_files <- list.files("descargas/csv", recursive = TRUE, full.names = TRUE)
-zipr(csv_zip, files = csv_files)
-unlink("descargas/csv", recursive = TRUE)        # ← añadir
-message("[EXPORT] ZIP CSV generado en ", csv_zip)
-
-sqlite_zip <- "descargas/eleccionesdb_sqlite.zip"
-if (file.exists(sqlite_zip)) invisible(file.remove(sqlite_zip))
-zipr(sqlite_zip, files = sqlite_path)
-message("[EXPORT] ZIP SQLite generado en ", sqlite_zip)
-
-sqlite_manifest <- list(
-  schema_version = sqlite_schema_version,
-  generated_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
-  url = sqlite_download_url,
-  archive_size = unname(file.info(sqlite_zip)$size),
-  archive_sha256 = tolower(digest::digest(
-    file = sqlite_zip, algo = "sha256", serialize = FALSE
-  )),
-  database_filename = basename(sqlite_path),
-  database_size = unname(file.info(sqlite_path)$size),
-  database_sha256 = tolower(digest::digest(
-    file = sqlite_path, algo = "sha256", serialize = FALSE
-  ))
-)
-jsonlite::write_json(
-  sqlite_manifest,
-  sqlite_manifest_path,
-  auto_unbox = TRUE,
-  pretty = TRUE
-)
-invisible(file.remove(sqlite_path))
-message("[EXPORT] Manifiesto SQLite generado en ", sqlite_manifest_path)
-# ---------------------------------------------------------------------------
-# Resumen final
-# ---------------------------------------------------------------------------
-
-
-parquet_zip_size <- file.info(parquet_zip)$size
-sqlite_zip_size <- file.info(sqlite_zip)$size
-csv_zip_size <- file.info(csv_zip)$size
-
-format_mb <- function(bytes) sprintf("%.1f MB", bytes / 1024^2)
-
-message("\n[EXPORT] === Resumen ===")
-message("  Parquet: ", format_mb(parquet_size), "  →  ZIP: ", format_mb(parquet_zip_size))
-message("  SQLite:  ", format_mb(sqlite_size), "  →  ZIP: ", format_mb(sqlite_zip_size))
-message("  CSV:     ", format_mb(csv_size), "  →  ZIP: ", format_mb(csv_zip_size))
-message("[EXPORT] Completado.")
+# parquet_size <- sum(file.info(list.files("descargas/parquet", recursive = TRUE, full.names = TRUE))$size)
+# sqlite_size <- file.info(sqlite_path)$size
+# csv_size <- sum(file.info(list.files("descargas/csv", full.names = TRUE))$size)
+#
+# parquet_zip <- "descargas/eleccionesdb_parquet.zip"
+# if (file.exists(parquet_zip)) invisible(file.remove(parquet_zip))
+# parquet_files <- list.files("descargas/parquet", recursive = TRUE, full.names = TRUE)
+# zipr(parquet_zip, files = parquet_files)
+# unlink("descargas/parquet", recursive = TRUE)   # ← añadir
+# message("[EXPORT] ZIP Parquet generado en ", parquet_zip)
+#
+# csv_zip <- "descargas/eleccionesdb_csv.zip"
+# if (file.exists(csv_zip)) invisible(file.remove(csv_zip))
+# csv_files <- list.files("descargas/csv", recursive = TRUE, full.names = TRUE)
+# zipr(csv_zip, files = csv_files)
+# unlink("descargas/csv", recursive = TRUE)        # ← añadir
+# message("[EXPORT] ZIP CSV generado en ", csv_zip)
+#
+# sqlite_zip <- "descargas/eleccionesdb_sqlite.zip"
+# if (file.exists(sqlite_zip)) invisible(file.remove(sqlite_zip))
+# zipr(sqlite_zip, files = sqlite_path)
+# message("[EXPORT] ZIP SQLite generado en ", sqlite_zip)
+#
+# sqlite_manifest <- list(
+#   schema_version = sqlite_schema_version,
+#   generated_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
+#   url = sqlite_download_url,
+#   archive_size = unname(file.info(sqlite_zip)$size),
+#   archive_sha256 = tolower(digest::digest(
+#     file = sqlite_zip, algo = "sha256", serialize = FALSE
+#   )),
+#   database_filename = basename(sqlite_path),
+#   database_size = unname(file.info(sqlite_path)$size),
+#   database_sha256 = tolower(digest::digest(
+#     file = sqlite_path, algo = "sha256", serialize = FALSE
+#   ))
+# )
+# jsonlite::write_json(
+#   sqlite_manifest,
+#   sqlite_manifest_path,
+#   auto_unbox = TRUE,
+#   pretty = TRUE
+# )
+# invisible(file.remove(sqlite_path))
+# message("[EXPORT] Manifiesto SQLite generado en ", sqlite_manifest_path)
+# # ---------------------------------------------------------------------------
+# # Resumen final
+# # ---------------------------------------------------------------------------
+#
+#
+# parquet_zip_size <- file.info(parquet_zip)$size
+# sqlite_zip_size <- file.info(sqlite_zip)$size
+# csv_zip_size <- file.info(csv_zip)$size
+#
+# format_mb <- function(bytes) sprintf("%.1f MB", bytes / 1024^2)
+#
+# message("\n[EXPORT] === Resumen ===")
+# message("  Parquet: ", format_mb(parquet_size), "  →  ZIP: ", format_mb(parquet_zip_size))
+# message("  SQLite:  ", format_mb(sqlite_size), "  →  ZIP: ", format_mb(sqlite_zip_size))
+# message("  CSV:     ", format_mb(csv_size), "  →  ZIP: ", format_mb(csv_zip_size))
+# message("[EXPORT] Completado.")
