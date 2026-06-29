@@ -15,7 +15,7 @@ library(DBI)
 library(RSQLite)
 library(zip)
 
-sqlite_schema_version <- 1L
+sqlite_schema_version <- 2L
 sqlite_download_url <- paste0(
   "https://data.spainelectoralproject.com/eleccionesdb-etl/descargas/",
   "eleccionesdb_sqlite.zip"
@@ -127,7 +127,10 @@ tryCatch(
         id              INTEGER PRIMARY KEY,
         partido_recode  TEXT NOT NULL,
         agrupacion      TEXT,
+        bloque          TEXT,
         color           TEXT,
+        color_pastel    TEXT,
+        color_oscuro    TEXT,
         UNIQUE (partido_recode)
       )")
 
@@ -242,7 +245,7 @@ partidos_join <- partidos %>%
   left_join(partidos_recode, by = c("partido_recode_id" = "id")) %>%
   select(
     partido_id = id, siglas, denominacion,
-    partido_recode, agrupacion
+    partido_recode, agrupacion, bloque, color, color_pastel, color_oscuro
   )
 
 # --- CSV 1: Resumen territorial (plano) ---
@@ -284,6 +287,7 @@ votos_plano <- votos %>%
     codigo_distrito, codigo_seccion, codigo_completo,
     # Partido
     siglas, denominacion, partido_recode, agrupacion,
+    bloque, color, color_pastel, color_oscuro,
     # Datos
     votos, representantes
   )

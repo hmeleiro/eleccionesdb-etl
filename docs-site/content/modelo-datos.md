@@ -53,7 +53,10 @@ erDiagram
         INT id PK
         VARCHAR partido_recode
         VARCHAR agrupacion
+        VARCHAR bloque
         VARCHAR color
+        VARCHAR color_pastel
+        VARCHAR color_oscuro
     }
 
     partidos {
@@ -197,7 +200,10 @@ Agrupaciones y recodificaciones de partidos. Permite agrupar siglas históricas 
 | `id` | `INT` PK | Identificador autogenerado |
 | `partido_recode` | `VARCHAR(50)` UNIQUE | Nombre de la agrupación (ej: "PSOE", "PP", "Otros") |
 | `agrupacion` | `VARCHAR(50)` | Agrupación de nivel superior |
+| `bloque` | `VARCHAR(50)` | Bloque político/analítico procedente de `partidos_colores.xlsx` |
 | `color` | `VARCHAR(7)` | Color hexadecimal para visualización |
+| `color_pastel` | `VARCHAR(7)` | Variante pastel del color hexadecimal |
+| `color_oscuro` | `VARCHAR(7)` | Variante oscura del color hexadecimal |
 
 ### `partidos`
 
@@ -285,7 +291,7 @@ El modelo utiliza dos tablas separadas para gestionar la complejidad del panoram
 
 1. **`partidos`**: Recoge cada par `(siglas, denominacion)` tal como aparece en los datos oficiales. Un mismo partido puede aparecer con distintas denominaciones a lo largo de los años o en distintas comunidades.
 
-2. **`partidos_recode`**: Agrupa las distintas apariciones bajo una etiqueta analítica común. Por ejemplo, todas las variantes de "Partido Socialista Obrero Español", "PSOE", "PSC-PSOE" pueden agruparse bajo el recode "PSOE". Incluye además un campo `agrupacion` para agrupaciones de nivel superior y un `color` para visualización.
+2. **`partidos_recode`**: Agrupa las distintas apariciones bajo una etiqueta analítica común. Por ejemplo, todas las variantes de "Partido Socialista Obrero Español", "PSOE", "PSC-PSOE" pueden agruparse bajo el recode "PSOE". Incluye además `agrupacion`, `bloque` y colores de visualización (`color`, `color_pastel`, `color_oscuro`).
 
 ### Flujo de asignación
 

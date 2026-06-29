@@ -70,8 +70,8 @@ if (length(missing_manifest_fields) > 0) {
         call. = FALSE
     )
 }
-if (!identical(as.integer(sqlite_manifest$schema_version), 1L)) {
-    stop("El manifiesto SQLite no usa schema_version 1", call. = FALSE)
+if (!identical(as.integer(sqlite_manifest$schema_version), 2L)) {
+    stop("El manifiesto SQLite no usa schema_version 2", call. = FALSE)
 }
 if (!identical(sqlite_manifest$url, sqlite_download_url)) {
     stop("La URL del manifiesto SQLite no es la URL publica esperada", call. = FALSE)
@@ -144,8 +144,8 @@ con <- DBI::dbConnect(
 on.exit(DBI::dbDisconnect(con), add = TRUE)
 
 schema_version <- DBI::dbGetQuery(con, "PRAGMA user_version")[[1]][[1]]
-if (!identical(as.integer(schema_version), 1L)) {
-    stop("SQLite no usa PRAGMA user_version = 1", call. = FALSE)
+if (!identical(as.integer(schema_version), 2L)) {
+    stop("SQLite no usa PRAGMA user_version = 2", call. = FALSE)
 }
 
 integrity <- DBI::dbGetQuery(con, "PRAGMA integrity_check")[[1]]
@@ -170,6 +170,27 @@ tables <- DBI::dbGetQuery(
 missing_tables <- setdiff(required_tables, tables)
 if (length(missing_tables) > 0) {
     stop("Faltan tablas SQLite: ", paste(missing_tables, collapse = ", "), call. = FALSE)
+}
+
+required_partidos_recode_columns <- c(
+    "id",
+    "partido_recode",
+    "agrupacion",
+    "bloque",
+    "color",
+    "color_pastel",
+    "color_oscuro"
+)
+missing_partidos_recode_columns <- setdiff(
+    required_partidos_recode_columns,
+    DBI::dbListFields(con, "partidos_recode")
+)
+if (length(missing_partidos_recode_columns) > 0) {
+    stop(
+        "Faltan columnas en partidos_recode: ",
+        paste(missing_partidos_recode_columns, collapse = ", "),
+        call. = FALSE
+    )
 }
 
 invalid_years <- DBI::dbGetQuery(

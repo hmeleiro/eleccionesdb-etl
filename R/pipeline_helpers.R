@@ -56,9 +56,9 @@ run_dim_elecciones_fuentes <- function(dim_elecciones) {
   "tablas-finales/dimensiones/elecciones_fuentes"
 }
 
-run_dim_partidos <- function() {
+run_dim_partidos <- function(raw_partidos_recodes, raw_partidos_colores) {
   env <- source_pipeline_env("R/01-generate-data/dimensiones/partidos/sync-partidos.R")
-  env$sync_partidos()
+  env$sync_partidos(path = raw_partidos_recodes, colores_path = raw_partidos_colores)
   rm(env)
   invisible(gc())
   c(

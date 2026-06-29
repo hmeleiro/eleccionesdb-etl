@@ -183,7 +183,7 @@ descargas/csv/
 └── votos_territoriales.csv
 ```
 
-Cada fila incluye tanto los datos numéricos (votos, censo, participación) como los campos descriptivos de las dimensiones (nombre del territorio, siglas del partido, descripción de la elección, etc.).
+Cada fila incluye tanto los datos numéricos (votos, censo, participación) como los campos descriptivos de las dimensiones (nombre del territorio, siglas del partido, descripción de la elección, etc.). En `votos_territoriales.csv`, los campos de partido incluyen también `bloque`, `color`, `color_pastel` y `color_oscuro`.
 
 ### Ventajas
 

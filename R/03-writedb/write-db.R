@@ -190,6 +190,26 @@ recreate_load_indexes <- function(con) {
   DBI::dbExecute(con, sprintf("ANALYZE %s", sql_table(PUBLIC_SCHEMA, "votos_territoriales")))
 }
 
+ensure_partidos_recode_metadata_columns <- function(con) {
+  metadata_columns <- c(
+    bloque = "VARCHAR(50)",
+    color_pastel = "VARCHAR(7)",
+    color_oscuro = "VARCHAR(7)"
+  )
+
+  for (column in names(metadata_columns)) {
+    DBI::dbExecute(
+      con,
+      sprintf(
+        "ALTER TABLE %s ADD COLUMN IF NOT EXISTS %s %s NULL",
+        sql_table(PUBLIC_SCHEMA, "partidos_recode"),
+        sql_ident(column),
+        metadata_columns[[column]]
+      )
+    )
+  }
+}
+
 replace_final_tables_from_staging <- function(con, table_columns) {
   DBI::dbExecute(con, "SET LOCAL synchronous_commit TO off")
   DBI::dbExecute(con, "SET LOCAL maintenance_work_mem TO '512MB'")
@@ -265,6 +285,7 @@ transaction_open <- FALSE
 
 tryCatch(
   {
+    ensure_partidos_recode_metadata_columns(con)
     message("[DB] Preparando staging temporal...")
     stage_table(con, "tipos_eleccion", tipos_eleccion)
     stage_table(con, "elecciones", elecciones)

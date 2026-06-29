@@ -30,6 +30,7 @@ Además incluye:
 - `nombres_municipios.csv` — Nomenclátor de municipios del INE.
 - `representantes/` — Escaños asignados y representantes electos por provincia y municipio.
 - `partidos_recodes.xlsx` — Tabla maestra de recodificación/agrupación de partidos.
+- `partidos_colores.xlsx` — Bloques y colores asociados a cada recode de partido.
 
 <div class="callout callout-tip">
 <strong>¿Quieres reproducir el ETL completo?</strong>
@@ -46,7 +47,7 @@ Transforma los datos en bruto en tablas intermedias estandarizadas (formato RDS)
 |--------|--------|-------------|
 | `dimensiones/elecciones/fechas-elecciones-format.R` | `tablas-finales/dimensiones/elecciones` | Normaliza fechas en español, codifica tipo de elección, genera slug |
 | `dimensiones/territorios/territorios.R` | `tablas-finales/dimensiones/territorios` | Construye jerarquía territorial (CCAA → provincia → circunscripción → municipio → distrito → sección) con `parent_id` |
-| `dimensiones/partidos/sync-partidos.R` | `tablas-finales/dimensiones/partidos`, `partidos_recode` | Sincroniza partidos desde `partidos_recodes.xlsx` |
+| `dimensiones/partidos/sync-partidos.R` | `tablas-finales/dimensiones/partidos`, `partidos_recode` | Sincroniza partidos desde `partidos_recodes.xlsx` y enriquece recodes con `partidos_colores.xlsx` |
 | `dimensiones/partidos/new-partidos.R` | `data-processed/partidos_recodes_pending.xlsx` | Detecta partidos nuevos sin recodificación asignada |
 
 ### Hechos (por comunidad autónoma)

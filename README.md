@@ -13,8 +13,8 @@ cada commit. Cada run de GitHub Actions y sus artefactos deben trazarse mediante
 metadatos de ejecucion como commit SHA, fecha, `run_id` o `run_number`, sin cambiar
 por ahora los nombres actuales de los artefactos automaticos.
 
-- [CHANGELOG.md](CHANGELOG.md)
-- [Estrategia de versionado](docs/versioning.md)
+- [CHANGELOG.md](docs-site/content/changelog.md)
+- [Estrategia de versionado](versioning.md)
 - [GitHub Releases](https://github.com/hmeleiro/eleccionesdb-etl/releases)
 
 ## CI/CD
@@ -111,7 +111,7 @@ El DDL completo está en `R/00-setup/db_schema.sql`. Tablas principales:
 -   `elecciones(id, tipo_eleccion, year, mes, dia, fecha, codigo_ccaa, numero_vuelta, descripcion, ambito, slug)`
 -   `elecciones_fuentes(eleccion_id, fuente, url_fuente, observaciones)` — fuente oficial y URL de cada elección.
 -   `territorios(id, tipo, codigo_ccaa, codigo_provincia, codigo_municipio, codigo_distrito, codigo_seccion, codigo_circunscripcion, nombre, codigo_completo, parent_id)` — jerarquía con `parent_id`.
--   `partidos_recode(id, partido_recode, agrupacion, color)` — agrupaciones/recodificaciones de partidos.
+-   `partidos_recode(id, partido_recode, agrupacion, bloque, color, color_pastel, color_oscuro)` — agrupaciones/recodificaciones de partidos y metadatos de visualización.
 -   `partidos(id, partido_recode_id, siglas, denominacion)` — FK a `partidos_recode`.
 
 **Hechos:**
@@ -167,8 +167,8 @@ La conexión se centraliza en `R/utils.R` mediante la función `connect()`:
 Los partidos se gestionan en dos dimensiones separadas:
 
 1.  **Recodificación base (`partidos_recode`)**
-    -   Fichero fuente: `data-raw/partidos_recodes.xlsx`.
-    -   Contiene `partido_recode`, `agrupacion`, `color`.
+    -   Ficheros fuente: `data-raw/partidos_recodes.xlsx` y `data-raw/partidos_colores.xlsx`.
+    -   Contiene `partido_recode`, `agrupacion`, `bloque`, `color`, `color_pastel`, `color_oscuro`.
     -   Script: `R/01-generate-data/dimensiones/partidos/sync-partidos.R`.
     -   Genera `tablas-finales/dimensiones/partidos_recode`.
 2.  **Partidos (`partidos`)**
@@ -346,7 +346,7 @@ tar_destroy()
 
 1.  Configurar `.env` con credenciales de Postgres.
 2.  Crear esquema en BD ejecutando `R/00-setup/db_schema.sql`.
-3.  Preparar ficheros de datos en `data-raw/` (incluyendo `partidos_recodes.xlsx`).
+3.  Preparar ficheros de datos en `data-raw/` (incluyendo `partidos_recodes.xlsx` y `partidos_colores.xlsx`).
 4.  Ejecutar el pipeline completo con {targets} (ver [Orquestación con {targets}](#orquestación-con-targets)):
 
 ``` r
@@ -366,7 +366,7 @@ Alternativamente, ejecutar paso a paso:
 1.  Incorporar nuevos ficheros de resultados en `data-raw/hechos/<ambito>/`.
 2.  Si la fuente requiere descarga (Andalucía, Asturias, Canarias), ejecutar manualmente el script de fetch correspondiente.
 3.  Ejecutar `R/01-generate-data/dimensiones/partidos/new-partidos.R` para detectar nuevos partidos → revisar `partidos_recodes_pending.xlsx`.
-4.  Incorporar nuevos partidos a `partidos_recodes.xlsx` y ejecutar `sync_partidos()`.
+4.  Incorporar nuevos partidos a `partidos_recodes.xlsx`, revisar `partidos_colores.xlsx` si procede y ejecutar `sync_partidos()`.
 5.  Ejecutar el pipeline:
 
 ``` r

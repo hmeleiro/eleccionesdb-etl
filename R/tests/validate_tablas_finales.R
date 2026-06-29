@@ -282,7 +282,10 @@ validate_dim_territorios <- function(df, label = "territorios") {
 #' validate_dim_partidos_recode(partidos_recode_df)
 #' write_csv(partidos_recode_df, "tablas-finales/dimensiones/partidos_recode")
 validate_dim_partidos_recode <- function(df, label = "partidos_recode") {
-  expected_cols <- c("id", "partido_recode", "agrupacion", "color")
+  expected_cols <- c(
+    "id", "partido_recode", "agrupacion", "bloque",
+    "color", "color_pastel", "color_oscuro"
+  )
   stop_if_not_all(
     setequal(names(df), expected_cols),
     paste0(
@@ -308,6 +311,17 @@ validate_dim_partidos_recode <- function(df, label = "partidos_recode") {
   stop_if_not_all(
     !duplicated(df$partido_recode),
     paste0("[", label, "] $partido_recode debe ser único (UNIQUE constraint)")
+  )
+  color_cols <- c("color", "color_pastel", "color_oscuro")
+  for (col in color_cols) {
+    stop_if_not_all(
+      !is.na(df[[col]]) & grepl("^#[0-9A-Fa-f]{6}$", df[[col]]),
+      paste0("[", label, "] $", col, " debe tener formato hexadecimal #RRGGBB")
+    )
+  }
+  stop_if_not_all(
+    !is.na(df$bloque) & df$bloque != "",
+    paste0("[", label, "] $bloque no debe estar vacÃ­o")
   )
   message(sprintf("  [OK] %s (%d filas)", label, nrow(df)))
   invisible(df)
