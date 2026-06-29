@@ -1199,11 +1199,12 @@ eleccionesdb-etl/data-raw/hechos/minsait/07-cyl.csv,29317960,2026-06-16 14:31:03
 eleccionesdb-etl/data-raw/hechos/minsait/11-extremadura.csv,9795823,2026-06-16 14:31:28,https://pub-36ce9aa148a348ae8d9b6686b7edf0c4.r2.dev/eleccionesdb-etl/data-raw/hechos/minsait/11-extremadura.csv
 eleccionesdb-etl/data-raw/nombres_municipios.csv,170086,2026-03-27 09:30:36,https://pub-36ce9aa148a348ae8d9b6686b7edf0c4.r2.dev/eleccionesdb-etl/data-raw/nombres_municipios.csv
 eleccionesdb-etl/data-raw/partido_id_overrides.csv,108,2026-06-16 14:30:20,https://pub-36ce9aa148a348ae8d9b6686b7edf0c4.r2.dev/eleccionesdb-etl/data-raw/partido_id_overrides.csv
-eleccionesdb-etl/data-raw/partidos_colores.xlsx,10153,2026-03-27 09:30:36,https://pub-36ce9aa148a348ae8d9b6686b7edf0c4.r2.dev/eleccionesdb-etl/data-raw/partidos_colores.xlsx
+eleccionesdb-etl/data-raw/partidos_colores.xlsx,13959,2026-06-29 09:04:45,https://pub-36ce9aa148a348ae8d9b6686b7edf0c4.r2.dev/eleccionesdb-etl/data-raw/partidos_colores.xlsx
 eleccionesdb-etl/data-raw/partidos_recodes.xlsx,409843,2026-06-16 14:30:20,https://pub-36ce9aa148a348ae8d9b6686b7edf0c4.r2.dev/eleccionesdb-etl/data-raw/partidos_recodes.xlsx
 eleccionesdb-etl/data-raw/representantes/nrepresentantes_muni.xlsx,2368492,2026-06-23 15:10:54,https://pub-36ce9aa148a348ae8d9b6686b7edf0c4.r2.dev/eleccionesdb-etl/data-raw/representantes/nrepresentantes_muni.xlsx
 eleccionesdb-etl/data-raw/representantes/nrepresentantes_muni_pending.xlsx,5565,2026-06-23 15:10:52,https://pub-36ce9aa148a348ae8d9b6686b7edf0c4.r2.dev/eleccionesdb-etl/data-raw/representantes/nrepresentantes_muni_pending.xlsx
 eleccionesdb-etl/data-raw/representantes/nrepresentantes_prov.xlsx,75955,2026-06-23 08:08:04,https://pub-36ce9aa148a348ae8d9b6686b7edf0c4.r2.dev/eleccionesdb-etl/data-raw/representantes/nrepresentantes_prov.xlsx
+eleccionesdb-etl/data-raw/representantes/representantes_muni - copia.xlsx,10209687,2026-06-29 09:04:47,https://pub-36ce9aa148a348ae8d9b6686b7edf0c4.r2.dev/eleccionesdb-etl/data-raw/representantes/representantes_muni - copia.xlsx
 eleccionesdb-etl/data-raw/representantes/representantes_muni.xlsx,10209687,2026-06-23 15:10:57,https://pub-36ce9aa148a348ae8d9b6686b7edf0c4.r2.dev/eleccionesdb-etl/data-raw/representantes/representantes_muni.xlsx
 eleccionesdb-etl/data-raw/representantes/representantes_muni_pending.xlsx,21845,2026-06-23 15:10:52,https://pub-36ce9aa148a348ae8d9b6686b7edf0c4.r2.dev/eleccionesdb-etl/data-raw/representantes/representantes_muni_pending.xlsx
-eleccionesdb-etl/data-raw/representantes/representantes_prov.xlsx,1125110,2026-06-23 15:10:54,https://pub-36ce9aa148a348ae8d9b6686b7edf0c4.r2.dev/eleccionesdb-etl/data-raw/representantes/representantes_prov.xlsx
+eleccionesdb-etl/data-raw/representantes/representantes_prov.xlsx,168322,2026-06-29 09:04:45,https://pub-36ce9aa148a348ae8d9b6686b7edf0c4.r2.dev/eleccionesdb-etl/data-raw/representantes/representantes_prov.xlsx
