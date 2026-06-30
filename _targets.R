@@ -42,6 +42,7 @@ list(
     tar_target(raw_fechas_elecciones, "data-raw/fechas_elecciones.csv", format = "file"),
     tar_target(raw_partidos_recodes, "data-raw/partidos_recodes.xlsx", format = "file"),
     tar_target(raw_partidos_colores, "data-raw/partidos_colores.xlsx", format = "file"),
+    tar_target(script_writedb, "R/03-writedb/write-db.R", format = "file"),
     tar_target(
         raw_representantes,
         c(
@@ -113,7 +114,7 @@ list(
     # ---------------------------------------------------------------------------
     tar_target(writedb, run_writedb(
         bind_hechos, dim_tipos_eleccion, dim_elecciones, dim_elecciones_fuentes,
-        dim_territorios, dim_partidos, representantes_coverage
+        dim_territorios, dim_partidos, representantes_coverage, script_writedb
     )),
 
     # ---------------------------------------------------------------------------

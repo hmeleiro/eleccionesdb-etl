@@ -121,8 +121,9 @@ run_representantes_coverage_target <- function(
 # =============================================================================
 
 run_writedb <- function(bind_hechos, dim_tipos_eleccion, dim_elecciones, dim_elecciones_fuentes,
-                        dim_territorios, dim_partidos, representantes_coverage) {
-  run_pipeline_script("R/03-writedb/write-db.R")
+                        dim_territorios, dim_partidos, representantes_coverage,
+                        script_writedb) {
+  run_pipeline_script(script_writedb)
   invisible(NULL)
 }
 

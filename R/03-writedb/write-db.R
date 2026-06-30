@@ -10,6 +10,12 @@ PUBLIC_SCHEMA <- "public"
 STAGING_SCHEMA <- "pg_temp"
 LOAD_CHUNK_SIZE <- 1000000L
 
+required_partidos_recode_metadata_columns <- c(
+  "bloque",
+  "color_pastel",
+  "color_oscuro"
+)
+
 final_load_tables <- c(
   "tipos_eleccion",
   "elecciones",
@@ -59,6 +65,42 @@ sql_column_list <- function(columns) {
 
 sql_string <- function(con, value) {
   as.character(DBI::dbQuoteString(con, value))
+}
+
+log_connection_context <- function(con) {
+  context <- DBI::dbGetQuery(
+    con,
+    "SELECT
+       current_database() AS database,
+       current_user AS user_name,
+       current_schema() AS schema_name,
+       inet_server_addr()::text AS server_addr,
+       inet_server_port() AS server_port"
+  )
+
+  message(sprintf(
+    "[DB] Conectado a database=%s user=%s schema=%s server=%s:%s",
+    context$database[[1]],
+    context$user_name[[1]],
+    context$schema_name[[1]],
+    context$server_addr[[1]],
+    context$server_port[[1]]
+  ))
+}
+
+get_table_columns <- function(con, table, schema = PUBLIC_SCHEMA) {
+  DBI::dbGetQuery(
+    con,
+    sprintf(
+      "SELECT column_name
+       FROM information_schema.columns
+       WHERE table_schema = %s
+         AND table_name = %s
+       ORDER BY ordinal_position",
+      sql_string(con, schema),
+      sql_string(con, table)
+    )
+  )$column_name
 }
 
 staging_table_name <- function(table) {
@@ -191,23 +233,61 @@ recreate_load_indexes <- function(con) {
 }
 
 ensure_partidos_recode_metadata_columns <- function(con) {
-  metadata_columns <- c(
+  metadata_column_types <- c(
     bloque = "VARCHAR(50)",
     color_pastel = "VARCHAR(7)",
     color_oscuro = "VARCHAR(7)"
   )
 
-  for (column in names(metadata_columns)) {
+  for (column in names(metadata_column_types)) {
     DBI::dbExecute(
       con,
       sprintf(
         "ALTER TABLE %s ADD COLUMN IF NOT EXISTS %s %s NULL",
         sql_table(PUBLIC_SCHEMA, "partidos_recode"),
         sql_ident(column),
-        metadata_columns[[column]]
+        metadata_column_types[[column]]
       )
     )
   }
+
+  existing_columns <- get_table_columns(con, "partidos_recode")
+  missing_columns <- setdiff(required_partidos_recode_metadata_columns, existing_columns)
+  if (length(missing_columns) > 0) {
+    stop(
+      "[DB] No se pudieron crear columnas en partidos_recode: ",
+      paste(missing_columns, collapse = ", "),
+      call. = FALSE
+    )
+  }
+
+  message(
+    "[DB] Columnas metadata partidos_recode OK: ",
+    paste(required_partidos_recode_metadata_columns, collapse = ", ")
+  )
+}
+
+verify_partidos_recode_loaded <- function(con) {
+  existing_columns <- get_table_columns(con, "partidos_recode")
+  missing_columns <- setdiff(required_partidos_recode_metadata_columns, existing_columns)
+  if (length(missing_columns) > 0) {
+    stop(
+      "[DB] Carga completada, pero faltan columnas en public.partidos_recode: ",
+      paste(missing_columns, collapse = ", "),
+      call. = FALSE
+    )
+  }
+
+  row_count <- DBI::dbGetQuery(
+    con,
+    sprintf("SELECT COUNT(*) AS n FROM %s", sql_table(PUBLIC_SCHEMA, "partidos_recode"))
+  )$n[[1]]
+
+  message(
+    "[DB] Verificacion partidos_recode OK: ",
+    row_count, " filas; columnas=",
+    paste(existing_columns, collapse = ", ")
+  )
 }
 
 replace_final_tables_from_staging <- function(con, table_columns) {
@@ -285,6 +365,7 @@ transaction_open <- FALSE
 
 tryCatch(
   {
+    log_connection_context(con)
     ensure_partidos_recode_metadata_columns(con)
     message("[DB] Preparando staging temporal...")
     stage_table(con, "tipos_eleccion", tipos_eleccion)
@@ -311,6 +392,7 @@ tryCatch(
     replace_final_tables_from_staging(con, table_columns)
     DBI::dbCommit(con)
     transaction_open <- FALSE
+    verify_partidos_recode_loaded(con)
     message("[DB] Carga transaccional completada.")
   },
   error = function(e) {

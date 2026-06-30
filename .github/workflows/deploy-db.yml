@@ -127,6 +127,7 @@ jobs:
           trap 'rm -f .deploy-writedb-targets' EXIT
           Rscript -e "source('run.R'); run_dims_local()"
           Rscript -e "source('run.R'); writeLines(writedb_ordered_targets())" > .deploy-writedb-targets
+          Rscript -e "targets::tar_invalidate('writedb')"
           while IFS= read -r target_name; do
             echo "Running target: \${target_name}"
             Rscript -e "source('run.R'); run_target_local('\${target_name}')"

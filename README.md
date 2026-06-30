@@ -5,6 +5,7 @@
 [![ETL Export](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/etl-export.yml/badge.svg)](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/etl-export.yml)
 [![Deploy Docs](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/deploy-docs.yml)
 [![Deploy DB](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/deploy-db.yml/badge.svg)](https://github.com/hmeleiro/eleccionesdb-etl/actions/workflows/deploy-db.yml)
+[![Spain Electoral Project](https://img.shields.io/badge/Spain%20Electoral-Project-red?style=flat-square)](https://spainelectoralproject.com)
 
 ## Versionado
 
